@@ -11,13 +11,13 @@ const COLUMN_COUNT = 3;
 const ITEM_SIZE = SCREEN_WIDTH / COLUMN_COUNT;
 
 export default function FavoritesScreen() {
-  const { favedItems, undoFave } = useTrash();
+  const { favedItems, restoreFromFave } = useTrash();
   const router = useRouter();
 
   const renderItem = ({ item }: { item: import('expo-media-library').Asset }) => (
     <View style={styles.gridItem}>
       <Image source={{ uri: item.uri }} style={styles.gridImage} contentFit="cover" />
-      <TouchableOpacity style={styles.undoButton} onPress={() => undoFave(item)}>
+      <TouchableOpacity style={styles.undoButton} onPress={() => restoreFromFave(item)}>
         <MaterialIcons name="close" size={18} color={Colors.white} />
       </TouchableOpacity>
       {item.mediaType === 'video' && (

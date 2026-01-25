@@ -13,14 +13,13 @@ import { useTrash } from '../context/TrashContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SwipeScreen() {
-  const { items, swipeLeft, swipeRight, faveItem, trashItems, favedItems, undoTrash, loadPhotos, isLoading } = useTrash();
+  const { items, swipeLeft, swipeRight, faveItem, trashItems, favedItems, undo, loadPhotos, isLoading, loadMore, totalCount, keepItems } = useTrash();
   const router = useRouter();
   const navigation = useNavigation();
   const params = useLocalSearchParams();
 
   // Prevent accidental exit if trash has items
   useEffect(() => {
-      // ... same logic
       const unsubscribe = navigation.addListener('beforeRemove', (e: any) => {
           if (trashItems.length === 0 && favedItems.length === 0) {
               return;
@@ -51,11 +50,19 @@ export default function SwipeScreen() {
      if (params.year) options.year = Number(params.year);
      if (params.month) options.month = Number(params.month);
      if (params.random) options.random = true;
+     if (params.albumId) options.albumId = String(params.albumId);
      
      loadPhotos(options);
   }, []); // Run once on mount
 
-  // ... prefetch logic same ...
+  // Infinite Scroll Trigger
+  useEffect(() => {
+     if (items.length < 5 && items.length > 0 && !isLoading) {
+         console.log('Threshold reached, loading more...');
+         loadMore();
+     }
+  }, [items.length]);
+
   useEffect(() => {
       const nextItems = items.slice(0, 5);
       nextItems.forEach((item) => {
@@ -87,23 +94,10 @@ export default function SwipeScreen() {
   }, [currentItem, faveItem]);
   
   const handleUndo = () => {
-      if (trashItems.length > 0) {
-          const lastTrashed = trashItems[trashItems.length - 1];
-          undoTrash(lastTrashed);
-      }
-      // Note: We currently only undo trash via this button. 
-      // Undo for fave is confusing if button is shared. 
-      // Ideally "Undo" reverses the *last action*.
-      // But we track `trashItems` and `favedItems` separately.
-      // For now, let's keep it simple: Undo only undos Trash from the left swipe?
-      // Or we need a history stack.
-      // Given complexity, let's leave Undo as Trash-only or disable it for Fave for now.
-      // Or better: Checking which was last modified?
-      // Let's stick to Trash Undo for now as it's the "dangerous" one.
+      undo();
   };
 
-  if (isLoading) {
-      // ... returning loading view
+  if (isLoading && items.length === 0) {
       return (
           <AuroraBackground>
             <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -115,6 +109,11 @@ export default function SwipeScreen() {
           </AuroraBackground>
       )
   }
+
+  const processedCount = trashItems.length + keepItems.length + favedItems.length;
+  // If totalCount is available, use it (Total - Processed). Else use stack length.
+  // totalCount from MediaLibrary might be 0 if not supported or filtered, fallback safe.
+  const remainingCount = totalCount > 0 ? Math.max(0, totalCount - processedCount) : items.length;
 
   return (
     <View style={styles.container}>
@@ -130,7 +129,10 @@ export default function SwipeScreen() {
           {/* Stats / Title */}
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>{i18n.t('title')}</Text>
-            <Text style={styles.headerSubtitle}>{items.length} {i18n.t('remaining')}</Text>
+            <Text style={styles.headerSubtitle}>
+                {remainingCount} {i18n.t('remaining')} 
+                {totalCount > 0 && ` / ${totalCount}`}
+            </Text>
           </View>
 
           {/* Action Row */}

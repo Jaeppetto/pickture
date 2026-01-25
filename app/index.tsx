@@ -105,17 +105,17 @@ export default function HomeScreen() {
                   </LinearGradient>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => handleStart('favorites')}>
+              <TouchableOpacity onPress={() => router.push('/albums')}>
                   <LinearGradient 
                       colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
                       style={styles.card}
                   >
                       <View style={styles.iconContainer}>
-                          <MaterialIcons name="favorite" size={32} color={Colors.danger} />
+                          <MaterialIcons name="photo-album" size={32} color={Colors.white} />
                       </View>
                       <View>
-                          <Text style={styles.cardTitle}>{i18n.t('favorites')}</Text>
-                          <Text style={styles.cardDesc}>{i18n.t('favoritesDesc')}</Text>
+                          <Text style={styles.cardTitle}>{i18n.t('myAlbums')}</Text>
+                          <Text style={styles.cardDesc}>{i18n.t('myAlbumsDesc')}</Text>
                       </View>
                   </LinearGradient>
               </TouchableOpacity>

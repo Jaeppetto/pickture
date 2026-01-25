@@ -15,7 +15,7 @@ import { useToast } from '../context/ToastContext';
 import { i18n } from '../constants/Translations';
 
 export default function ReviewScreen() {
-  const { trashItems, undoTrash, emptyTrash } = useTrash();
+  const { trashItems, restoreFromTrash, emptyTrash } = useTrash();
   const { showToast } = useToast();
   const router = useRouter();
 
@@ -33,7 +33,7 @@ export default function ReviewScreen() {
   const renderItem = ({ item }: { item: import('expo-media-library').Asset }) => (
     <View style={styles.gridItem}>
       <Image source={{ uri: item.uri }} style={styles.gridImage} contentFit="cover" />
-      <TouchableOpacity style={styles.undoButton} onPress={() => undoTrash(item)}>
+      <TouchableOpacity style={styles.undoButton} onPress={() => restoreFromTrash(item)}>
         <MaterialIcons name="undo" size={18} color={Colors.white} />
       </TouchableOpacity>
       {item.mediaType === 'video' && (

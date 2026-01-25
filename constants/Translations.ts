@@ -42,6 +42,10 @@ export const translations = {
     unfinishedReviewMsg: 'You have pending items (Trash/Favorites). Going back will discard your current selection.',
     stay: 'Stay',
     discardLeave: 'Discard & Leave',
+    myAlbums: 'My Albums',
+    myAlbumsDesc: 'Clean specific album',
+    selectAlbum: 'Select Album',
+    albums: 'Albums',
   },
   ko: {
     title: 'Pickture',
@@ -83,6 +87,10 @@ export const translations = {
     unfinishedReviewMsg: '휴지통이나 즐겨찾기에 남아있는 항목이 있습니다. 나가시면 선택한 내용이 초기화됩니다.',
     stay: '유지',
     discardLeave: '나가기',
+    myAlbums: '내 앨범',
+    myAlbumsDesc: '특정 앨범 정리',
+    selectAlbum: '앨범 선택',
+    albums: '앨범',
   },
   ja: {
     title: 'Pickture',
@@ -120,6 +128,10 @@ export const translations = {
     unfinishedReviewMsg: 'ゴミ箱やお気に入りに項目が残っています。戻ると選択内容は破棄されます。',
     stay: '留まる',
     discardLeave: '破棄して戻る',
+    myAlbums: 'マイアルバム',
+    myAlbumsDesc: '特定のアルバムを整理',
+    selectAlbum: 'アルバム選択',
+    albums: 'アルバム',
   },
 };
 

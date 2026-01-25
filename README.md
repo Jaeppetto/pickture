@@ -25,6 +25,12 @@ Pickture is a premium Gallery Cleaning application built with **React Native (Ex
 
 ## 📝 Version History (Patch Notes)
 
+### v0.9.0 - Infinite Possibilities ♾️
+*   **Infinite Swipe**: Implemented **Infinite Scroll (Pagination)**. The app now loads photos in smart batches, allowing you to browse thousands of photos (e.g., 10,000+) without memory crashes.
+*   **Album Selection**: Replaced "Favorites Mode" with **"My Albums"**. You can now choose *any* album from your device to clean.
+*   **Universal Undo**: The "Undo" button now tracks your history stack. You can undo **any action** (Trash, Keep, or Favorite), not just deletions.
+*   **Performance**: Optimized memory usage with proactive garbage collection during swiping.
+
 ### v0.8.0 - Dynamic Fluid & Core Fixes 💧
 *   **New Background**: Replaced the previous background with a **"Fluid Lava Lamp"** effect (`Orb` animation) for a more organic and dynamic visual experience.
 *   **Robust Favorites**: Enhanced "Favorites" album detection to search not just for exact names but also for loose matches (e.g., "Starred", "Heart"), resolving integration issues on some devices.
