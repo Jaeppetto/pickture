@@ -2,7 +2,7 @@
   "expo": {
     "name": "Pickture",
     "slug": "pickture",
-    "version": "0.6.0",
+    "version": "0.8.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tempinit",
@@ -48,7 +48,7 @@
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false
     }
   }
 }

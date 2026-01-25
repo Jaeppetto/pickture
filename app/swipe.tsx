@@ -13,27 +13,28 @@ import { useTrash } from '../context/TrashContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SwipeScreen() {
-  const { items, swipeLeft, swipeRight, trashItems, undoTrash, loadPhotos, isLoading } = useTrash();
+  const { items, swipeLeft, swipeRight, faveItem, trashItems, favedItems, undoTrash, loadPhotos, isLoading } = useTrash();
   const router = useRouter();
   const navigation = useNavigation();
   const params = useLocalSearchParams();
 
   // Prevent accidental exit if trash has items
   useEffect(() => {
+      // ... same logic
       const unsubscribe = navigation.addListener('beforeRemove', (e: any) => {
-          if (trashItems.length === 0) {
+          if (trashItems.length === 0 && favedItems.length === 0) {
               return;
           }
 
           e.preventDefault();
 
           Alert.alert(
-              'Unemptied Trash',
-              'You have items in your trash. Going back will discard your current selection.',
+              i18n.t('unfinishedReviewTitle'),
+              i18n.t('unfinishedReviewMsg'),
               [
-                  { text: 'Stay', style: 'cancel', onPress: () => {} },
+                  { text: i18n.t('stay'), style: 'cancel', onPress: () => {} },
                   {
-                      text: 'Discard & Leave',
+                      text: i18n.t('discardLeave'),
                       style: 'destructive',
                       onPress: () => navigation.dispatch(e.data.action),
                   },
@@ -42,7 +43,7 @@ export default function SwipeScreen() {
       });
 
       return unsubscribe;
-  }, [navigation, trashItems.length]);
+  }, [navigation, trashItems.length, favedItems.length]);
 
   useEffect(() => {
      // Convert params and load
@@ -54,7 +55,7 @@ export default function SwipeScreen() {
      loadPhotos(options);
   }, []); // Run once on mount
 
-  // Prefetch next 5 images for smooth experience
+  // ... prefetch logic same ...
   useEffect(() => {
       const nextItems = items.slice(0, 5);
       nextItems.forEach((item) => {
@@ -78,25 +79,31 @@ export default function SwipeScreen() {
       swipeRight(currentItem);
     }
   }, [currentItem, swipeRight]);
+
+  const handleFave = useCallback(() => {
+    if (currentItem) {
+      faveItem(currentItem);
+    }
+  }, [currentItem, faveItem]);
   
   const handleUndo = () => {
       if (trashItems.length > 0) {
           const lastTrashed = trashItems[trashItems.length - 1];
           undoTrash(lastTrashed);
       }
+      // Note: We currently only undo trash via this button. 
+      // Undo for fave is confusing if button is shared. 
+      // Ideally "Undo" reverses the *last action*.
+      // But we track `trashItems` and `favedItems` separately.
+      // For now, let's keep it simple: Undo only undos Trash from the left swipe?
+      // Or we need a history stack.
+      // Given complexity, let's leave Undo as Trash-only or disable it for Fave for now.
+      // Or better: Checking which was last modified?
+      // Let's stick to Trash Undo for now as it's the "dangerous" one.
   };
 
-  const totalLoaded = items.length + trashItems.length + 0; // we don't track keep count properly in context for progress yet, assuming static load? 
-  // Actually context sets items, so we can calculate progress if we knew initial count.
-  // For now, let's just show remaining count? Or simple progress bar isn't trivial with dynamic filters without tracking "total fetched".
-  // Let's simplified progress: Just a visual indicator of stack.
-  
-// ... imports moved to top
-
-// ...
-
-// Inside SwipeScreen component
   if (isLoading) {
+      // ... returning loading view
       return (
           <AuroraBackground>
             <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -109,8 +116,6 @@ export default function SwipeScreen() {
       )
   }
 
-// ... 
-
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
@@ -118,23 +123,40 @@ export default function SwipeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          {/* ... back button ... */}
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
              <MaterialIcons name="close" size={24} color={Colors.white} />
           </TouchableOpacity>
+          
+          {/* Stats / Title */}
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>{i18n.t('title')}</Text>
             <Text style={styles.headerSubtitle}>{items.length} {i18n.t('remaining')}</Text>
           </View>
-          <TouchableOpacity 
-            style={styles.reviewButton} 
-            onPress={() => router.push('/review')}
-            disabled={trashItems.length === 0}
-          >
-             <Text style={[styles.reviewText, { opacity: trashItems.length > 0 ? 1 : 0.3 }]}>
-                {trashItems.length} {i18n.t('trash')}
-             </Text>
-          </TouchableOpacity>
+
+          {/* Action Row */}
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+              {/* Favorites Button */}
+              <TouchableOpacity 
+                style={[styles.reviewButton, { borderColor: 'rgba(255, 215, 0, 0.3)', backgroundColor: 'rgba(255, 215, 0, 0.1)' }]} 
+                onPress={() => router.push('/favorites')}
+                disabled={favedItems.length === 0}
+              >
+                 <Text style={[styles.reviewText, { color: '#FFD700', opacity: favedItems.length > 0 ? 1 : 0.3 }]}>
+                    {favedItems.length} ★
+                 </Text>
+              </TouchableOpacity>
+
+              {/* Trash Button */}
+              <TouchableOpacity 
+                style={styles.reviewButton} 
+                onPress={() => router.push('/review')}
+                disabled={trashItems.length === 0}
+              >
+                 <Text style={[styles.reviewText, { opacity: trashItems.length > 0 ? 1 : 0.3 }]}>
+                    {trashItems.length} {i18n.t('trash')}
+                 </Text>
+              </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -144,9 +166,22 @@ export default function SwipeScreen() {
            <View style={styles.emptyContainer}>
                <Text style={styles.emptyText}>{i18n.t('allCaughtUp')}</Text>
                <Text style={styles.emptySubText}>{i18n.t('noMorePhotos')}</Text>
-               <TouchableOpacity style={styles.reviewLargeButton} onPress={() => router.push('/review')}>
-                   <Text style={styles.reviewLargeButtonText}>{i18n.t('reviewDeletion')}</Text>
-               </TouchableOpacity>
+               
+               <View style={{ flexDirection: 'row', gap: 16, marginTop: 20 }}>
+                   <TouchableOpacity 
+                        style={[styles.reviewLargeButton, { backgroundColor: '#FFD700' }]} 
+                        onPress={() => router.push('/favorites')}
+                   >
+                       <Text style={[styles.reviewLargeButtonText, { color: Colors.background }]}>{i18n.t('faves')}</Text>
+                   </TouchableOpacity>
+
+                   <TouchableOpacity 
+                        style={styles.reviewLargeButton} 
+                        onPress={() => router.push('/review')}
+                   >
+                       <Text style={styles.reviewLargeButtonText}>{i18n.t('reviewDeletion')}</Text>
+                   </TouchableOpacity>
+               </View>
            </View>
         ) : (
             <>
@@ -171,7 +206,6 @@ export default function SwipeScreen() {
                             index={0}
                             onSwipeLeft={handleSwipeLeft}
                             onSwipeRight={handleSwipeRight}
-                            // Pass translations if SwipeCard needs them (it doesn't, just icons)
                         />
                      </View>
                 )}
@@ -187,7 +221,7 @@ export default function SwipeScreen() {
       {/* Action Buttons */}
       <ActionButtons 
         onUndo={handleUndo} 
-        onFave={handleSwipeRight} 
+        onFave={handleFave} 
         onSkip={handleSwipeRight} 
       />
     </View>

@@ -3,45 +3,75 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
 } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 
-const GradientLayer = ({ colors, duration, initialRotation, scale }: any) => {
-  const rotation = useSharedValue(initialRotation);
+const Orb = ({ colors, size, initialX, initialY, duration }: any) => {
+  const x = useSharedValue(initialX);
+  const y = useSharedValue(initialY);
+  const scale = useSharedValue(1);
 
   useEffect(() => {
-    rotation.value = withRepeat(
-      withTiming(initialRotation + 360, {
-        duration: duration,
-        easing: Easing.linear,
-      }),
-      -1,
-      false
+    // Random movement pattern
+    const randomShift = () => (Math.random() - 0.5) * 100;
+    
+    x.value = withRepeat(
+        withSequence(
+            withTiming(initialX + randomShift(), { duration: duration, easing: Easing.inOut(Easing.ease) }),
+            withTiming(initialX - randomShift(), { duration: duration * 1.2, easing: Easing.inOut(Easing.ease) }),
+            withTiming(initialX, { duration: duration, easing: Easing.inOut(Easing.ease) })
+        ), -1, true
+    );
+
+    y.value = withRepeat(
+        withSequence(
+            withTiming(initialY + randomShift(), { duration: duration * 1.1, easing: Easing.inOut(Easing.ease) }),
+            withTiming(initialY - randomShift(), { duration: duration * 0.9, easing: Easing.inOut(Easing.ease) }),
+            withTiming(initialY, { duration: duration, easing: Easing.inOut(Easing.ease) })
+        ), -1, true
+    );
+
+    scale.value = withRepeat(
+        withSequence(
+            withTiming(1.2, { duration: duration * 0.7 }),
+            withTiming(0.8, { duration: duration * 0.7 })
+        ), -1, true
     );
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { rotate: `${rotation.value}deg` },
-        { scale: scale }
+        { translateX: x.value },
+        { translateY: y.value },
+        { scale: scale.value }
       ],
     };
   });
 
   return (
-    <Animated.View style={[styles.layerContainer, animatedStyle]}>
+    <Animated.View style={[
+        {
+            position: 'absolute',
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            opacity: 0.6,
+        }, 
+        animatedStyle
+    ]}>
         <LinearGradient
             colors={colors}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.gradient}
+            style={{ width: '100%', height: '100%', borderRadius: size / 2 }}
+            start={{ x: 0.3, y: 0.3 }}
+            end={{ x: 0.9, y: 0.9 }}
         />
     </Animated.View>
   );
@@ -54,35 +84,39 @@ export function ColorBends({ children }: { children?: React.ReactNode }) {
         {/* Dark Base */}
         <View style={{ position: 'absolute', width, height, backgroundColor: '#000' }} />
 
-        {/* Moving Layers */}
-        <GradientLayer 
-            colors={['#00FF94', '#00000000']} // Primary Green to Transparent
-            duration={15000} 
-            initialRotation={0}
-            scale={1.5}
+        {/* Floating Orbs - More fluid and organic than rigid rotating layers */}
+        <Orb 
+            colors={['#00FF94', '#000000']} 
+            size={width * 1.2} 
+            initialX={-width * 0.2} 
+            initialY={-width * 0.2} 
+            duration={8000} 
         />
-        <GradientLayer 
-            colors={['#FF4B4B', '#00000000']} // Danger Red to Transparent
-            duration={18000} 
-            initialRotation={120}
-            scale={1.8}
+        <Orb 
+            colors={['#FF4B4B', '#440000']} 
+            size={width * 1.0} 
+            initialX={width * 0.4} 
+            initialY={-height * 0.1} 
+            duration={10000} 
         />
-        <GradientLayer 
-            colors={['#3b82f6', '#00000000']} // Blue to Transparent
-            duration={22000} 
-            initialRotation={240}
-            scale={1.6}
+        <Orb 
+            colors={['#3b82f6', '#000044']} 
+            size={width * 1.1} 
+            initialX={-width * 0.1} 
+            initialY={height * 0.4} 
+            duration={9000} 
         />
-         <GradientLayer 
-            colors={['#a855f7', '#00000000']} // Purple to Transparent
-            duration={25000} 
-            initialRotation={60}
-            scale={1.9}
+         <Orb 
+            colors={['#a855f7', '#220022']} 
+            size={width * 1.3} 
+            initialX={width * 0.2} 
+            initialY={height * 0.3} 
+            duration={11000} 
         />
       </View>
       
-      {/* Heavy Blur to blend the sharp gradients into "Bends" */}
-      <BlurView intensity={80} tint="dark" style={StyleSheet.absoluteFill} />
+      {/* Heavy Blur to blend into a "Lava" effect */}
+      <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
       
       {/* Overlay for contrast */}
       <View style={styles.overlay} />
@@ -97,7 +131,7 @@ export function ColorBends({ children }: { children?: React.ReactNode }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Ensure black background behind
+    backgroundColor: '#000',
   },
   background: {
     ...StyleSheet.absoluteFillObject,
@@ -105,19 +139,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  layerContainer: {
-      position: 'absolute',
-      width: width * 1.8,
-      height: height * 1.8,
-      opacity: 0.8, // Good visibility
-  },
-  gradient: {
-      flex: 1,
-      width: '100%',
-      height: '100%',
-  },
   overlay: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0,0,0,0.2)', // Reduced overlay opacity
+      backgroundColor: 'rgba(0,0,0,0.3)',
   }
 });

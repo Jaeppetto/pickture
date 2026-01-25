@@ -25,6 +25,18 @@ Pickture is a premium Gallery Cleaning application built with **React Native (Ex
 
 ## 📝 Version History (Patch Notes)
 
+### v0.8.0 - Dynamic Fluid & Core Fixes 💧
+*   **New Background**: Replaced the previous background with a **"Fluid Lava Lamp"** effect (`Orb` animation) for a more organic and dynamic visual experience.
+*   **Robust Favorites**: Enhanced "Favorites" album detection to search not just for exact names but also for loose matches (e.g., "Starred", "Heart"), resolving integration issues on some devices.
+
+### v0.7.1 - Critical Fixes 🔧
+*   **Animation Fix**: Created `babel.config.js` to properly enable `react-native-reanimated`, fixing the "Color Bends" background animation.
+*   **Reactivity Fix**: Disabled `reactCompiler` to fix language switching issues where the UI wouldn't update immediately.
+
+### v0.7.0 - Favorites & Localization 🌟
+*   **In-App Favorites**: Implemented a new feature to "Star" photos during the swipe session without deleting them. Added a dedicated **Review Favorites** screen.
+*   **Alert Localization**: Fully localized all system alerts (Permissions, Errors, Confirmations) into English, Korean, and Japanese.
+
 ### v0.6.0 - Identity & Assets 🎨
 *   **App Identity**: Generated and applied custom **App Icon** and **Splash Screen** matching the "Dark Aurora" theme.
 *   **Cleanup**: Removed all legacy `mockData` and unused assets.

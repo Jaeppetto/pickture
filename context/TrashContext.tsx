@@ -1,6 +1,7 @@
 import * as MediaLibrary from 'expo-media-library';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { Alert } from 'react-native';
+import { i18n } from '../constants/Translations';
 
 export type PhotoItem = MediaLibrary.Asset;
 
@@ -16,13 +17,16 @@ interface TrashContextType {
   items: PhotoItem[];
   trashItems: PhotoItem[];
   keepItems: PhotoItem[];
+  favedItems: PhotoItem[];
   isLoading: boolean;
   hasPermission: boolean | null;
   requestPermission: () => Promise<boolean>;
   loadPhotos: (options?: FilterOptions) => Promise<void>;
   swipeLeft: (item: PhotoItem) => void;
   swipeRight: (item: PhotoItem) => void;
+  faveItem: (item: PhotoItem) => void;
   undoTrash: (item: PhotoItem) => void;
+  undoFave: (item: PhotoItem) => void;
   emptyTrash: () => Promise<void>;
   reset: () => void;
 }
@@ -33,6 +37,7 @@ export function TrashProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<PhotoItem[]>([]);
   const [trashItems, setTrashItems] = useState<PhotoItem[]>([]);
   const [keepItems, setKeepItems] = useState<PhotoItem[]>([]);
+  const [favedItems, setFavedItems] = useState<PhotoItem[]>([]);
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,18 +60,25 @@ export function TrashProvider({ children }: { children: ReactNode }) {
 
         if (options.favorites) {
             const albums = await MediaLibrary.getAlbumsAsync({ includeSmartAlbums: true });
-            // smartAlbums can have titles like 'Favorites', 'Favorites', 'Bilder', etc.
-            // On iOS, the smart album 'Favorites' is standard.
+            
+            // Log available albums to help debug
+            console.log('Available Albums:', albums.map(a => `${a.title} (${a.id}, smart:${a.type})`).join(', '));
+
+            // 1. Try exact standard names
             album = albums.find(a => a.title === 'Favorites' || a.title === '즐겨찾기' || a.title === 'お気に入り'); 
             
+            // 2. Fallback: Search for any album with "Favorite" in the name (case insensitive)
             if (!album) {
-                // If we can't find the favorites album, we MUST NOT show all photos.
-                // Show 0 items or alert.
-                console.log('Favorites album not found. Returning empty.');
+                album = albums.find(a => a.title.toLowerCase().includes('favorite') || a.title.includes('Star') || a.title.includes('Heart'));
+            }
+
+            if (!album) {
+                console.warn('Favorites album not found even after fallback search.');
                 setItems([]);
                 setIsLoading(false);
                 return;
             }
+            console.log(`Found Favorites Album: ${album.title} (${album.id})`);
         }
 
         // Calculate time range if filter is applied
@@ -87,7 +99,7 @@ export function TrashProvider({ children }: { children: ReactNode }) {
             first: options.limit || 500,
             createdAfter,
             createdBefore,
-            album: album?.id, // This is key. If undefined, it fetches all. We guarded above.
+            album: album?.id, 
         };
 
         const { assets } = await MediaLibrary.getAssetsAsync(mediaParams);
@@ -101,6 +113,7 @@ export function TrashProvider({ children }: { children: ReactNode }) {
         setItems(finalAssets);
         setTrashItems([]);
         setKeepItems([]);
+        setFavedItems([]);
 
     } catch (error) {
         console.error("Failed to load photos", error);
@@ -120,9 +133,19 @@ export function TrashProvider({ children }: { children: ReactNode }) {
      setKeepItems((prev) => [...prev, item]);
   };
 
+  const faveItem = (item: PhotoItem) => {
+      setItems((prev) => prev.filter((i) => i.id !== item.id));
+      setFavedItems((prev) => [...prev, item]);
+  };
+
   const undoTrash = (item: PhotoItem) => {
     setTrashItems((prev) => prev.filter((i) => i.id !== item.id));
     setItems((prev) => [item, ...prev]); 
+  };
+
+  const undoFave = (item: PhotoItem) => {
+      setFavedItems((prev) => prev.filter((i) => i.id !== item.id));
+      setItems((prev) => [item, ...prev]);
   };
   
   const emptyTrash = async () => {
@@ -133,7 +156,7 @@ export function TrashProvider({ children }: { children: ReactNode }) {
           setTrashItems([]);
       } catch (error) {
           console.error("Failed to delete assets", error);
-          Alert.alert("Deletion Failed", "Could not delete selected photos.");
+          Alert.alert(i18n.t('deletionFailedTitle'), i18n.t('deletionFailedMsg'));
       }
   };
 
@@ -141,6 +164,7 @@ export function TrashProvider({ children }: { children: ReactNode }) {
       setItems([]);
       setTrashItems([]);
       setKeepItems([]);
+      setFavedItems([]);
   }
 
   return (
@@ -148,13 +172,16 @@ export function TrashProvider({ children }: { children: ReactNode }) {
         items, 
         trashItems, 
         keepItems, 
+        favedItems,
         isLoading,
         hasPermission: permissionResponse?.granted ?? null,
         requestPermission: handleRequestPermission,
         loadPhotos, 
         swipeLeft, 
         swipeRight, 
+        faveItem,
         undoTrash, 
+        undoFave,
         emptyTrash, 
         reset 
     }}>
