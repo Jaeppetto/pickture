@@ -7,9 +7,12 @@ import { ColorBends } from '../components/ColorBends';
 import { Colors } from '../constants/Colors';
 import { i18n } from '../constants/Translations';
 
+// Custom type for display
+type AlbumDisplay = MediaLibrary.Album & { photoCount: number };
+
 export default function AlbumsScreen() {
   const router = useRouter();
-  const [albums, setAlbums] = useState<MediaLibrary.Album[]>([]);
+  const [albums, setAlbums] = useState<AlbumDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,11 +21,24 @@ export default function AlbumsScreen() {
 
   const loadAlbums = async () => {
     try {
-      // Get all albums (smart albums too like Favorites, Recents)
       const cachedAlbums = await MediaLibrary.getAlbumsAsync({ includeSmartAlbums: true });
-      // Filter out empty albums if desired
-      const validAlbums = cachedAlbums.filter(a => a.assetCount > 0);
-      setAlbums(validAlbums);
+      const nonEmptyAlbums = cachedAlbums.filter(a => a.assetCount > 0);
+      
+      // Calculate Photo Count for each
+      const albumPromises = nonEmptyAlbums.map(async (album) => {
+          const params: MediaLibrary.AssetsOptions = {
+              album: album.id,
+              mediaType: MediaLibrary.MediaType.photo,
+              first: 0,
+          };
+          const result = await MediaLibrary.getAssetsAsync(params);
+          return { ...album, photoCount: result.totalCount };
+      });
+      
+      const results = await Promise.all(albumPromises);
+      // Filter out albums with 0 photos (videos only albums)
+      setAlbums(results.filter(a => a.photoCount > 0));
+      
     } catch (e) {
       console.error('Failed to load albums', e);
     } finally {
@@ -34,7 +50,7 @@ export default function AlbumsScreen() {
     router.push({ pathname: '/swipe', params: { albumId } });
   };
 
-  const renderItem = ({ item }: { item: MediaLibrary.Album }) => (
+  const renderItem = ({ item }: { item: AlbumDisplay }) => (
     <TouchableOpacity style={styles.albumItem} onPress={() => handleSelectAlbum(item.id)}>
          <View style={styles.albumIcon}>
              <MaterialIcons 
@@ -45,7 +61,7 @@ export default function AlbumsScreen() {
          </View>
          <View style={{ flex: 1 }}>
              <Text style={styles.albumTitle} numberOfLines={1}>{item.title}</Text>
-             <Text style={styles.albumCount}>{item.assetCount}</Text>
+             <Text style={styles.albumCount}>{i18n.t('photosCount', { count: item.photoCount })}</Text>
          </View>
          <MaterialIcons name="chevron-right" size={24} color="rgba(255,255,255,0.3)" />
     </TouchableOpacity>

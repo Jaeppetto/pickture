@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../constants/Colors';
 import { useTrash } from '../context/TrashContext';
 
@@ -19,24 +19,12 @@ export default function HomeScreen() {
     requestPermission();
   }, []);
 
-  const handleStart = (mode: 'month' | 'year' | 'random' | 'favorites') => {
-      const now = new Date();
-      let params = {};
-
-      if (mode === 'month') {
-          let m = now.getMonth() - 1;
-          let y = now.getFullYear();
-          if (m < 0) { m = 11; y--; }
-          params = { month: m, year: y };
-      } else if (mode === 'year') {
-          params = { year: now.getFullYear() };
+  const handleStart = (mode: 'recents' | 'random') => {
+      if (mode === 'recents') {
+        router.push({ pathname: '/swipe', params: { recents: 'true' } });
       } else if (mode === 'random') {
-          params = { random: 'true' };
-      } else if (mode === 'favorites') {
-          params = { favorites: 'true' };
+        router.push({ pathname: '/swipe', params: { random: 'true' } });
       }
-
-      router.push({ pathname: '/swipe', params });
   };
   
   const toggleLanguage = () => {
@@ -59,66 +47,77 @@ export default function HomeScreen() {
               <Text style={styles.subtitle}>{i18n.t('subtitle')}</Text>
           </View>
 
-          <View style={styles.menu}>
-              <TouchableOpacity onPress={() => handleStart('month')}>
-                  <LinearGradient 
-                      colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
-                      style={styles.card}
-                  >
-                      <View style={styles.iconContainer}>
-                          <MaterialIcons name="calendar-today" size={32} color={Colors.primary} />
-                      </View>
-                      <View>
-                          <Text style={styles.cardTitle}>{i18n.t('lastMonth')}</Text>
-                          <Text style={styles.cardDesc}>{i18n.t('lastMonthDesc')}</Text>
-                      </View>
-                  </LinearGradient>
-              </TouchableOpacity>
+          {/* Selection Cards */}
+          <View style={styles.cardContainer}>
+              <ScrollView contentContainerStyle={{ gap: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+                  {/* 1. Recents */}
+                  <TouchableOpacity onPress={() => handleStart('recents')}>
+                      <LinearGradient 
+                          colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
+                          style={styles.card}
+                      >
+                          <View style={styles.iconContainer}>
+                              <MaterialIcons name="schedule" size={32} color={Colors.primary} />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                              <Text style={styles.cardTitle}>{i18n.t('recentPhotos')}</Text>
+                              <Text style={styles.cardDesc}>{i18n.t('recentPhotosDesc')}</Text>
+                          </View>
+                          <MaterialIcons name="chevron-right" size={24} color="rgba(255,255,255,0.3)" />
+                      </LinearGradient>
+                  </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => handleStart('year')}>
-                  <LinearGradient 
-                      colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
-                      style={styles.card}
-                  >
-                      <View style={styles.iconContainer}>
-                          <MaterialIcons name="calendar-view-month" size={32} color="#3b82f6" />
-                      </View>
-                      <View>
-                          <Text style={styles.cardTitle}>{i18n.t('thisYear')}</Text>
-                          <Text style={styles.cardDesc}>{i18n.t('thisYearDesc')}</Text>
-                      </View>
-                  </LinearGradient>
-              </TouchableOpacity>
+                  {/* 2. By Date */}
+                  <TouchableOpacity onPress={() => router.push('/date-select')}>
+                      <LinearGradient 
+                          colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
+                          style={styles.card}
+                      >
+                          <View style={styles.iconContainer}>
+                              <MaterialIcons name="calendar-today" size={32} color="#60A5FA" />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                              <Text style={styles.cardTitle}>{i18n.t('byDate')}</Text>
+                              <Text style={styles.cardDesc}>{i18n.t('byDateDesc')}</Text>
+                          </View>
+                          <MaterialIcons name="chevron-right" size={24} color="rgba(255,255,255,0.3)" />
+                      </LinearGradient>
+                  </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => handleStart('random')}>
-                  <LinearGradient 
-                      colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
-                      style={styles.card}
-                  >
-                      <View style={styles.iconContainer}>
-                          <MaterialIcons name="shuffle" size={32} color="#a855f7" />
-                      </View>
-                      <View>
-                          <Text style={styles.cardTitle}>{i18n.t('random')}</Text>
-                          <Text style={styles.cardDesc}>{i18n.t('randomDesc')}</Text>
-                      </View>
-                  </LinearGradient>
-              </TouchableOpacity>
+                  {/* 3. Albums */}
+                  <TouchableOpacity onPress={() => router.push('/albums')}>
+                      <LinearGradient 
+                          colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
+                          style={styles.card}
+                      >
+                          <View style={styles.iconContainer}>
+                              <MaterialIcons name="photo-album" size={32} color="#F472B6" />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                              <Text style={styles.cardTitle}>{i18n.t('myAlbums')}</Text>
+                              <Text style={styles.cardDesc}>{i18n.t('myAlbumsDesc')}</Text>
+                          </View>
+                          <MaterialIcons name="chevron-right" size={24} color="rgba(255,255,255,0.3)" />
+                      </LinearGradient>
+                  </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => router.push('/albums')}>
-                  <LinearGradient 
-                      colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
-                      style={styles.card}
-                  >
-                      <View style={styles.iconContainer}>
-                          <MaterialIcons name="photo-album" size={32} color={Colors.white} />
-                      </View>
-                      <View>
-                          <Text style={styles.cardTitle}>{i18n.t('myAlbums')}</Text>
-                          <Text style={styles.cardDesc}>{i18n.t('myAlbumsDesc')}</Text>
-                      </View>
-                  </LinearGradient>
-              </TouchableOpacity>
+                  {/* 4. Random */}
+                  <TouchableOpacity onPress={() => handleStart('random')}>
+                      <LinearGradient 
+                          colors={['rgba(24, 24, 27, 0.8)', 'rgba(9, 9, 11, 0.9)']} 
+                          style={styles.card}
+                      >
+                          <View style={styles.iconContainer}>
+                              <MaterialIcons name="shuffle" size={32} color="#A78BFA" />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                              <Text style={styles.cardTitle}>{i18n.t('random')}</Text>
+                              <Text style={styles.cardDesc}>{i18n.t('randomDesc')}</Text>
+                          </View>
+                          <MaterialIcons name="chevron-right" size={24} color="rgba(255,255,255,0.3)" />
+                      </LinearGradient>
+                  </TouchableOpacity>
+              </ScrollView>
           </View>
         </View>
         
@@ -161,7 +160,9 @@ const styles = StyleSheet.create({
       fontSize: 12,
   },
   content: {
-    gap: 48,
+    flex: 1,
+    gap: 32,
+    marginTop: 60,
   },
   header: {
       gap: 8,
@@ -177,8 +178,8 @@ const styles = StyleSheet.create({
       color: 'rgba(255,255,255,0.6)',
       fontWeight: '500',
   },
-  menu: {
-      gap: 16,
+  cardContainer: {
+      flex: 1,
   },
   card: {
       flexDirection: 'row',

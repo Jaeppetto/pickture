@@ -50,7 +50,9 @@ export default function SwipeScreen() {
      if (params.year) options.year = Number(params.year);
      if (params.month) options.month = Number(params.month);
      if (params.random) options.random = true;
+     if (params.random) options.random = true;
      if (params.albumId) options.albumId = String(params.albumId);
+     if (params.recents) options.recents = true;
      
      loadPhotos(options);
   }, []); // Run once on mount

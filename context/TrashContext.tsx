@@ -11,7 +11,8 @@ export interface FilterOptions {
   limit?: number;
   random?: boolean;
   favorites?: boolean;
-  albumId?: string; // New option
+  albumId?: string;
+  recents?: boolean; // New option for last 30 days
 }
 
 interface ActionHistoryItem {
@@ -103,7 +104,14 @@ export function TrashProvider({ children }: { children: ReactNode }) {
         let createdAfter: number | undefined;
         let createdBefore: number | undefined;
 
-        if (options.year !== undefined) {
+        if (options.recents) {
+             const now = new Date();
+             const thirtyDaysAgo = new Date();
+             thirtyDaysAgo.setDate(now.getDate() - 30);
+             
+             createdAfter = thirtyDaysAgo.getTime();
+             createdBefore = now.getTime();
+        } else if (options.year !== undefined) {
              const start = new Date(options.year, options.month ?? 0, 1);
              const end = new Date(options.year, (options.month ?? 11) + 1, 0); 
              createdAfter = start.getTime();
