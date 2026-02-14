@@ -49,8 +49,8 @@
 | 1차 | **iOS** | MVP 출시 대상 |
 | 2차 | Android | iOS 안정화 후 확장 |
 
-- Flutter로 개발하므로 양 플랫폼 코드베이스는 공유
-- iOS 우선 출시 후 Android 플랫폼별 최적화 진행
+- iOS 네이티브 (Swift + SwiftUI)로 개발
+- iOS 우선 출시 후 Android 별도 개발 검토
 
 ---
 
@@ -256,17 +256,19 @@
 
 | 영역 | 기술 | 비고 |
 |------|------|------|
-| Framework | Flutter | 크로스 플랫폼 |
-| Language | Dart | |
-| State Management | Riverpod | Code generation 활용 |
-| Architecture | Clean Architecture | Domain / Data / Presentation |
-| Photo Access | `photo_manager` | iOS/Android 갤러리 접근 |
-| Local Storage | `drift` 또는 `isar` | 정리 기록, 캐시 메타데이터 |
-| Animations | Flutter Built-in | `AnimationController`, `Hero` |
-| Charts | `fl_chart` | 스토리지 분석 차트 |
-| Notifications | `flutter_local_notifications` | 정리 리마인더 |
-| Haptics | `HapticFeedback` | 스와이프 촉각 피드백 |
-| i18n | `flutter_localizations` + `intl` | ARB 파일 기반 코드 생성 (`gen-l10n`) |
+| Platform | iOS Native | iOS 17.0+ |
+| Language | Swift 6 | Strict Concurrency |
+| UI Framework | SwiftUI | Declarative UI |
+| State Management | @Observable macro | iOS 17+ |
+| Architecture | Clean Architecture + MVVM | Domain / Data / Presentation |
+| Photo Access | PhotosUI / PHCachingImageManager | iOS 네이티브 갤러리 접근 |
+| Local Storage | UserDefaults + FileManager | 정리 기록, 캐시 메타데이터 |
+| Animations | SwiftUI Built-in | matchedGeometryEffect, Spring |
+| Charts | Swift Charts | 스토리지 분석 차트 |
+| Notifications | UserNotifications | 정리 리마인더 |
+| Haptics | UIImpactFeedbackGenerator | 스와이프 촉각 피드백 |
+| i18n | String Catalog (.xcstrings) | ko/en/ja/zh-Hans |
+| Project Generation | XcodeGen | 선언적 project.yml |
 
 ---
 
