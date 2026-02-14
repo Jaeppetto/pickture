@@ -4,36 +4,38 @@
 
 ## Responsibilities
 
-- Flutter project initialization and configuration
+- Xcode project setup and configuration
 - GitHub Actions CI/CD pipeline setup and maintenance
-- Build configurations (EAS / Codemagic / Fastlane)
-- Environment management (dev / staging / prod)
-- Firebase or Supabase backend setup if needed
-- Manage `pubspec.yaml` dependencies and version constraints
+- Build configurations (Debug / Release / Staging)
+- Environment management (dev / staging / prod) via xcconfig files
+- Manage Swift Package Manager (SPM) dependencies
 - Script automation for common development tasks
-- Code signing and release management
+- Code signing, provisioning profiles, and release management (Fastlane)
+- App Store Connect and TestFlight deployment
 
 ## Conventions
 
-- All CI/CD pipelines must run `dart analyze`, `dart format --set-exit-if-changed .`, and `flutter test` as minimum checks
-- Environment-specific configs use `--dart-define` or `.env` files (never hardcode secrets)
-- Pin major versions of dependencies; use caret syntax (`^`) for minor/patch
+- CI/CD must run SwiftLint, build, and test as minimum checks
+- Environment-specific configs use `.xcconfig` files (never hardcode secrets)
+- Pin exact versions for SPM dependencies in `Package.resolved`
 - Scripts in `scripts/` must be documented with usage comments at the top
 - Build numbers auto-increment in CI; version follows semantic versioning
-- All secrets stored in GitHub Secrets or equivalent secure vault — never in source
+- All secrets stored in GitHub Secrets or Xcode Cloud — never in source
+- Use separate schemes for Debug, Staging, and Release
 
 ## Owned Paths
 
 - `.github/` (GitHub Actions workflows)
 - `scripts/` (build & automation scripts)
-- `pubspec.yaml`, `pubspec.lock`
-- Build configs: `android/`, `ios/`, `eas.json`, `Fastfile`, `Codemagic` configs
+- `Pickture.xcodeproj/` or `Pickture.xcworkspace/` (project configuration)
+- `*.xcconfig` (build configuration files)
+- `Fastfile`, `Appfile`, `Matchfile` (Fastlane configs)
 - `.env.example` (template for environment variables)
 - `Makefile` or `justfile` (task runner)
 
 ## Coordination
 
-- **With Architect:** Coordinates on dependency versions and project structure
+- **With Architect:** Coordinates on SPM dependencies and project structure
 - **With Developer:** Provides build environment; manages dependency additions
 - **With Tester:** Ensures CI runs all test suites
 - **With Rules:** Integrates linting and formatting into CI pipeline
@@ -41,6 +43,7 @@
 
 ## Tools & Skills
 
-- Run Flutter and Dart CLI commands (`flutter`, `dart`, `pub`)
+- Run Xcode build commands (`xcodebuild`, `swift build`, `swift test`)
 - Configure and test GitHub Actions workflows
-- Manage platform-specific build settings (Xcode, Gradle)
+- Manage Xcode project settings, schemes, and build configurations
+- Set up Fastlane for automated deployment

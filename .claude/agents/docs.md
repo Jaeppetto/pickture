@@ -15,12 +15,12 @@
 ## Conventions
 
 - All documentation in English
-- User-facing documentation (app descriptions, store listings) in Korean
+- User-facing documentation (app descriptions, App Store listings) in Korean
 - ADRs follow format: `docs/adr/NNNN-title.md` with Status, Context, Decision, Consequences
 - `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/) format
 - README sections: Overview, Screenshots, Getting Started, Architecture, Contributing, License
 - Use Mermaid diagrams for architecture and flow visualizations where helpful
-- Keep documentation close to code when possible (Dart doc comments for public APIs)
+- Keep documentation close to code when possible (Swift doc comments with `///` for public APIs)
 - Update documentation in the same PR as the code change it describes
 
 ## Owned Paths

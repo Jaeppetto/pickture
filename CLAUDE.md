@@ -1,13 +1,16 @@
 # Pickture
 
-**Flutter gallery cleaning app** — helps users organize, review, and clean up their photo library.
+**iOS native gallery cleaning app** — helps users organize, review, and clean up their photo library.
 
 ## Tech Stack
 
-- **Framework:** Flutter (Dart)
-- **State Management:** Riverpod
-- **Architecture:** Clean Architecture (domain / data / presentation)
-- **Targets:** iOS, Android
+- **Platform:** iOS (native)
+- **Language:** Swift
+- **UI Framework:** SwiftUI
+- **Architecture:** Clean Architecture (Domain / Data / Presentation) + MVVM
+- **Concurrency:** Swift Concurrency (async/await, actors)
+- **Dependency Management:** Swift Package Manager (SPM)
+- **Minimum Target:** iOS 17.0
 
 ## Agent Team
 
@@ -26,39 +29,73 @@ This project uses 7 specialized agents:
 ## Project Structure
 
 ```
-lib/
-  core/           # Shared utilities, theme, constants
-    theme/        # Design tokens, colors, typography
-  domain/         # Entities, repositories (interfaces), use cases
-    entities/
-    repositories/
-    usecases/
-  data/           # Repository implementations, data sources, models
-    repositories/
-    datasources/
-    models/
-  presentation/   # UI screens, widgets, Riverpod providers
-    screens/
-    widgets/
-    providers/
-  application/    # App-level providers, routing, DI setup
-test/             # Unit & widget tests
-integration_test/ # Integration tests
-docs/             # ADRs, guides
-assets/           # Images, fonts, etc.
-scripts/          # Build & automation scripts
+Pickture/
+  App/                # App entry point, App delegate, scene configuration
+  Core/               # Shared utilities, extensions, constants
+    Theme/            # Design tokens, colors, typography
+    Extensions/       # Swift extensions
+    Constants/        # App-wide constants
+  Domain/             # Entities, repository protocols, use cases
+    Entities/
+    Repositories/     # Protocol definitions
+    UseCases/
+  Data/               # Repository implementations, data sources, models
+    Repositories/
+    DataSources/
+    Models/
+    Mappers/
+  Presentation/       # SwiftUI views, ViewModels
+    Screens/
+    Components/       # Reusable SwiftUI views
+    ViewModels/
+  Resources/          # Assets, Localizable strings, Info.plist
+    Assets.xcassets/
+    Localizable/
+PicktureTests/        # Unit & integration tests
+PicktureUITests/      # UI tests
+docs/                 # ADRs, guides
+scripts/              # Build & automation scripts
 ```
+
+## Core Design Principles
+
+> These principles are **non-negotiable** and must guide every decision across all agents.
+
+### 1. Distinctive, High-Quality UI/UX
+- The app's visual identity must be **original and polished** — avoid generic, template-like aesthetics.
+- Pursue a unique design language with carefully crafted micro-interactions, transitions, and visual hierarchy.
+- Every screen should feel intentional. Typography, spacing, color, and motion must work together cohesively.
+- Benchmark against best-in-class gallery and utility apps. The goal is an experience users want to show off.
+
+### 2. Performance at Scale (Tens of Thousands of Photos)
+- Users may have **30,000+ photos** in their library. Every feature must be designed with this scale in mind.
+- **Mandatory patterns:**
+  - Lazy loading and pagination — never fetch all assets at once.
+  - `PHCachingImageManager` for efficient thumbnail pre-fetching and cache management.
+  - Incremental `PHFetchResultChangeDetails` for reactive, diff-based updates instead of full reloads.
+  - Background processing with `TaskGroup` / actors for heavy operations (duplicate detection, analysis).
+  - Memory budget awareness — monitor and cap image cache sizes, release off-screen resources.
+- **Forbidden patterns:**
+  - Loading all `PHAsset` metadata into memory at once.
+  - Full-resolution image loading for thumbnails or previews.
+  - Blocking the main thread with photo library operations.
+  - Unbounded in-memory collections of image data.
+- When in doubt, profile first. Use Instruments (Allocations, Time Profiler, Core Animation) to validate.
 
 ## Cross-Cutting Conventions
 
 - **Language:** Code and agent instructions in English. User-facing communication in Korean.
-- **Naming:** `snake_case` for files and directories, `camelCase` for variables/functions, `PascalCase` for classes/enums/typedefs.
-- **Imports:** Dart imports first, then package imports, then relative imports. Each group separated by a blank line.
-- **Riverpod:** Use code generation (`@riverpod`) where possible. Prefer `ref.watch` over `ref.read` in build methods.
-- **Architecture layers:** Domain has zero dependencies on data or presentation. Data depends only on domain. Presentation depends on domain and application.
+- **Naming:** `camelCase` for variables/functions/properties, `PascalCase` for types/protocols/enums, `SCREAMING_SNAKE_CASE` for global constants.
+- **File naming:** `PascalCase.swift` — one primary type per file, filename matches type name.
+- **Imports:** System frameworks first (`Foundation`, `SwiftUI`, `PhotosUI`), then SPM packages, then local modules. Each group separated by a blank line.
+- **Architecture layers:** Domain has zero dependencies on Data or Presentation. Data depends only on Domain. Presentation depends on Domain (via ViewModels).
 - **No circular dependencies** between features or layers.
-- **Dart formatting:** Follow `dart format` defaults (line length 80).
-- **Analysis:** Strict mode via `analysis_options.yaml`. Zero warnings policy.
+- **Swift formatting:** Follow Swift standard style. Use SwiftFormat/SwiftLint for enforcement.
+- **Analysis:** SwiftLint strict mode. Zero warnings policy.
+- **Concurrency:** Prefer `async/await` over closures/Combine for async operations. Use `@MainActor` for UI-bound code.
+- **Error handling:** Use Swift's `Result` type or typed throws. No force unwrapping (`!`) except in tests.
+- **Access control:** Explicit access modifiers on all declarations. Default to most restrictive (`private`, `internal`). Use `public` only for module API boundaries.
+- **Dependency Injection:** Protocol-based DI. ViewModels receive dependencies through initializer injection.
 
 ## Agent Workflow Rules
 
