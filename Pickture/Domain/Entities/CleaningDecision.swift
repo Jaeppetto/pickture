@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CleaningDecision: Sendable, Equatable {
+public struct CleaningDecision: Sendable, Equatable, Codable {
     public let photoId: String
     public let sessionId: String
     public let decision: Decision
@@ -19,7 +19,7 @@ public struct CleaningDecision: Sendable, Equatable {
     }
 }
 
-public enum Decision: String, Sendable, Equatable, CaseIterable {
+public enum Decision: String, Sendable, Equatable, CaseIterable, Codable {
     case delete
     case keep
     case favorite

@@ -3,21 +3,32 @@ import SwiftUI
 struct MainTabView: View {
     let container: AppContainer
 
-    @State private var selectedTab: AppTab = .home
-
     var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeScreen(viewModel: container.makeHomeViewModel())
-                .tabItem {
-                    Label("홈", systemImage: "house.fill")
-                }
-                .tag(AppTab.home)
+        TabView(selection: Binding(
+            get: { container.navigationCoordinator.selectedTab },
+            set: { container.navigationCoordinator.selectedTab = $0 }
+        )) {
+            HomeScreen(
+                viewModel: container.makeHomeViewModel(),
+                permissionViewModel: container.makePhotoPermissionViewModel()
+            )
+            .tabItem {
+                Label("홈", systemImage: "house.fill")
+            }
+            .tag(AppTab.home)
 
-            CleanScreen(viewModel: container.makeCleanViewModel())
-                .tabItem {
-                    Label("정리", systemImage: "sparkles")
+            CleanScreen(
+                viewModel: container.makeCleanViewModel(),
+                permissionViewModel: container.makePhotoPermissionViewModel(),
+                navigationCoordinator: container.navigationCoordinator,
+                deletionQueueViewModelFactory: { [container] in
+                    container.makeDeletionQueueViewModel()
                 }
-                .tag(AppTab.clean)
+            )
+            .tabItem {
+                Label("정리", systemImage: "sparkles")
+            }
+            .tag(AppTab.clean)
 
             SettingsScreen(viewModel: container.makeSettingsViewModel())
                 .tabItem {

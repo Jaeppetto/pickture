@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CleaningSession: Sendable, Equatable, Identifiable {
+public struct CleaningSession: Sendable, Equatable, Identifiable, Codable {
     public let id: String
     public var startedAt: Date
     public var endedAt: Date?
@@ -40,7 +40,7 @@ public struct CleaningSession: Sendable, Equatable, Identifiable {
     }
 }
 
-public enum SessionStatus: String, Sendable, Equatable, CaseIterable {
+public enum SessionStatus: String, Sendable, Equatable, CaseIterable, Codable {
     case active
     case paused
     case completed

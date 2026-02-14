@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TrashItem: Sendable, Equatable, Identifiable {
+public struct TrashItem: Sendable, Equatable, Identifiable, Codable {
     public let id: String
     public let photoId: String
     public let deletedAt: Date

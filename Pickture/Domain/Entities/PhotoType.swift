@@ -1,6 +1,6 @@
 import Foundation
 
-public enum PhotoType: String, Sendable, Equatable, CaseIterable {
+public enum PhotoType: String, Sendable, Equatable, CaseIterable, Codable {
     case image
     case video
     case screenshot

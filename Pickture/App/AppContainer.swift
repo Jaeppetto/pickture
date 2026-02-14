@@ -17,17 +17,51 @@ final class AppContainer {
         localStorage: localStorageDataSource
     )
 
-    private(set) lazy var trashRepository: any TrashRepositoryProtocol = TrashRepository()
+    private(set) lazy var trashRepository: any TrashRepositoryProtocol = TrashRepository(
+        localStorage: localStorageDataSource,
+        photoDataSource: photoLibraryDataSource
+    )
 
     private(set) lazy var userPreferenceRepository: any UserPreferenceRepositoryProtocol = UserPreferenceRepository(
         localStorage: localStorageDataSource
     )
 
-    private(set) lazy var storageAnalysisRepository: any StorageAnalysisRepositoryProtocol = StorageAnalysisRepository()
+    private(set) lazy var storageAnalysisRepository: any StorageAnalysisRepositoryProtocol = StorageAnalysisRepository(
+        photoDataSource: photoLibraryDataSource
+    )
 
     // MARK: - Theme
 
     let theme = AppTheme()
+
+    // MARK: - Navigation
+
+    let navigationCoordinator = NavigationCoordinator()
+
+    // MARK: - Use Case Factories
+
+    func makeAnalyzeStorageUseCase() -> AnalyzeStorageUseCase {
+        AnalyzeStorageUseCase(storageRepository: storageAnalysisRepository)
+    }
+
+    func makeStartCleaningSessionUseCase() -> StartCleaningSessionUseCase {
+        StartCleaningSessionUseCase(sessionRepository: cleaningSessionRepository)
+    }
+
+    func makeProcessSwipeDecisionUseCase() -> ProcessSwipeDecisionUseCase {
+        ProcessSwipeDecisionUseCase(
+            sessionRepository: cleaningSessionRepository,
+            trashRepository: trashRepository
+        )
+    }
+
+    func makeCompleteSessionUseCase() -> CompleteSessionUseCase {
+        CompleteSessionUseCase(sessionRepository: cleaningSessionRepository)
+    }
+
+    func makeConfirmDeletionUseCase() -> ConfirmDeletionUseCase {
+        ConfirmDeletionUseCase(trashRepository: trashRepository)
+    }
 
     // MARK: - ViewModel Factories
 
@@ -36,12 +70,26 @@ final class AppContainer {
     }
 
     func makeHomeViewModel() -> HomeViewModel {
-        HomeViewModel(storageRepository: storageAnalysisRepository)
+        HomeViewModel(
+            analyzeStorageUseCase: makeAnalyzeStorageUseCase(),
+            navigationCoordinator: navigationCoordinator
+        )
     }
 
     func makeCleanViewModel() -> CleanViewModel {
         CleanViewModel(
-            sessionRepository: cleaningSessionRepository,
+            photoRepository: photoRepository,
+            startSessionUseCase: makeStartCleaningSessionUseCase(),
+            processDecisionUseCase: makeProcessSwipeDecisionUseCase(),
+            completeSessionUseCase: makeCompleteSessionUseCase(),
+            sessionRepository: cleaningSessionRepository
+        )
+    }
+
+    func makeDeletionQueueViewModel() -> DeletionQueueViewModel {
+        DeletionQueueViewModel(
+            trashRepository: trashRepository,
+            confirmDeletionUseCase: makeConfirmDeletionUseCase(),
             photoRepository: photoRepository
         )
     }
