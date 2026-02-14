@@ -202,4 +202,134 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get deleteSuccess => '削除が完了しました';
+
+  @override
+  String get settingsGeneral => '一般';
+
+  @override
+  String get settingsAbout => '情報';
+
+  @override
+  String get settingsVersion => 'バージョン';
+
+  @override
+  String get settingsLicenses => 'オープンソースライセンス';
+
+  @override
+  String get trashTitle => 'ゴミ箱';
+
+  @override
+  String get trashDescription => '最近削除した写真';
+
+  @override
+  String get trashEmpty => 'ゴミ箱は空です';
+
+  @override
+  String trashItemCount(int count) {
+    return '$count件';
+  }
+
+  @override
+  String trashStorageUsed(String size) {
+    return '$size使用中';
+  }
+
+  @override
+  String get trashRetentionNotice => '30日後に自動的に完全削除されます';
+
+  @override
+  String get trashRestoreSuccess => '写真を復元しました';
+
+  @override
+  String get trashDeleteSuccess => '完全に削除しました';
+
+  @override
+  String get trashEmptyAll => 'ゴミ箱を空にする';
+
+  @override
+  String trashEmptyConfirm(int count) {
+    return '$count件を完全に削除しますか？';
+  }
+
+  @override
+  String trashDaysRemaining(int days) {
+    return '残り$days日';
+  }
+
+  @override
+  String get trashPermanentDelete => '完全に削除';
+
+  @override
+  String get trashMoveSuccess => 'ゴミ箱に移動しました';
+
+  @override
+  String get statisticsTitle => '整理統計';
+
+  @override
+  String get statTotalSessions => 'セッション';
+
+  @override
+  String get statTotalCleaned => '整理済み';
+
+  @override
+  String get statTotalFreed => '解放済み';
+
+  @override
+  String get statTotalReviewed => '確認済み';
+
+  @override
+  String get statNoData => 'まだ整理記録がありません';
+
+  @override
+  String get statStartCleaning => '最初のセッションを始めましょう！';
+
+  @override
+  String get onboardingTitle1 => 'スワイプで整理';
+
+  @override
+  String get onboardingDesc1 => '左にスワイプで削除、右で保管、上でお気に入り';
+
+  @override
+  String get onboardingTitle2 => '安全で元に戻せます';
+
+  @override
+  String get onboardingDesc2 => '削除した写真はゴミ箱に保管されます。30日以内に復元できます';
+
+  @override
+  String get onboardingTitle3 => '進捗を追跡';
+
+  @override
+  String get onboardingDesc3 => '整理統計を確認してストレージを解放しましょう';
+
+  @override
+  String get onboardingSkip => 'スキップ';
+
+  @override
+  String get onboardingNext => '次へ';
+
+  @override
+  String get onboardingGetStarted => '始める';
+
+  @override
+  String get reminderTitle => '整理リマインダー';
+
+  @override
+  String get reminderDescription => '毎週ギャラリー整理のリマインダーを受け取る';
+
+  @override
+  String get reminderNotificationTitle => '整理の時間です！';
+
+  @override
+  String get reminderNotificationBody => 'ギャラリーが整理を待っています';
+
+  @override
+  String get hapticTitle => '触覚フィードバック';
+
+  @override
+  String get hapticDescription => 'スワイプ時の振動フィードバック';
+
+  @override
+  String comboCount(int count) {
+    return '${count}xコンボ！';
+  }
 }

@@ -9,5 +9,9 @@ abstract class CleaningSessionRepository {
   Future<List<CleaningDecision>> getDecisions(String sessionId);
   Future<List<CleaningDecision>> getDeleteDecisions(String sessionId);
   Future<void> removeDecision(String sessionId, String photoId);
+  Future<void> saveAllDecisions(
+    String sessionId,
+    List<CleaningDecision> decisions,
+  );
   Future<void> clearSession(String sessionId);
 }

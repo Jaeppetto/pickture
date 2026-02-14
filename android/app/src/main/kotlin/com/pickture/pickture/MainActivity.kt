@@ -1,4 +1,4 @@
-package com.pickture.pickture
+package com.jaeppetto.pickture
 
 import io.flutter.embedding.android.FlutterActivity
 

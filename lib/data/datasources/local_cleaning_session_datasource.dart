@@ -61,6 +61,13 @@ class LocalCleaningSessionDatasource {
     await _saveDecisions(sessionId, decisions);
   }
 
+  Future<void> saveAllDecisions(
+    String sessionId,
+    List<CleaningDecision> decisions,
+  ) async {
+    await _saveDecisions(sessionId, decisions);
+  }
+
   Future<void> clearSession(String sessionId) async {
     await prefs.remove(_sessionKey);
     await prefs.remove(_decisionsKeyFor(sessionId));

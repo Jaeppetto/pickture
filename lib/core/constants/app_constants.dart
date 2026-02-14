@@ -54,4 +54,10 @@ abstract final class AppConstants {
   static const preloadCount = 3;
   static const nextBatchThreshold = 10;
   static const persistInterval = 10;
+
+  // Trash
+  static const trashRetentionDays = 30;
+
+  // Combo
+  static const comboMinStreak = 3;
 }

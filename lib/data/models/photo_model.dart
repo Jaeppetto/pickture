@@ -11,7 +11,7 @@ extension AssetEntityToPhoto on AssetEntity {
       fileSize: 0,
       width: width,
       height: height,
-      type: _mapType(type),
+      type: mapType(type),
       duration: type == AssetType.video ? Duration(seconds: duration) : null,
     );
   }
@@ -26,12 +26,12 @@ extension AssetEntityToPhoto on AssetEntity {
       fileSize: size,
       width: width,
       height: height,
-      type: _mapType(type),
+      type: mapType(type),
       duration: type == AssetType.video ? Duration(seconds: duration) : null,
     );
   }
 
-  static PhotoType _mapType(AssetType type) {
+  static PhotoType mapType(AssetType type) {
     switch (type) {
       case AssetType.image:
         return PhotoType.image;

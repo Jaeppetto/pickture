@@ -1,4 +1,4 @@
-import 'package:pickture/data/datasources/local_cleaning_session_datasource.dart';
+import 'package:pickture/data/datasources/drift_cleaning_session_datasource.dart';
 import 'package:pickture/domain/entities/cleaning_decision.dart';
 import 'package:pickture/domain/entities/cleaning_session.dart';
 import 'package:pickture/domain/repositories/cleaning_session_repository.dart';
@@ -6,7 +6,7 @@ import 'package:pickture/domain/repositories/cleaning_session_repository.dart';
 class CleaningSessionRepositoryImpl implements CleaningSessionRepository {
   CleaningSessionRepositoryImpl({required this.datasource});
 
-  final LocalCleaningSessionDatasource datasource;
+  final DriftCleaningSessionDatasource datasource;
 
   @override
   Future<CleaningSession?> getActiveSession() {
@@ -41,6 +41,14 @@ class CleaningSessionRepositoryImpl implements CleaningSessionRepository {
   @override
   Future<void> removeDecision(String sessionId, String photoId) {
     return datasource.removeDecision(sessionId, photoId);
+  }
+
+  @override
+  Future<void> saveAllDecisions(
+    String sessionId,
+    List<CleaningDecision> decisions,
+  ) {
+    return datasource.saveAllDecisions(sessionId, decisions);
   }
 
   @override

@@ -455,6 +455,246 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'삭제가 완료되었습니다'**
   String get deleteSuccess;
+
+  /// Settings general section
+  ///
+  /// In ko, this message translates to:
+  /// **'일반'**
+  String get settingsGeneral;
+
+  /// Settings about section
+  ///
+  /// In ko, this message translates to:
+  /// **'정보'**
+  String get settingsAbout;
+
+  /// App version label
+  ///
+  /// In ko, this message translates to:
+  /// **'버전'**
+  String get settingsVersion;
+
+  /// Licenses button
+  ///
+  /// In ko, this message translates to:
+  /// **'오픈소스 라이선스'**
+  String get settingsLicenses;
+
+  /// Trash screen title
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통'**
+  String get trashTitle;
+
+  /// Trash description
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 삭제된 사진'**
+  String get trashDescription;
+
+  /// Empty trash message
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통이 비어있습니다'**
+  String get trashEmpty;
+
+  /// Trash item count
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 항목'**
+  String trashItemCount(int count);
+
+  /// Trash storage used
+  ///
+  /// In ko, this message translates to:
+  /// **'{size} 사용 중'**
+  String trashStorageUsed(String size);
+
+  /// Trash retention notice
+  ///
+  /// In ko, this message translates to:
+  /// **'30일 후 자동으로 영구 삭제됩니다'**
+  String get trashRetentionNotice;
+
+  /// Restore success message
+  ///
+  /// In ko, this message translates to:
+  /// **'사진이 복구되었습니다'**
+  String get trashRestoreSuccess;
+
+  /// Permanent delete success
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제되었습니다'**
+  String get trashDeleteSuccess;
+
+  /// Empty trash button
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통 비우기'**
+  String get trashEmptyAll;
+
+  /// Empty trash confirm
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 항목을 영구 삭제하시겠습니까?'**
+  String trashEmptyConfirm(int count);
+
+  /// Days remaining
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일 남음'**
+  String trashDaysRemaining(int days);
+
+  /// Permanent delete button
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제'**
+  String get trashPermanentDelete;
+
+  /// Move to trash success
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 이동되었습니다'**
+  String get trashMoveSuccess;
+
+  /// Statistics title
+  ///
+  /// In ko, this message translates to:
+  /// **'정리 통계'**
+  String get statisticsTitle;
+
+  /// Total sessions label
+  ///
+  /// In ko, this message translates to:
+  /// **'세션'**
+  String get statTotalSessions;
+
+  /// Total cleaned label
+  ///
+  /// In ko, this message translates to:
+  /// **'정리됨'**
+  String get statTotalCleaned;
+
+  /// Total freed label
+  ///
+  /// In ko, this message translates to:
+  /// **'확보됨'**
+  String get statTotalFreed;
+
+  /// Total reviewed label
+  ///
+  /// In ko, this message translates to:
+  /// **'확인됨'**
+  String get statTotalReviewed;
+
+  /// No stats data
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 정리 기록이 없습니다'**
+  String get statNoData;
+
+  /// Start first session CTA
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 번째 세션을 시작해보세요!'**
+  String get statStartCleaning;
+
+  /// Onboarding page 1 title
+  ///
+  /// In ko, this message translates to:
+  /// **'스와이프로 정리'**
+  String get onboardingTitle1;
+
+  /// Onboarding page 1 description
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽으로 삭제, 오른쪽으로 보관, 위로 즐겨찾기'**
+  String get onboardingDesc1;
+
+  /// Onboarding page 2 title
+  ///
+  /// In ko, this message translates to:
+  /// **'안전하고 되돌릴 수 있어요'**
+  String get onboardingTitle2;
+
+  /// Onboarding page 2 description
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제된 사진은 휴지통에 보관됩니다. 30일 이내에 복구할 수 있어요'**
+  String get onboardingDesc2;
+
+  /// Onboarding page 3 title
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 상황 추적'**
+  String get onboardingTitle3;
+
+  /// Onboarding page 3 description
+  ///
+  /// In ko, this message translates to:
+  /// **'정리 통계를 확인하고 저장 공간을 확보하세요'**
+  String get onboardingDesc3;
+
+  /// Skip onboarding button
+  ///
+  /// In ko, this message translates to:
+  /// **'건너뛰기'**
+  String get onboardingSkip;
+
+  /// Next onboarding button
+  ///
+  /// In ko, this message translates to:
+  /// **'다음'**
+  String get onboardingNext;
+
+  /// Get started button
+  ///
+  /// In ko, this message translates to:
+  /// **'시작하기'**
+  String get onboardingGetStarted;
+
+  /// Reminder title
+  ///
+  /// In ko, this message translates to:
+  /// **'정리 리마인더'**
+  String get reminderTitle;
+
+  /// Reminder description
+  ///
+  /// In ko, this message translates to:
+  /// **'매주 갤러리 정리 알림을 받아보세요'**
+  String get reminderDescription;
+
+  /// Reminder notification title
+  ///
+  /// In ko, this message translates to:
+  /// **'정리할 시간이에요!'**
+  String get reminderNotificationTitle;
+
+  /// Reminder notification body
+  ///
+  /// In ko, this message translates to:
+  /// **'갤러리가 정리를 기다리고 있어요'**
+  String get reminderNotificationBody;
+
+  /// Haptic feedback title
+  ///
+  /// In ko, this message translates to:
+  /// **'햅틱 피드백'**
+  String get hapticTitle;
+
+  /// Haptic feedback description
+  ///
+  /// In ko, this message translates to:
+  /// **'스와이프 시 진동 피드백'**
+  String get hapticDescription;
+
+  /// Combo counter
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}x 콤보!'**
+  String comboCount(int count);
 }
 
 class _AppLocalizationsDelegate

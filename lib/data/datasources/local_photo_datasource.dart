@@ -5,10 +5,15 @@ import 'package:pickture/data/models/photo_model.dart';
 import 'package:pickture/domain/entities/cleaning_filter.dart';
 import 'package:pickture/domain/entities/insight_card.dart';
 import 'package:pickture/domain/entities/photo.dart';
+import 'package:pickture/data/datasources/device_storage_channel.dart';
 import 'package:pickture/domain/entities/storage_info.dart';
 import 'package:pickture/domain/repositories/photo_repository.dart';
 
 class LocalPhotoDatasource {
+  LocalPhotoDatasource({this.storageChannel});
+
+  final DeviceStorageChannel? storageChannel;
+
   Future<PhotoPermissionStatus> requestPermission() async {
     final result = await PhotoManager.requestPermissionExtend();
     return _mapPermission(result);
@@ -111,9 +116,14 @@ class LocalPhotoDatasource {
       }
     }
 
-    // Device storage info (placeholder values for MVP)
-    const deviceTotal = 256 * 1024 * 1024 * 1024;
-    const deviceFree = 128 * 1024 * 1024 * 1024;
+    // Device storage info from platform channel
+    int deviceTotal = 0;
+    int deviceFree = 0;
+    if (storageChannel != null) {
+      final storage = await storageChannel!.getStorageInfo();
+      deviceTotal = storage['totalBytes'] ?? 0;
+      deviceFree = storage['freeBytes'] ?? 0;
+    }
 
     return StorageInfo(
       totalPhotos: photos,
@@ -231,7 +241,7 @@ class LocalPhotoDatasource {
     final filtered = allAssets
         .where((asset) {
           if (filter.photoType != null) {
-            final mapped = AssetEntityToPhoto._mapType(asset.type);
+            final mapped = AssetEntityToPhoto.mapType(asset.type);
             if (mapped != filter.photoType) return false;
           }
           if (filter.startDate != null &&
@@ -274,7 +284,7 @@ class LocalPhotoDatasource {
       for (final asset in assets) {
         var matches = true;
         if (filter.photoType != null) {
-          final mapped = AssetEntityToPhoto._mapType(asset.type);
+          final mapped = AssetEntityToPhoto.mapType(asset.type);
           if (mapped != filter.photoType) matches = false;
         }
         if (filter.startDate != null &&

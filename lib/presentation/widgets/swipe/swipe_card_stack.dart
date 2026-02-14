@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:pickture/core/constants/app_constants.dart';
+import 'package:pickture/core/utils/haptic_service.dart';
 import 'package:pickture/domain/entities/photo.dart';
+import 'package:pickture/presentation/widgets/swipe/animations/delete_particle_effect.dart';
+import 'package:pickture/presentation/widgets/swipe/animations/keep_checkmark.dart';
 import 'package:pickture/presentation/widgets/swipe/photo_detail_overlay.dart';
 import 'package:pickture/presentation/widgets/swipe/swipe_card.dart';
 import 'package:pickture/presentation/widgets/swipe/swipe_direction.dart';
@@ -16,11 +19,13 @@ class SwipeCardStack extends StatefulWidget {
     required this.photos,
     required this.currentIndex,
     required this.onSwiped,
+    this.hapticService,
   });
 
   final List<Photo> photos;
   final int currentIndex;
   final void Function(SwipeDirection direction) onSwiped;
+  final HapticService? hapticService;
 
   @override
   State<SwipeCardStack> createState() => SwipeCardStackState();
@@ -37,6 +42,10 @@ class SwipeCardStackState extends State<SwipeCardStack>
   SwipeDirection? _currentDirection;
   double _currentOpacity = 0;
 
+  // Swipe effect overlay
+  SwipeDirection? _effectDirection;
+  Timer? _effectTimer;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +57,7 @@ class SwipeCardStackState extends State<SwipeCardStack>
 
   @override
   void dispose() {
+    _effectTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -58,6 +68,17 @@ class SwipeCardStackState extends State<SwipeCardStack>
     if (widget.currentIndex != oldWidget.currentIndex) {
       _resetCard();
     }
+  }
+
+  void _showSwipeEffect(SwipeDirection direction) {
+    if (direction == SwipeDirection.up) return;
+    _effectTimer?.cancel();
+    setState(() => _effectDirection = direction);
+    _effectTimer = Timer(AppConstants.durationSlow, () {
+      if (mounted) {
+        setState(() => _effectDirection = null);
+      }
+    });
   }
 
   void _resetCard() {
@@ -87,11 +108,12 @@ class SwipeCardStackState extends State<SwipeCardStack>
 
     _animationController.forward(from: 0).then((_) {
       widget.onSwiped(direction);
+      _showSwipeEffect(direction);
       _resetCard();
       _animationController.reset();
     });
 
-    HapticFeedback.mediumImpact();
+    widget.hapticService?.mediumImpact();
   }
 
   void _onPanStart(DragStartDetails details) {
@@ -179,7 +201,7 @@ class SwipeCardStackState extends State<SwipeCardStack>
 
     // Haptic at threshold
     if (_currentOpacity >= 1.0 && _currentOpacity < 1.05) {
-      HapticFeedback.lightImpact();
+      widget.hapticService?.lightImpact();
     }
   }
 
@@ -197,6 +219,10 @@ class SwipeCardStackState extends State<SwipeCardStack>
         for (int i = stackCount - 1; i > 0; i--) _buildBackCard(i),
         // Front card with gestures
         _buildFrontCard(),
+        // Swipe effect overlay
+        if (_effectDirection == SwipeDirection.left)
+          const DeleteParticleEffect(),
+        if (_effectDirection == SwipeDirection.right) const KeepCheckmark(),
       ],
     );
   }

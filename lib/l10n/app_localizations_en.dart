@@ -204,4 +204,140 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteSuccess => 'Deletion complete';
+
+  @override
+  String get settingsGeneral => 'General';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get settingsVersion => 'Version';
+
+  @override
+  String get settingsLicenses => 'Licenses';
+
+  @override
+  String get trashTitle => 'Trash';
+
+  @override
+  String get trashDescription => 'Recently deleted photos';
+
+  @override
+  String get trashEmpty => 'Trash is empty';
+
+  @override
+  String trashItemCount(int count) {
+    return '$count items';
+  }
+
+  @override
+  String trashStorageUsed(String size) {
+    return '$size used';
+  }
+
+  @override
+  String get trashRetentionNotice =>
+      'Items are permanently deleted after 30 days';
+
+  @override
+  String get trashRestoreSuccess => 'Photo restored';
+
+  @override
+  String get trashDeleteSuccess => 'Permanently deleted';
+
+  @override
+  String get trashEmptyAll => 'Empty Trash';
+
+  @override
+  String trashEmptyConfirm(int count) {
+    return 'Permanently delete all $count items?';
+  }
+
+  @override
+  String trashDaysRemaining(int days) {
+    return '${days}d left';
+  }
+
+  @override
+  String get trashPermanentDelete => 'Delete Forever';
+
+  @override
+  String get trashMoveSuccess => 'Moved to trash';
+
+  @override
+  String get statisticsTitle => 'Cleaning Stats';
+
+  @override
+  String get statTotalSessions => 'Sessions';
+
+  @override
+  String get statTotalCleaned => 'Cleaned';
+
+  @override
+  String get statTotalFreed => 'Freed';
+
+  @override
+  String get statTotalReviewed => 'Reviewed';
+
+  @override
+  String get statNoData => 'No cleaning data yet';
+
+  @override
+  String get statStartCleaning => 'Start your first session!';
+
+  @override
+  String get onboardingTitle1 => 'Swipe to Clean';
+
+  @override
+  String get onboardingDesc1 =>
+      'Swipe left to delete, right to keep, up to favorite';
+
+  @override
+  String get onboardingTitle2 => 'Safe & Reversible';
+
+  @override
+  String get onboardingDesc2 =>
+      'Deleted photos go to trash first. You can restore them within 30 days';
+
+  @override
+  String get onboardingTitle3 => 'Track Progress';
+
+  @override
+  String get onboardingDesc3 =>
+      'See your cleaning stats and free up storage space';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get reminderTitle => 'Cleaning Reminder';
+
+  @override
+  String get reminderDescription =>
+      'Get weekly reminders to clean your gallery';
+
+  @override
+  String get reminderNotificationTitle => 'Time to clean!';
+
+  @override
+  String get reminderNotificationBody =>
+      'Your gallery is waiting for a cleanup session';
+
+  @override
+  String get hapticTitle => 'Haptic Feedback';
+
+  @override
+  String get hapticDescription => 'Vibration feedback on swipe actions';
+
+  @override
+  String comboCount(int count) {
+    return '${count}x Combo!';
+  }
 }

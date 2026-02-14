@@ -202,4 +202,134 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get deleteSuccess => '删除完成';
+
+  @override
+  String get settingsGeneral => '通用';
+
+  @override
+  String get settingsAbout => '关于';
+
+  @override
+  String get settingsVersion => '版本';
+
+  @override
+  String get settingsLicenses => '开源许可证';
+
+  @override
+  String get trashTitle => '回收站';
+
+  @override
+  String get trashDescription => '最近删除的照片';
+
+  @override
+  String get trashEmpty => '回收站为空';
+
+  @override
+  String trashItemCount(int count) {
+    return '$count项';
+  }
+
+  @override
+  String trashStorageUsed(String size) {
+    return '已使用$size';
+  }
+
+  @override
+  String get trashRetentionNotice => '30天后将自动永久删除';
+
+  @override
+  String get trashRestoreSuccess => '照片已恢复';
+
+  @override
+  String get trashDeleteSuccess => '已永久删除';
+
+  @override
+  String get trashEmptyAll => '清空回收站';
+
+  @override
+  String trashEmptyConfirm(int count) {
+    return '确定永久删除$count个项目吗？';
+  }
+
+  @override
+  String trashDaysRemaining(int days) {
+    return '剩余$days天';
+  }
+
+  @override
+  String get trashPermanentDelete => '永久删除';
+
+  @override
+  String get trashMoveSuccess => '已移至回收站';
+
+  @override
+  String get statisticsTitle => '清理统计';
+
+  @override
+  String get statTotalSessions => '会话';
+
+  @override
+  String get statTotalCleaned => '已清理';
+
+  @override
+  String get statTotalFreed => '已释放';
+
+  @override
+  String get statTotalReviewed => '已查看';
+
+  @override
+  String get statNoData => '还没有清理记录';
+
+  @override
+  String get statStartCleaning => '开始你的第一次清理吧！';
+
+  @override
+  String get onboardingTitle1 => '滑动整理';
+
+  @override
+  String get onboardingDesc1 => '向左滑动删除，向右保留，向上收藏';
+
+  @override
+  String get onboardingTitle2 => '安全可恢复';
+
+  @override
+  String get onboardingDesc2 => '删除的照片先进入回收站，30天内可以恢复';
+
+  @override
+  String get onboardingTitle3 => '追踪进度';
+
+  @override
+  String get onboardingDesc3 => '查看清理统计，释放存储空间';
+
+  @override
+  String get onboardingSkip => '跳过';
+
+  @override
+  String get onboardingNext => '下一步';
+
+  @override
+  String get onboardingGetStarted => '开始使用';
+
+  @override
+  String get reminderTitle => '清理提醒';
+
+  @override
+  String get reminderDescription => '每周接收相册清理提醒';
+
+  @override
+  String get reminderNotificationTitle => '该整理了！';
+
+  @override
+  String get reminderNotificationBody => '你的相册正在等待清理';
+
+  @override
+  String get hapticTitle => '触觉反馈';
+
+  @override
+  String get hapticDescription => '滑动时的振动反馈';
+
+  @override
+  String comboCount(int count) {
+    return '${count}x连击！';
+  }
 }

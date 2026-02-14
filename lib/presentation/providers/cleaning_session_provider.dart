@@ -5,6 +5,7 @@ import 'package:pickture/core/constants/app_constants.dart';
 import 'package:pickture/domain/entities/cleaning_decision.dart';
 import 'package:pickture/domain/entities/cleaning_session.dart';
 import 'package:pickture/domain/entities/cleaning_state.dart';
+import 'package:pickture/domain/entities/photo.dart';
 
 part 'cleaning_session_provider.g.dart';
 
@@ -58,7 +59,6 @@ class CleaningSessionNotifier extends _$CleaningSessionNotifier {
 
   Future<void> resumeSession() async {
     state = const AsyncLoading();
-    _currentPage = 0;
     _persistCounter = 0;
 
     final sessionRepo = ref.read(cleaningSessionRepositoryProvider);
@@ -71,16 +71,25 @@ class CleaningSessionNotifier extends _$CleaningSessionNotifier {
     }
 
     final decisions = await sessionRepo.getDecisions(session.id);
-    final photos = await photoRepo.getPhotos(
-      page: _currentPage,
-      pageSize: AppConstants.photoPageSize,
-    );
-
-    // Skip already reviewed photos
     final reviewedIds = decisions.map((d) => d.photoId).toSet();
-    final remainingPhotos = photos
-        .where((p) => !reviewedIds.contains(p.id))
-        .toList();
+
+    // Calculate start page based on reviewed count
+    _currentPage = reviewedIds.length ~/ AppConstants.photoPageSize;
+
+    // Load pages until we have enough unreviewed photos
+    final remainingPhotos = <Photo>[];
+    const minPhotos = AppConstants.nextBatchThreshold;
+    while (remainingPhotos.length < minPhotos) {
+      final photos = await photoRepo.getPhotos(
+        page: _currentPage,
+        pageSize: AppConstants.photoPageSize,
+      );
+      if (photos.isEmpty) break;
+
+      final filtered = photos.where((p) => !reviewedIds.contains(p.id));
+      remainingPhotos.addAll(filtered);
+      _currentPage++;
+    }
 
     state = AsyncData(
       CleaningState(
@@ -110,12 +119,18 @@ class CleaningSessionNotifier extends _$CleaningSessionNotifier {
       reviewedCount: current.session.reviewedCount + 1,
     );
 
+    // Track combo for consecutive deletes
+    final newCombo = type == CleaningDecisionType.delete
+        ? current.comboCount + 1
+        : 0;
+
     state = AsyncData(
       current.copyWith(
         session: newSession,
         currentIndex: newIndex,
         decisions: newDecisions,
         lastDecision: decision,
+        comboCount: newCombo,
       ),
     );
 
@@ -180,6 +195,26 @@ class CleaningSessionNotifier extends _$CleaningSessionNotifier {
 
     state = AsyncData(current.copyWith(session: newSession));
     await _persist();
+
+    // Record statistics
+    final statsRepo = ref.read(statisticsRepositoryProvider);
+    final deleted = current.decisions
+        .where((d) => d.type == CleaningDecisionType.delete)
+        .length;
+    final kept = current.decisions
+        .where((d) => d.type == CleaningDecisionType.keep)
+        .length;
+    final favorited = current.decisions
+        .where((d) => d.type == CleaningDecisionType.favorite)
+        .length;
+    await statsRepo.recordSession(
+      sessionId: current.session.id,
+      reviewed: current.session.reviewedCount,
+      deleted: deleted,
+      kept: kept,
+      favorited: favorited,
+      bytesFreed: 0,
+    );
   }
 
   Future<void> _loadNextBatch() async {
@@ -211,9 +246,6 @@ class CleaningSessionNotifier extends _$CleaningSessionNotifier {
 
     final sessionRepo = ref.read(cleaningSessionRepositoryProvider);
     await sessionRepo.updateSession(current.session);
-
-    for (final decision in current.decisions) {
-      await sessionRepo.addDecision(current.session.id, decision);
-    }
+    await sessionRepo.saveAllDecisions(current.session.id, current.decisions);
   }
 }

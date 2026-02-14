@@ -24,16 +24,20 @@ class DeleteQueue extends _$DeleteQueue {
     final current = state.value;
     if (current == null || current.isEmpty) return false;
 
-    final photoRepo = ref.read(photoRepositoryProvider);
-    final photoIds = current.map((d) => d.photoId).toList();
-    final success = await photoRepo.deletePhotos(photoIds);
+    final trashRepo = ref.read(trashRepositoryProvider);
 
-    if (success) {
-      final sessionRepo = ref.read(cleaningSessionRepositoryProvider);
-      await sessionRepo.clearSession(sessionId);
-      state = const AsyncData([]);
+    // Move to trash instead of permanent deletion
+    for (final decision in current) {
+      await trashRepo.moveToTrash(
+        photoId: decision.photoId,
+        sessionId: sessionId,
+      );
     }
 
-    return success;
+    final sessionRepo = ref.read(cleaningSessionRepositoryProvider);
+    await sessionRepo.clearSession(sessionId);
+    state = const AsyncData([]);
+
+    return true;
   }
 }

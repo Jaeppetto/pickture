@@ -15,6 +15,7 @@ abstract class CleaningState with _$CleaningState {
     required int currentIndex,
     required List<CleaningDecision> decisions,
     CleaningDecision? lastDecision,
+    @Default(0) int comboCount,
   }) = _CleaningState;
 
   factory CleaningState.fromJson(Map<String, dynamic> json) =>

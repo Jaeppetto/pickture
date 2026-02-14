@@ -202,4 +202,134 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get deleteSuccess => '삭제가 완료되었습니다';
+
+  @override
+  String get settingsGeneral => '일반';
+
+  @override
+  String get settingsAbout => '정보';
+
+  @override
+  String get settingsVersion => '버전';
+
+  @override
+  String get settingsLicenses => '오픈소스 라이선스';
+
+  @override
+  String get trashTitle => '휴지통';
+
+  @override
+  String get trashDescription => '최근 삭제된 사진';
+
+  @override
+  String get trashEmpty => '휴지통이 비어있습니다';
+
+  @override
+  String trashItemCount(int count) {
+    return '$count개 항목';
+  }
+
+  @override
+  String trashStorageUsed(String size) {
+    return '$size 사용 중';
+  }
+
+  @override
+  String get trashRetentionNotice => '30일 후 자동으로 영구 삭제됩니다';
+
+  @override
+  String get trashRestoreSuccess => '사진이 복구되었습니다';
+
+  @override
+  String get trashDeleteSuccess => '영구 삭제되었습니다';
+
+  @override
+  String get trashEmptyAll => '휴지통 비우기';
+
+  @override
+  String trashEmptyConfirm(int count) {
+    return '$count개 항목을 영구 삭제하시겠습니까?';
+  }
+
+  @override
+  String trashDaysRemaining(int days) {
+    return '$days일 남음';
+  }
+
+  @override
+  String get trashPermanentDelete => '영구 삭제';
+
+  @override
+  String get trashMoveSuccess => '휴지통으로 이동되었습니다';
+
+  @override
+  String get statisticsTitle => '정리 통계';
+
+  @override
+  String get statTotalSessions => '세션';
+
+  @override
+  String get statTotalCleaned => '정리됨';
+
+  @override
+  String get statTotalFreed => '확보됨';
+
+  @override
+  String get statTotalReviewed => '확인됨';
+
+  @override
+  String get statNoData => '아직 정리 기록이 없습니다';
+
+  @override
+  String get statStartCleaning => '첫 번째 세션을 시작해보세요!';
+
+  @override
+  String get onboardingTitle1 => '스와이프로 정리';
+
+  @override
+  String get onboardingDesc1 => '왼쪽으로 삭제, 오른쪽으로 보관, 위로 즐겨찾기';
+
+  @override
+  String get onboardingTitle2 => '안전하고 되돌릴 수 있어요';
+
+  @override
+  String get onboardingDesc2 => '삭제된 사진은 휴지통에 보관됩니다. 30일 이내에 복구할 수 있어요';
+
+  @override
+  String get onboardingTitle3 => '진행 상황 추적';
+
+  @override
+  String get onboardingDesc3 => '정리 통계를 확인하고 저장 공간을 확보하세요';
+
+  @override
+  String get onboardingSkip => '건너뛰기';
+
+  @override
+  String get onboardingNext => '다음';
+
+  @override
+  String get onboardingGetStarted => '시작하기';
+
+  @override
+  String get reminderTitle => '정리 리마인더';
+
+  @override
+  String get reminderDescription => '매주 갤러리 정리 알림을 받아보세요';
+
+  @override
+  String get reminderNotificationTitle => '정리할 시간이에요!';
+
+  @override
+  String get reminderNotificationBody => '갤러리가 정리를 기다리고 있어요';
+
+  @override
+  String get hapticTitle => '햅틱 피드백';
+
+  @override
+  String get hapticDescription => '스와이프 시 진동 피드백';
+
+  @override
+  String comboCount(int count) {
+    return '${count}x 콤보!';
+  }
 }

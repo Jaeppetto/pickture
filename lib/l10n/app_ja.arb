@@ -61,5 +61,52 @@
   "storageFreed": "確保した容量",
   "viewDeleteQueue": "削除キューを確認",
   "done": "完了",
-  "deleteSuccess": "削除が完了しました"
+  "deleteSuccess": "削除が完了しました",
+
+  "settingsGeneral": "一般",
+  "settingsAbout": "情報",
+  "settingsVersion": "バージョン",
+  "settingsLicenses": "オープンソースライセンス",
+
+  "trashTitle": "ゴミ箱",
+  "trashDescription": "最近削除した写真",
+  "trashEmpty": "ゴミ箱は空です",
+  "trashItemCount": "{count}件",
+  "trashStorageUsed": "{size}使用中",
+  "trashRetentionNotice": "30日後に自動的に完全削除されます",
+  "trashRestoreSuccess": "写真を復元しました",
+  "trashDeleteSuccess": "完全に削除しました",
+  "trashEmptyAll": "ゴミ箱を空にする",
+  "trashEmptyConfirm": "{count}件を完全に削除しますか？",
+  "trashDaysRemaining": "残り{days}日",
+  "trashPermanentDelete": "完全に削除",
+  "trashMoveSuccess": "ゴミ箱に移動しました",
+
+  "statisticsTitle": "整理統計",
+  "statTotalSessions": "セッション",
+  "statTotalCleaned": "整理済み",
+  "statTotalFreed": "解放済み",
+  "statTotalReviewed": "確認済み",
+  "statNoData": "まだ整理記録がありません",
+  "statStartCleaning": "最初のセッションを始めましょう！",
+
+  "onboardingTitle1": "スワイプで整理",
+  "onboardingDesc1": "左にスワイプで削除、右で保管、上でお気に入り",
+  "onboardingTitle2": "安全で元に戻せます",
+  "onboardingDesc2": "削除した写真はゴミ箱に保管されます。30日以内に復元できます",
+  "onboardingTitle3": "進捗を追跡",
+  "onboardingDesc3": "整理統計を確認してストレージを解放しましょう",
+  "onboardingSkip": "スキップ",
+  "onboardingNext": "次へ",
+  "onboardingGetStarted": "始める",
+
+  "reminderTitle": "整理リマインダー",
+  "reminderDescription": "毎週ギャラリー整理のリマインダーを受け取る",
+  "reminderNotificationTitle": "整理の時間です！",
+  "reminderNotificationBody": "ギャラリーが整理を待っています",
+
+  "hapticTitle": "触覚フィードバック",
+  "hapticDescription": "スワイプ時の振動フィードバック",
+
+  "comboCount": "{count}xコンボ！"
 }

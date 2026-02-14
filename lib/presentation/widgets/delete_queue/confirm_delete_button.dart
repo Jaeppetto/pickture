@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pickture/core/constants/app_constants.dart';
 import 'package:pickture/core/theme/app_colors.dart';
+import 'package:pickture/core/utils/haptic_service.dart';
 import 'package:pickture/l10n/app_localizations.dart';
 
 class ConfirmDeleteButton extends StatelessWidget {
@@ -9,10 +10,12 @@ class ConfirmDeleteButton extends StatelessWidget {
     super.key,
     required this.count,
     required this.onConfirm,
+    this.hapticService,
   });
 
   final int count;
   final VoidCallback onConfirm;
+  final HapticService? hapticService;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +48,7 @@ class ConfirmDeleteButton extends StatelessWidget {
           FilledButton(
             onPressed: () {
               Navigator.of(ctx).pop();
+              hapticService?.heavyImpact();
               onConfirm();
             },
             style: FilledButton.styleFrom(backgroundColor: AppColors.delete),

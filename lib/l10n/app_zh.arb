@@ -61,5 +61,52 @@
   "storageFreed": "已释放空间",
   "viewDeleteQueue": "查看删除队列",
   "done": "完成",
-  "deleteSuccess": "删除完成"
+  "deleteSuccess": "删除完成",
+
+  "settingsGeneral": "通用",
+  "settingsAbout": "关于",
+  "settingsVersion": "版本",
+  "settingsLicenses": "开源许可证",
+
+  "trashTitle": "回收站",
+  "trashDescription": "最近删除的照片",
+  "trashEmpty": "回收站为空",
+  "trashItemCount": "{count}项",
+  "trashStorageUsed": "已使用{size}",
+  "trashRetentionNotice": "30天后将自动永久删除",
+  "trashRestoreSuccess": "照片已恢复",
+  "trashDeleteSuccess": "已永久删除",
+  "trashEmptyAll": "清空回收站",
+  "trashEmptyConfirm": "确定永久删除{count}个项目吗？",
+  "trashDaysRemaining": "剩余{days}天",
+  "trashPermanentDelete": "永久删除",
+  "trashMoveSuccess": "已移至回收站",
+
+  "statisticsTitle": "清理统计",
+  "statTotalSessions": "会话",
+  "statTotalCleaned": "已清理",
+  "statTotalFreed": "已释放",
+  "statTotalReviewed": "已查看",
+  "statNoData": "还没有清理记录",
+  "statStartCleaning": "开始你的第一次清理吧！",
+
+  "onboardingTitle1": "滑动整理",
+  "onboardingDesc1": "向左滑动删除，向右保留，向上收藏",
+  "onboardingTitle2": "安全可恢复",
+  "onboardingDesc2": "删除的照片先进入回收站，30天内可以恢复",
+  "onboardingTitle3": "追踪进度",
+  "onboardingDesc3": "查看清理统计，释放存储空间",
+  "onboardingSkip": "跳过",
+  "onboardingNext": "下一步",
+  "onboardingGetStarted": "开始使用",
+
+  "reminderTitle": "清理提醒",
+  "reminderDescription": "每周接收相册清理提醒",
+  "reminderNotificationTitle": "该整理了！",
+  "reminderNotificationBody": "你的相册正在等待清理",
+
+  "hapticTitle": "触觉反馈",
+  "hapticDescription": "滑动时的振动反馈",
+
+  "comboCount": "{count}x连击！"
 }

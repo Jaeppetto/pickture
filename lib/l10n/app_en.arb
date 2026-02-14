@@ -61,5 +61,52 @@
   "storageFreed": "Storage Freed",
   "viewDeleteQueue": "View Delete Queue",
   "done": "Done",
-  "deleteSuccess": "Deletion complete"
+  "deleteSuccess": "Deletion complete",
+
+  "settingsGeneral": "General",
+  "settingsAbout": "About",
+  "settingsVersion": "Version",
+  "settingsLicenses": "Licenses",
+
+  "trashTitle": "Trash",
+  "trashDescription": "Recently deleted photos",
+  "trashEmpty": "Trash is empty",
+  "trashItemCount": "{count} items",
+  "trashStorageUsed": "{size} used",
+  "trashRetentionNotice": "Items are permanently deleted after 30 days",
+  "trashRestoreSuccess": "Photo restored",
+  "trashDeleteSuccess": "Permanently deleted",
+  "trashEmptyAll": "Empty Trash",
+  "trashEmptyConfirm": "Permanently delete all {count} items?",
+  "trashDaysRemaining": "{days}d left",
+  "trashPermanentDelete": "Delete Forever",
+  "trashMoveSuccess": "Moved to trash",
+
+  "statisticsTitle": "Cleaning Stats",
+  "statTotalSessions": "Sessions",
+  "statTotalCleaned": "Cleaned",
+  "statTotalFreed": "Freed",
+  "statTotalReviewed": "Reviewed",
+  "statNoData": "No cleaning data yet",
+  "statStartCleaning": "Start your first session!",
+
+  "onboardingTitle1": "Swipe to Clean",
+  "onboardingDesc1": "Swipe left to delete, right to keep, up to favorite",
+  "onboardingTitle2": "Safe & Reversible",
+  "onboardingDesc2": "Deleted photos go to trash first. You can restore them within 30 days",
+  "onboardingTitle3": "Track Progress",
+  "onboardingDesc3": "See your cleaning stats and free up storage space",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingGetStarted": "Get Started",
+
+  "reminderTitle": "Cleaning Reminder",
+  "reminderDescription": "Get weekly reminders to clean your gallery",
+  "reminderNotificationTitle": "Time to clean!",
+  "reminderNotificationBody": "Your gallery is waiting for a cleanup session",
+
+  "hapticTitle": "Haptic Feedback",
+  "hapticDescription": "Vibration feedback on swipe actions",
+
+  "comboCount": "{count}x Combo!"
 }

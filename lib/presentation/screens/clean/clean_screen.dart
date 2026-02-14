@@ -6,9 +6,12 @@ import 'package:pickture/core/constants/app_constants.dart';
 import 'package:pickture/domain/entities/cleaning_decision.dart';
 import 'package:pickture/l10n/app_localizations.dart';
 import 'package:pickture/presentation/providers/cleaning_session_provider.dart';
+import 'package:pickture/presentation/providers/haptic_provider.dart';
 import 'package:pickture/presentation/widgets/swipe/cleaning_progress_bar.dart';
 import 'package:pickture/presentation/widgets/swipe/session_resume_dialog.dart';
 import 'package:pickture/presentation/widgets/swipe/swipe_action_buttons.dart';
+import 'package:pickture/presentation/widgets/animations/confetti_overlay.dart';
+import 'package:pickture/presentation/widgets/swipe/animations/combo_counter.dart';
 import 'package:pickture/presentation/widgets/swipe/swipe_card_stack.dart';
 import 'package:pickture/presentation/widgets/swipe/swipe_direction.dart';
 
@@ -91,11 +94,22 @@ class _CleanScreenState extends ConsumerState<CleanScreen> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(AppConstants.spacing16),
-                  child: SwipeCardStack(
-                    key: _cardStackKey,
-                    photos: state.photoQueue,
-                    currentIndex: state.currentIndex,
-                    onSwiped: _onSwiped,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SwipeCardStack(
+                        key: _cardStackKey,
+                        photos: state.photoQueue,
+                        currentIndex: state.currentIndex,
+                        onSwiped: _onSwiped,
+                        hapticService: ref.read(hapticServiceProvider),
+                      ),
+                      // Combo counter
+                      Positioned(
+                        top: AppConstants.spacing8,
+                        child: ComboCounter(count: state.comboCount),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -152,32 +166,40 @@ class _CleanScreenState extends ConsumerState<CleanScreen> {
     ThemeData theme,
     dynamic state,
   ) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 80,
-            color: theme.colorScheme.primary,
+    return Stack(
+      children: [
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.check_circle_outline,
+                size: 80,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(height: AppConstants.spacing24),
+              Text(
+                l10n.allPhotosCleaned,
+                style: theme.textTheme.headlineMedium,
+              ),
+              const SizedBox(height: AppConstants.spacing32),
+              FilledButton(
+                onPressed: () async {
+                  await ref
+                      .read(cleaningSessionNotifierProvider.notifier)
+                      .completeSession();
+                  if (mounted) {
+                    await context.push('/session-summary/${state.session.id}');
+                  }
+                },
+                style: FilledButton.styleFrom(minimumSize: const Size(200, 56)),
+                child: Text(l10n.done),
+              ),
+            ],
           ),
-          const SizedBox(height: AppConstants.spacing24),
-          Text(l10n.allPhotosCleaned, style: theme.textTheme.headlineMedium),
-          const SizedBox(height: AppConstants.spacing32),
-          FilledButton(
-            onPressed: () async {
-              await ref
-                  .read(cleaningSessionNotifierProvider.notifier)
-                  .completeSession();
-              if (mounted) {
-                await context.push('/session-summary/${state.session.id}');
-              }
-            },
-            style: FilledButton.styleFrom(minimumSize: const Size(200, 56)),
-            child: Text(l10n.done),
-          ),
-        ],
-      ),
+        ),
+        const Positioned.fill(child: ConfettiOverlay()),
+      ],
     );
   }
 }
