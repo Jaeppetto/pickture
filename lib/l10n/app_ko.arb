@@ -1,0 +1,200 @@
+{
+  "@@locale": "ko",
+  "appName": "Pickture",
+  "@appName": { "description": "App name" },
+  "tabHome": "홈",
+  "@tabHome": { "description": "Home tab label" },
+  "tabClean": "정리",
+  "@tabClean": { "description": "Clean tab label" },
+  "tabSettings": "설정",
+  "@tabSettings": { "description": "Settings tab label" },
+  "homeTitle": "홈",
+  "@homeTitle": { "description": "Home screen title" },
+  "cleanTitle": "정리",
+  "@cleanTitle": { "description": "Clean screen title" },
+  "settingsTitle": "설정",
+  "@settingsTitle": { "description": "Settings screen title" },
+  "permissionGranted": "사진 접근이 허용되었습니다",
+  "@permissionGranted": { "description": "Permission granted message" },
+  "permissionLimited": "제한된 사진 접근",
+  "@permissionLimited": { "description": "Permission limited message" },
+  "permissionDenied": "사진 접근이 거부되었습니다",
+  "@permissionDenied": { "description": "Permission denied message" },
+  "permissionDeniedDescription": "설정에서 사진 접근을 허용해주세요",
+  "@permissionDeniedDescription": { "description": "Permission denied description" },
+  "readyToOrganize": "갤러리 정리를 시작할 준비가 되었습니다",
+  "@readyToOrganize": { "description": "Ready to organize message" },
+  "organizeYourGallery": "갤러리를 정리해보세요",
+  "@organizeYourGallery": { "description": "Organize your gallery message" },
+  "allowAccessToStart": "정리를 시작하려면 사진 접근을 허용해주세요",
+  "@allowAccessToStart": { "description": "Allow access to start message" },
+  "grantPhotoAccess": "사진 접근 허용",
+  "@grantPhotoAccess": { "description": "Grant photo access button" },
+
+  "dashboardTitle": "대시보드",
+  "@dashboardTitle": { "description": "Dashboard screen title" },
+  "totalPhotosVideos": "사진 및 동영상 {count}장",
+  "@totalPhotosVideos": {
+    "description": "Total photos and videos count label",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1234"
+      }
+    }
+  },
+  "totalStorage": "총 저장 용량",
+  "@totalStorage": { "description": "Total storage label" },
+  "photos": "사진",
+  "@photos": { "description": "Photos category label" },
+  "videos": "동영상",
+  "@videos": { "description": "Videos category label" },
+  "screenshots": "스크린샷",
+  "@screenshots": { "description": "Screenshots category label" },
+  "other": "기타",
+  "@other": { "description": "Other category label" },
+  "deviceStorage": "기기 저장 공간",
+  "@deviceStorage": { "description": "Device storage label" },
+  "freeSpace": "여유 공간",
+  "@freeSpace": { "description": "Free space label" },
+  "cleaningPrediction": "정리하면 {size} 확보 가능",
+  "@cleaningPrediction": {
+    "description": "Predicted storage freed by cleaning",
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "example": "2.5GB"
+      }
+    }
+  },
+  "insightScreenshots": "스크린샷 {count}장",
+  "@insightScreenshots": {
+    "description": "Insight card showing screenshot count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+  "insightOldPhotos": "6개월 이전 사진 {count}장",
+  "@insightOldPhotos": {
+    "description": "Insight card showing old photos count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "150"
+      }
+    }
+  },
+  "insightLargeFiles": "10MB 이상 파일 {count}장",
+  "@insightLargeFiles": {
+    "description": "Insight card showing large files count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "startCleaning": "정리 시작",
+  "@startCleaning": { "description": "Start cleaning button label" },
+
+  "cleanSessionTitle": "갤러리 정리",
+  "@cleanSessionTitle": { "description": "Gallery cleaning session title" },
+  "undo": "되돌리기",
+  "@undo": { "description": "Undo action label" },
+  "resumeSession": "이어서 정리",
+  "@resumeSession": { "description": "Resume previous session button" },
+  "startFresh": "처음부터",
+  "@startFresh": { "description": "Start fresh button" },
+  "resumeSessionTitle": "이전 세션 발견",
+  "@resumeSessionTitle": { "description": "Resume session dialog title" },
+  "resumeSessionDescription": "이전 정리를 이어서 하시겠습니까?",
+  "@resumeSessionDescription": { "description": "Resume session dialog description" },
+  "progressLabel": "{reviewed}/{total}장 확인",
+  "@progressLabel": {
+    "description": "Progress label showing reviewed count out of total",
+    "placeholders": {
+      "reviewed": {
+        "type": "int",
+        "example": "25"
+      },
+      "total": {
+        "type": "int",
+        "example": "100"
+      }
+    }
+  },
+  "deleteAction": "삭제",
+  "@deleteAction": { "description": "Delete swipe action label" },
+  "keepAction": "보관",
+  "@keepAction": { "description": "Keep swipe action label" },
+  "favoriteAction": "즐겨찾기",
+  "@favoriteAction": { "description": "Favorite swipe action label" },
+  "photoDate": "촬영일",
+  "@photoDate": { "description": "Photo date metadata label" },
+  "photoSize": "크기",
+  "@photoSize": { "description": "Photo file size metadata label" },
+  "photoDimensions": "해상도",
+  "@photoDimensions": { "description": "Photo dimensions metadata label" },
+  "noPhotosToClean": "정리할 사진이 없습니다",
+  "@noPhotosToClean": { "description": "Empty state message when no photos to clean" },
+  "allPhotosCleaned": "모든 사진을 확인했습니다!",
+  "@allPhotosCleaned": { "description": "Completion message when all photos reviewed" },
+
+  "deleteQueueTitle": "삭제 대기열",
+  "@deleteQueueTitle": { "description": "Delete queue screen title" },
+  "totalToDelete": "총 {count}장 삭제 예정",
+  "@totalToDelete": {
+    "description": "Total items pending deletion",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "totalSizeToFree": "{size} 확보 예정",
+  "@totalSizeToFree": {
+    "description": "Total storage size to be freed",
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "example": "1.2GB"
+      }
+    }
+  },
+  "confirmDelete": "삭제 확정",
+  "@confirmDelete": { "description": "Confirm delete button label" },
+  "confirmDeleteDialog": "{count}장의 사진을 영구 삭제하시겠습니까?",
+  "@confirmDeleteDialog": {
+    "description": "Confirm delete dialog message",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "restore": "복구",
+  "@restore": { "description": "Restore item from delete queue" },
+  "sessionSummaryTitle": "정리 완료!",
+  "@sessionSummaryTitle": { "description": "Session summary screen title" },
+  "totalReviewed": "확인",
+  "@totalReviewed": { "description": "Total reviewed stat label" },
+  "totalDeleted": "삭제",
+  "@totalDeleted": { "description": "Total deleted stat label" },
+  "totalKept": "보관",
+  "@totalKept": { "description": "Total kept stat label" },
+  "totalFavorited": "즐겨찾기",
+  "@totalFavorited": { "description": "Total favorited stat label" },
+  "storageFreed": "확보 용량",
+  "@storageFreed": { "description": "Storage freed stat label" },
+  "viewDeleteQueue": "삭제 대기열 확인",
+  "@viewDeleteQueue": { "description": "View delete queue button label" },
+  "done": "완료",
+  "@done": { "description": "Done button label" },
+  "deleteSuccess": "삭제가 완료되었습니다",
+  "@deleteSuccess": { "description": "Deletion success snackbar message" }
+}

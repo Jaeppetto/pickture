@@ -1,0 +1,848 @@
+# Pickture — 제품 기획서
+
+> **한 줄 소개:** 스와이프 한 번으로 갤러리를 깔끔하게. 사진 정리를 재미있고 빠르게.
+
+---
+
+## 1. 프로젝트 개요
+
+### 1.1 배경 & 문제 정의
+
+스마트폰 사용자의 갤러리에는 수천~수만 장의 사진이 쌓여 있다. 그중 상당수는:
+
+- 비슷한 구도로 연속 촬영된 사진
+- 실수로 찍힌 흐릿하거나 의미 없는 사진
+- 더 이상 필요 없는 스크린샷, 밈, 다운로드 이미지
+- 용량만 차지하는 대용량 동영상
+
+하지만 기존 갤러리 앱은 **"정리"에 특화되어 있지 않다.** 수천 장을 일일이 선택하고 삭제하는 과정은 지루하고 시간이 오래 걸린다.
+
+### 1.2 솔루션
+
+**Pickture**는 Tinder 스타일의 스와이프 UX로 사진 정리를 **빠르고 재미있게** 만든다.
+
+- **왼쪽 스와이프 → 삭제** (또는 삭제 대기열로 이동)
+- **오른쪽 스와이프 → 보관**
+- 스토리지 분석으로 정리의 동기를 부여
+
+### 1.3 타겟 유저
+
+| 페르소나 | 특징 |
+|----------|------|
+| **갤러리 정리 귀찮은 사람** | 사진이 수천 장 쌓여 있지만 정리할 엄두를 못 내는 사용자 |
+| **저장 공간 부족한 사람** | "저장 공간이 부족합니다" 알림을 자주 받는 사용자 |
+| **미니멀리스트** | 갤러리도 깔끔하게 유지하고 싶은 사용자 |
+
+### 1.4 핵심 가치
+
+1. **빠름** — 스와이프 한 번에 1초, 1분이면 60장 정리
+2. **재미** — 게이미피케이션 요소로 정리에 몰입감 부여
+3. **안전** — 실수로 삭제해도 복구 가능 (휴지통 30일 보관)
+4. **인사이트** — 내 갤러리 현황을 한눈에 파악
+
+---
+
+## 2. 타겟 플랫폼
+
+| 우선순위 | 플랫폼 | 비고 |
+|----------|--------|------|
+| 1차 | **iOS** | MVP 출시 대상 |
+| 2차 | Android | iOS 안정화 후 확장 |
+
+- Flutter로 개발하므로 양 플랫폼 코드베이스는 공유
+- iOS 우선 출시 후 Android 플랫폼별 최적화 진행
+
+---
+
+## 3. 핵심 기능 (MVP)
+
+### 3.1 스와이프 정리 (Core)
+
+사진을 한 장씩 풀스크린으로 보여주며, 스와이프로 빠르게 정리한다.
+
+**동작:**
+- ← 왼쪽 스와이프: **삭제 대기열로 이동**
+- → 오른쪽 스와이프: **보관 (Keep)**
+- ↑ 위쪽 스와이프: **즐겨찾기**
+- 탭: 사진 상세 정보 확인 (날짜, 크기, 위치)
+
+**세부 기능:**
+- 스와이프 애니메이션 (카드가 날아가는 느낌)
+- 되돌리기 (Undo) 버튼 — 직전 스와이프 취소
+- 정리 세션 요약: "이번에 23장 정리, 150MB 확보!"
+- 삭제 대기열: 실제 삭제 전 최종 확인 단계
+- **세션 이어하기 (Resume):** 정리 중 이탈 시 마지막 위치를 기억. 재진입 시 "이어서 정리" / "처음부터" 선택 팝업
+- **진행률 표시:** 전체 사진 대비 현재 정리 진행률 프로그레스 바
+- **연속 삭제 콤보:** 연속 삭제 시 콤보 카운터 + 특별 이펙트 (게이미피케이션)
+- **일일 정리 목표:** 사용자 설정 일일 목표 (예: 30장/일), 달성 시 축하 애니메이션
+
+**필터 옵션:**
+- 전체 사진
+- 스크린샷만
+- 동영상만
+- 특정 기간 (예: 2023년 사진)
+- 대용량 파일 (>10MB)
+
+### 3.2 스토리지 분석 (Dashboard)
+
+갤러리 현황을 시각적으로 보여주어 정리 동기를 부여한다.
+
+**표시 정보:**
+- 총 사진/동영상 수
+- 총 용량 & 카테고리별 용량 (사진 / 동영상 / 스크린샷 / 기타)
+- 용량 비율 차트 (도넛 차트 또는 바 차트)
+- 기기 전체 저장 공간 대비 갤러리 비율
+- "정리하면 X GB 확보 가능" 예측치
+
+**인사이트 카드:**
+- "스크린샷 342장이 1.2GB를 차지하고 있어요"
+- "6개월 이상 된 사진이 2,340장이에요"
+- "10MB 이상 대용량 파일 45개 발견"
+
+### 3.3 휴지통 (Safety Net)
+
+삭제된 사진의 안전망.
+
+- 삭제 대기열에서 "삭제 확정" 시 휴지통으로 이동
+- 30일 보관 후 자동 영구 삭제
+- 휴지통 내에서 개별/전체 복구 가능
+- 휴지통 내에서 즉시 영구 삭제도 가능
+- 휴지통 용량 표시
+
+### 3.4 추가 MVP 기능
+
+| 기능 | 설명 |
+|------|------|
+| **빠른 선택 모드** | 그리드에서 다중 선택 → 일괄 삭제 (기존 갤러리 방식도 지원) |
+| **정리 통계** | 총 정리한 사진 수, 확보한 용량 누적 기록 |
+| **정리 리마인더** | 주 1회 "갤러리 정리할 시간이에요!" 로컬 푸시 알림 |
+
+### 3.5 국제화 (i18n)
+
+- **지원 언어:** 한국어(ko), 영어(en), 일본어(ja), 중국어 간체(zh)
+- **기본 언어:** 한국어
+- 기기 시스템 언어 자동 감지 → 미지원 언어는 영어 폴백
+- 설정에서 수동 언어 변경 가능
+- 모든 유저 대면 문자열은 ARB 파일로 관리 (`lib/l10n/`)
+- 날짜/시간, 숫자, 용량 포맷도 로케일 대응
+
+---
+
+## 4. 유저 플로우
+
+### 4.1 첫 실행 (Onboarding)
+
+```
+앱 실행
+  → 환영 화면 (3장 스와이프 튜토리얼)
+    → 사진 라이브러리 접근 권한 요청
+      → 갤러리 스캔 (로딩 + 프로그레스)
+        → 스토리지 분석 대시보드 (홈)
+```
+
+### 4.2 메인 정리 플로우
+
+```
+홈 (대시보드)
+  → "정리 시작" 버튼 또는 인사이트 카드 탭
+    → 이전 세션 있음?
+      → [예] "이어서 정리" / "처음부터" 선택 팝업
+      → [아니오] 필터 선택 (선택사항)
+    → 스와이프 모드 진입
+      → 사진 스와이프 (←삭제 / →보관 / ↑즐겨찾기)
+        → 세션 종료 (자동 또는 수동)
+          → 세션 요약 ("32장 정리! 200MB 확보")
+            → 삭제 대기열 확인 → 삭제 확정
+```
+
+---
+
+## 5. 화면 구성 (IA)
+
+### 5.1 탭 구조
+
+```
+┌──────────────────────────────────────┐
+│                                      │
+│           [현재 화면 영역]             │
+│                                      │
+├────────────┬────────────┬────────────┤
+│    홈      │    정리     │   설정     │
+│    🏠      │    ✨      │   ⚙️      │
+└────────────┴────────────┴────────────┘
+```
+
+### 5.2 화면 목록
+
+| 화면 | 설명 | 탭 |
+|------|------|-----|
+| **홈 (대시보드)** | 스토리지 분석, 인사이트 카드, 빠른 정리 진입점 | 홈 |
+| **스와이프 모드** | 풀스크린 사진 카드, 스와이프 정리 | 정리 |
+| **세션 요약** | 정리 결과, 확보 용량, 삭제 대기열 링크 | (오버레이) |
+| **삭제 대기열** | 삭제 예정 사진 목록, 최종 확인 | (내비게이션) |
+| **휴지통** | 삭제된 사진, 복구/영구삭제 | 설정 내 |
+| **설정** | 알림, 테마, 언어, 휴지통, 앱 정보 | 설정 |
+| **온보딩** | 앱 소개, 권한 요청 | (첫 실행) |
+
+---
+
+## 6. 디자인 방향
+
+### 6.1 디자인 원칙
+
+1. **심플 & 클린** — 사진이 주인공. UI는 최소한으로.
+2. **제스처 중심** — 버튼보다 스와이프와 제스처 우선.
+3. **피드백 명확** — 모든 액션에 즉각적인 시각/촉각 피드백 (햅틱).
+4. **성취감** — 정리 후 보상감을 주는 마이크로 인터랙션.
+5. **Fluid Motion** — 모든 전환에 자연스러운 물리 기반 애니메이션. 기계적이지 않은, 유기적으로 반응하는 인터페이스.
+6. **Depth & Layer** — 블러, 그림자, 레이어드 카드로 깊이감 표현. 평면적 UI를 넘어 공간감 있는 디자인.
+
+### 6.2 컬러 시스템
+
+| 역할 | Light Mode | Dark Mode |
+|------|-----------|-----------|
+| Background | `#FFFFFF` | `#0A0A0A` |
+| Surface | `#F5F5F5` | `#1A1A1A` |
+| Primary | `#2D5BFF` | `#4D7AFF` |
+| Secondary | `#7C3AED` | `#A78BFA` |
+| Delete (위험) | `#FF3B30` | `#FF453A` |
+| Keep (안전) | `#34C759` | `#30D158` |
+| Favorite | `#FF9500` | `#FFa726` |
+| Text Primary | `#1A1A1A` | `#F5F5F5` |
+| Text Secondary | `#8E8E93` | `#8E8E93` |
+
+**Gradient Accent:**
+- Primary → Secondary 그라디언트 (`#2D5BFF` → `#7C3AED`)
+- 스와이프 삭제 방향: 빨간색 그라디언트 오버레이 (`#FF3B30` → `#FF6B6B`)
+- 스와이프 보관 방향: 초록색 그라디언트 오버레이 (`#34C759` → `#7AE5A0`)
+- 스와이프 즐겨찾기 방향: 노란색 그라디언트 오버레이 (`#FF9500` → `#FFD60A`)
+
+### 6.3 타이포그래피
+
+- **한글:** Pretendard (시스템 기본 대체: Apple SD Gothic Neo)
+- **영문/숫자:** SF Pro (iOS 시스템)
+- **크기 스케일:** 12 / 14 / 16 / 20 / 24 / 32 / 40
+
+### 6.4 핵심 인터랙션
+
+| 제스처 | 동작 | 피드백 |
+|--------|------|--------|
+| ← 스와이프 | 삭제 대기열 | 빨간색 오버레이 + 🗑 아이콘 + 햅틱 |
+| → 스와이프 | 보관 | 초록색 오버레이 + ✓ 아이콘 + 햅틱 |
+| ↑ 스와이프 | 즐겨찾기 | 노란색 오버레이 + ⭐ 아이콘 + 햅틱 |
+| 탭 | 상세 정보 토글 | 반투명 오버레이에 메타데이터 |
+| 길게 누르기 | 확대 미리보기 | 사진 확대 + 블러 배경 |
+
+### 6.5 다크 모드 전략
+
+- **시스템 설정 자동 연동 + 수동 토글** (설정 화면에서 시스템/라이트/다크 선택)
+- **다크 모드를 기본 경험으로** — 사진 앱 특성상 어두운 배경이 콘텐츠를 돋보이게 함
+- 모든 UI 컴포넌트가 Light/Dark 양쪽 토큰을 반드시 정의
+- Phase 1에서부터 테마 시스템에 포함하여 구현 (후순위가 아닌 Day 1 기능)
+
+### 6.6 모션 & 마이크로인터랙션
+
+- **스프링 기반 물리 애니메이션:** 카드 스와이프, 바운스 등 모든 제스처에 스프링 물리 적용
+- **삭제 시:** 카드가 회전하며 축소 → 파티클 이펙트
+- **보관 시:** 부드러운 슬라이드 + 체크 마크 팝 애니메이션
+- **세션 완료 시:** 컨페티 / 숫자 카운트업 애니메이션
+- **대시보드 차트:** 등장 시 순차적 빌드업 애니메이션
+- **화면 전환:** Shared Element Transition (Hero) 적극 활용
+- **연속 삭제 콤보:** 콤보 카운터 숫자 스케일업 + 화면 진동 이펙트
+
+---
+
+## 7. 기술 스택
+
+| 영역 | 기술 | 비고 |
+|------|------|------|
+| Framework | Flutter | 크로스 플랫폼 |
+| Language | Dart | |
+| State Management | Riverpod | Code generation 활용 |
+| Architecture | Clean Architecture | Domain / Data / Presentation |
+| Photo Access | `photo_manager` | iOS/Android 갤러리 접근 |
+| Local Storage | `drift` 또는 `isar` | 정리 기록, 캐시 메타데이터 |
+| Animations | Flutter Built-in | `AnimationController`, `Hero` |
+| Charts | `fl_chart` | 스토리지 분석 차트 |
+| Notifications | `flutter_local_notifications` | 정리 리마인더 |
+| Haptics | `HapticFeedback` | 스와이프 촉각 피드백 |
+| i18n | `flutter_localizations` + `intl` | ARB 파일 기반 코드 생성 (`gen-l10n`) |
+
+---
+
+## 8. 데이터 모델 (핵심)
+
+```
+Photo
+├── id: String (기기 내 고유 ID)
+├── path: String
+├── thumbnailPath: String
+├── createdAt: DateTime
+├── fileSize: int (bytes)
+├── width: int
+├── height: int
+├── type: PhotoType (image / video / screenshot / gif)
+├── duration: Duration? (동영상)
+└── location: LatLng?
+
+CleaningSession
+├── id: String
+├── startedAt: DateTime
+├── endedAt: DateTime?
+├── status: SessionStatus (active / paused / completed)
+├── lastPhotoIndex: int
+├── totalReviewed: int
+├── totalDeleted: int
+├── totalKept: int
+├── totalFavorited: int
+├── freedBytes: int
+└── filter: CleaningFilter?
+
+CleaningDecision
+├── photoId: String
+├── sessionId: String
+├── decision: Decision (delete / keep / favorite)
+└── decidedAt: DateTime
+
+TrashItem
+├── photoId: String
+├── originalPath: String
+├── deletedAt: DateTime
+├── expiresAt: DateTime (deletedAt + 30일)
+└── fileSize: int
+
+UserPreference
+├── dailyGoal: int
+├── themeMode: ThemeMode (system / light / dark)
+├── locale: String
+└── hapticEnabled: bool
+```
+
+---
+
+## 9. 개발 페이즈
+
+### Phase 1 — Foundation (2주)
+
+| 작업 | 담당 에이전트 |
+|------|--------------|
+| Flutter 프로젝트 초기화, 폴더 구조 셋업 | Infra + Architect |
+| analysis_options, lint 규칙 설정 | Rules |
+| 다크 모드 포함 디자인 시스템 (색상, 타이포, 테마) 구현 | UI/UX |
+| 기본 내비게이션 (탭 구조) | UI/UX + Developer |
+| photo_manager 연동, 권한 처리 | Developer |
+| i18n 인프라 셋업 (ARB, gen-l10n) | Infra + Developer |
+| CI/CD 파이프라인 구축 | Infra |
+
+### Phase 2 — Core Feature (3주)
+
+| 작업 | 담당 에이전트 |
+|------|--------------|
+| 스토리지 분석 대시보드 (홈 화면) | Developer + UI/UX |
+| 스와이프 정리 카드 UI 및 제스처 | UI/UX |
+| 스와이프 비즈니스 로직 (세션, 결정 기록) | Developer |
+| 삭제 대기열 & 확정 플로우 | Developer |
+| 세션 요약 화면 | UI/UX + Developer |
+
+### Phase 3 — Polish & Safety (2주)
+
+| 작업 | 담당 에이전트 |
+|------|--------------|
+| 휴지통 (복구/영구삭제/자동만료) | Developer |
+| 온보딩 튜토리얼 | UI/UX |
+| 정리 통계 누적 기록 | Developer |
+| 정리 리마인더 알림 | Developer |
+| 햅틱 피드백 & 애니메이션 폴리시 | UI/UX |
+
+### Phase 4 — Testing & Launch (2주)
+
+| 작업 | 담당 에이전트 |
+|------|--------------|
+| Unit / Widget / Integration 테스트 | Tester |
+| 성능 최적화 (대용량 갤러리 처리) | Developer + Architect |
+| App Store 심사 준비 | Infra + Docs |
+| README, CHANGELOG, 스토어 설명 작성 | Docs |
+| 최종 QA 및 버그 수정 | Tester + Developer |
+
+---
+
+## 10. 수익 모델
+
+> 현재 미정. MVP 출시 후 유저 반응을 보며 결정.
+
+**검토 중인 옵션:**
+
+| 모델 | 장점 | 단점 |
+|------|------|------|
+| 프리미엄 구독 | 안정적 수익, 높은 LTV | 결제 장벽으로 전환율 ↓ |
+| 일회성 유료 | 단순, 유저 신뢰 | 지속 수익 없음 |
+| 광고 + 프리미엄 | 무료 사용자 확보 | 사진 앱에 광고는 UX 저해 |
+
+**가능한 프리미엄 잠금 기능 (향후 결정):**
+- 무제한 정리 세션 (무료: 일 50장 제한)
+- 고급 필터 (대용량, 유사 사진 등)
+- 정리 통계 상세 리포트
+- 위젯 (홈 화면 스토리지 위젯)
+
+---
+
+## 11. 향후 확장 (Post-MVP)
+
+| 기능 | 설명 | 우선순위 |
+|------|------|----------|
+| AI 유사/중복 사진 감지 | 비슷한 사진을 그룹핑하여 최적 1장 추천 | 높음 |
+| 스마트 카테고리 | AI 기반 자동 분류 (음식, 풍경, 셀카, 문서 등) | 높음 |
+| 타임라인 뷰 | 월별 그리드 탐색, 기간별 정리 진입 | 중간 |
+| 앨범 정리 | 앨범 단위 정리 & 정렬 | 중간 |
+| 클라우드 연동 | iCloud/Google Photos 용량 분석 | 중간 |
+| 위젯 | iOS 홈 화면 위젯 (오늘의 정리, 스토리지 현황) | 중간 |
+| Android 출시 | 플랫폼 확장 | 높음 |
+| 공유 기능 | 정리 전/후 비교 공유 (SNS 바이럴) | 낮음 |
+
+---
+
+## 12. 성공 지표 (KPI)
+
+| 지표 | 목표 (출시 후 3개월) |
+|------|---------------------|
+| DAU | 1,000+ |
+| 세션당 평균 정리 사진 수 | 30장 이상 |
+| D7 리텐션 | 30% 이상 |
+| App Store 평점 | 4.5 이상 |
+| 평균 세션 시간 | 3분 이상 |
+| 총 정리된 사진 수 | 100만 장 |
+
+---
+
+## 13. 리스크 & 대응
+
+| 리스크 | 영향 | 대응 |
+|--------|------|------|
+| iOS 사진 권한 거부율 높음 | 앱 사용 불가 | 권한 필요성을 명확히 설명하는 온보딩 |
+| 대용량 갤러리 (10만+장) 성능 | 앱 느려짐/크래시 | 페이지네이션, 썸네일 캐싱, 백그라운드 스캔 |
+| 실수로 중요한 사진 삭제 | 유저 이탈, 부정적 리뷰 | 휴지통 30일 보관, Undo 기능, 삭제 확정 단계 |
+| App Store 심사 리젝 | 출시 지연 | 가이드라인 사전 확인, 권한 사용 근거 명확화 |
+| 유사 앱과 차별화 부족 | 유저 획득 어려움 | 스와이프 UX 차별화, 빠른 AI 기능 도입 |
+
+---
+
+## 14. 테스트 전략
+
+### 14.1 테스트 피라미드
+
+안정적이고 빠른 피드백 루프를 위해 아래 비중으로 테스트를 구성한다.
+
+| 레벨 | 비중 | 목적 | 속도 |
+|------|------|------|------|
+| **Unit Test** | 60% | 비즈니스 로직, Use Case, 유틸리티 검증 | 매우 빠름 |
+| **Widget Test** | 25% | 개별 위젯 렌더링 및 인터랙션 검증 | 빠름 |
+| **Integration Test** | 10% | 화면 간 플로우, 실제 플랫폼 연동 검증 | 느림 |
+| **Golden Test** | 5% | UI 스냅샷 비교, 디자인 회귀 방지 | 보통 |
+
+### 14.2 테스트 도구 & 패키지
+
+| 패키지 | 용도 |
+|--------|------|
+| `test` | Dart 유닛 테스트 |
+| `flutter_test` | 위젯 테스트 |
+| `mocktail` | Mock/Fake 생성 (코드 생성 불필요) |
+| `patrol` | Integration 테스트 (네이티브 인터랙션 지원) |
+| `golden_toolkit` | Golden 테스트 유틸리티 |
+| `fake_async` | 시간 기반 로직 테스트 |
+| `coverage` | 코드 커버리지 리포트 생성 |
+
+### 14.3 커버리지 목표
+
+**레이어별 최소 커버리지:**
+
+| 레이어 | 최소 커버리지 | 비고 |
+|--------|-------------|------|
+| Domain (Entities, Use Cases) | 80% | 핵심 비즈니스 로직 — 최우선 |
+| Data (Repositories, DataSources) | 70% | 외부 연동 경계 |
+| Presentation (Providers) | 60% | 상태 관리 로직 |
+| Presentation (Widgets) | 50% | 위젯 테스트 + Golden |
+| **전체** | **60%** | 프로젝트 전체 기준 |
+
+**단계적 커버리지 래칫 (Ratchet):**
+
+| Phase | 전체 커버리지 목표 | 비고 |
+|-------|------------------|------|
+| Phase 2 (Core Feature) | 40% | 핵심 로직 위주 테스트 시작 |
+| Phase 3 (Polish & Safety) | 50% | 안전망 로직 테스트 강화 |
+| Phase 4 (Testing & Launch) | 60% | 출시 전 최종 목표 달성 |
+
+> 한번 달성한 커버리지는 절대 내려가지 않는다 (래칫 정책). CI에서 커버리지 하락 시 빌드 실패 처리.
+
+### 14.4 테스트 디렉토리 구조
+
+소스 코드와 **1:1 미러링** 구조를 따른다.
+
+```
+test/
+├── domain/
+│   ├── entities/
+│   │   └── photo_test.dart              ← lib/domain/entities/photo.dart
+│   ├── usecases/
+│   │   └── start_cleaning_session_test.dart
+│   └── repositories/                     ← Repository 인터페이스 테스트 (contract)
+├── data/
+│   ├── repositories/
+│   │   └── photo_repository_impl_test.dart
+│   ├── datasources/
+│   │   └── local_photo_datasource_test.dart
+│   └── models/
+│       └── photo_model_test.dart
+├── presentation/
+│   ├── providers/
+│   │   └── cleaning_session_provider_test.dart
+│   └── widgets/
+│       └── swipe_card_test.dart
+├── helpers/
+│   ├── mocks.dart                        ← 공용 Mock 정의
+│   ├── fixtures.dart                     ← 테스트 픽스처 (샘플 데이터)
+│   └── pump_app.dart                     ← MaterialApp 래핑 헬퍼
+├── goldens/
+│   ├── swipe_card_golden_test.dart
+│   └── dashboard_golden_test.dart
+integration_test/
+├── onboarding_flow_test.dart
+├── cleaning_session_flow_test.dart
+└── helpers/
+    └── test_setup.dart
+```
+
+### 14.5 테스트 작성 규칙
+
+1. **AAA 패턴:** 모든 테스트는 Arrange → Act → Assert 3단계로 구성
+2. **파일 명명:** `_test.dart` 접미사 필수
+3. **테스트 명명:** `should [기대 결과] when [조건]` 형식
+   ```dart
+   test('should mark photo as deleted when swiped left', () { ... });
+   ```
+4. **group() 사용:** 관련 테스트를 논리적으로 그룹핑
+   ```dart
+   group('CleaningSession', () {
+     group('start', () { ... });
+     group('resume', () { ... });
+     group('complete', () { ... });
+   });
+   ```
+5. **Mock 원칙:** `mocktail` 사용, 외부 의존성만 Mock (Domain 내부는 실제 객체 사용)
+6. **단일 책임:** 하나의 테스트에 하나의 assertion (관련 assertion 그룹은 허용)
+7. **테스트 독립성:** 테스트 간 상태 공유 금지, `setUp`/`tearDown`으로 격리
+
+### 14.6 CI 연동
+
+| 트리거 | 실행 테스트 | 타임아웃 |
+|--------|-----------|----------|
+| PR 생성/업데이트 | Unit + Widget | 5분 |
+| main 브랜치 머지 | Unit + Widget + Integration | 15분 |
+| Nightly (매일 새벽 2시) | 전체 + 커버리지 리포트 | 30분 |
+| Release 태그 | 전체 + 실기기 테스트 | 45분 |
+
+**CI 파이프라인 상세:**
+- `dart analyze` + `dart format --set-exit-if-changed` 필수 통과
+- 테스트 실패 시 PR 머지 차단
+- 커버리지 리포트는 PR 코멘트로 자동 첨부
+- Nightly 실패 시 Slack/이메일 알림
+
+### 14.7 디바이스 테스트
+
+| 단계 | 대상 | 도구 |
+|------|------|------|
+| 개발 중 | iOS Simulator / Android Emulator | Xcode, Android Studio |
+| PR 검증 | CI 에뮬레이터 (GitHub Actions) | `macos-latest` + Simulator |
+| 릴리즈 전 | 실기기 테스트 | 수동 QA |
+| Post-MVP | Firebase Test Lab | 다기기 자동화 |
+
+**iOS 실기기 테스트 매트릭스:**
+
+| 기기 | 화면 크기 | 비고 |
+|------|----------|------|
+| iPhone SE (3rd) | 4.7" | 최소 지원 화면 |
+| iPhone 14 | 6.1" | 기본 대상 |
+| iPhone 14 Pro Max | 6.7" | 대형 화면 |
+| iPhone 15 Pro | 6.1" | 최신 기기 (Dynamic Island) |
+| iPhone 15 Pro Max | 6.7" | 최대 화면 |
+
+### 14.8 성능 테스트
+
+**벤치마크 기준:**
+
+| 시나리오 | 목표 | 측정 방법 |
+|----------|------|----------|
+| 갤러리 스캔 (1만 장) | 5초 이내 | `Stopwatch` + Integration Test |
+| 갤러리 스캔 (5만 장) | 15초 이내 | `Stopwatch` + Integration Test |
+| 스와이프 애니메이션 | 60fps 유지 | `FrameTimingSummary` |
+| 썸네일 로딩 | 200ms 이내 | `Timeline` 프로파일링 |
+| 앱 초기 로딩 (Cold Start) | 2초 이내 | 실기기 측정 |
+| 메모리 사용량 | 300MB 이하 | DevTools Memory 탭 |
+
+**메모리 누수 검사:**
+- DevTools Memory 탭으로 위젯 생성/폐기 사이클 확인
+- 대량 스와이프 후 메모리 그래프가 안정화되는지 검증
+- `LeakTracker`를 활용한 자동 누수 탐지
+
+### 14.9 접근성 테스트
+
+| 항목 | 기준 | 검증 방법 |
+|------|------|----------|
+| Semantics 라벨 | 모든 인터랙티브 요소에 label 제공 | `semantics` 위젯 테스트 |
+| Dynamic Type | iOS 텍스트 크기 변경 대응 | Accessibility Inspector |
+| 색상 대비 | WCAG AA (4.5:1 텍스트, 3:1 UI) | Contrast Checker |
+| 터치 영역 | 최소 48×48 dp | Layout Inspector |
+| Reduce Motion | 시스템 설정 존중, 애니메이션 최소화 | `MediaQuery.disableAnimations` |
+| VoiceOver / TalkBack | 주요 플로우 탐색 가능 | 수동 테스트 |
+
+### 14.10 플랫폼별 테스트 고려사항
+
+**iOS:**
+
+| 항목 | 테스트 포인트 |
+|------|-------------|
+| Limited Photo Access | 제한된 접근 시 UI 안내 + 선택 사진만 표시 |
+| Full Photo Access | 전체 갤러리 정상 스캔 |
+| iCloud 사진 최적화 | 원본 다운로드 필요 시 로딩 UX |
+| 백그라운드 전환 | 세션 상태 유지, 포그라운드 복귀 시 이어하기 |
+| 다크 모드 전환 | 실시간 테마 전환 대응 |
+
+**Android (Post-MVP):**
+
+| 항목 | 테스트 포인트 |
+|------|-------------|
+| Scoped Storage (API 30+) | `MediaStore` 접근 방식 검증 |
+| `READ_MEDIA_IMAGES` (API 33+) | 세분화된 미디어 권한 대응 |
+| 기기 파편화 | 다양한 해상도/DPI/제조사별 테스트 |
+| 권한 "Don't ask again" | 설정 화면 유도 UX |
+| 앱 강제 종료 후 재시작 | 세션 복구 검증 |
+
+---
+
+## 15. 스토어 배포 전략
+
+### 15.1 환경 구성
+
+3개 환경을 분리하여 운영한다.
+
+| 환경 | 번들 ID | 용도 | 아이콘 |
+|------|---------|------|--------|
+| **dev** | `com.pickture.app.dev` | 개발/디버그 | 기본 아이콘 + 🟢 Dev 배너 |
+| **staging** | `com.pickture.app.staging` | TestFlight/내부 테스트 | 기본 아이콘 + 🟡 Staging 배너 |
+| **prod** | `com.pickture.app` | App Store 배포 | 정식 아이콘 |
+
+**환경 주입 방식:**
+```bash
+# 개발
+flutter run --dart-define=ENV=dev
+
+# 스테이징
+flutter build ipa --dart-define=ENV=staging
+
+# 프로덕션
+flutter build ipa --dart-define=ENV=prod --release
+```
+
+- 각 환경은 동일 기기에 동시 설치 가능 (별도 번들 ID)
+- 환경별 API 엔드포인트, 로깅 레벨, Feature flag 분리
+
+### 15.2 빌드 & 서명
+
+**iOS:**
+
+| 단계 | 도구 | 설명 |
+|------|------|------|
+| 인증서 관리 | Fastlane `match` | Git 저장소 기반 인증서/프로비저닝 공유 |
+| 빌드 | `flutter build ipa` | Release 모드 IPA 생성 |
+| TestFlight 업로드 | Fastlane `pilot` | 자동 업로드 + 빌드 번호 자동 증가 |
+| App Store 제출 | Fastlane `deliver` | 메타데이터 + 스크린샷 포함 제출 |
+
+**Android (Post-MVP):**
+
+| 단계 | 도구 | 설명 |
+|------|------|------|
+| 서명 키 관리 | GitHub Secrets | Keystore 파일 + 비밀번호 암호화 저장 |
+| 빌드 | `flutter build appbundle` | AAB 포맷 필수 |
+| Play Store 업로드 | Fastlane `supply` | Internal 트랙 자동 업로드 |
+
+### 15.3 CI/CD 워크플로우
+
+4개의 GitHub Actions 워크플로우로 구성한다.
+
+| 파일 | 트리거 | 실행 내용 |
+|------|--------|----------|
+| `pr-check.yml` | PR 생성/업데이트 | `dart analyze` + `dart format` 검사 + Unit/Widget 테스트 |
+| `staging-deploy.yml` | main 브랜치 머지 | 빌드 → TestFlight 자동 업로드 |
+| `release.yml` | `v*` 태그 푸시 | 빌드 → App Store 제출 + GitHub Release 생성 |
+| `nightly.yml` | cron (매일 새벽 2시) | 전체 테스트 + 커버리지 리포트 + Slack 알림 |
+
+**파이프라인 흐름:**
+
+```
+PR 생성 → pr-check (분석/포맷/테스트)
+  → 리뷰 & 승인
+    → main 머지 → staging-deploy (TestFlight)
+      → 내부 테스트 확인
+        → 릴리즈 태그 → release (App Store 제출)
+```
+
+### 15.4 iOS App Store 배포
+
+**TestFlight 운영:**
+
+| 그룹 | 대상 | 자동 배포 |
+|------|------|----------|
+| 내부 테스터 | 개발팀 (최대 25명) | main 머지 시 자동 |
+| 외부 테스터 | 베타 유저 (최대 10,000명) | 수동 승인 후 배포 |
+
+**App Store 심사 대응:**
+
+| 항목 | 대응 전략 |
+|------|----------|
+| `NSPhotoLibraryUsageDescription` | "사진을 스와이프하여 정리하기 위해 갤러리 접근이 필요합니다" — 명확한 사유 기재 |
+| Limited Photo Access (iOS 14+) | 제한된 접근 허용 시에도 선택된 사진만으로 정리 가능하도록 구현 |
+| Privacy Nutrition Label | 수집 데이터 없음 (로컬 전용 앱). Photos 접근 목적만 명시 |
+| 최소 기능 기준 (4.2) | 스와이프 정리 + 대시보드 + 휴지통으로 충분한 기능 제공 확인 |
+| 백그라운드 사용 | 불필요한 백그라운드 활동 없음 — 심사 리젝 요인 제거 |
+| 사진 삭제 확인 | 삭제 전 사용자 확인 단계 필수 (실수 방지) |
+
+**메타데이터:**
+
+| 항목 | 내용 |
+|------|------|
+| 앱 이름 | Pickture — 스와이프 갤러리 정리 |
+| 부제 | 스와이프 한 번으로 갤러리를 깔끔하게 |
+| 카테고리 | 사진 및 비디오 (기본), 유틸리티 (보조) |
+| 키워드 | 사진정리, 갤러리, 스토리지, 용량확보, 사진삭제, 중복사진, 갤러리청소, 스와이프, 포토, 클리너 |
+| 연령 등급 | 4+ (부적절한 콘텐츠 없음) |
+
+**스크린샷 구성 (5장):**
+
+| 순서 | 화면 | 캡션 |
+|------|------|------|
+| 1 | 스와이프 정리 화면 | "스와이프 한 번으로 빠르게 정리" |
+| 2 | 스토리지 대시보드 | "내 갤러리 현황을 한눈에" |
+| 3 | 세션 요약 | "정리 성과를 바로 확인" |
+| 4 | 삭제 대기열 | "실수 걱정 없는 안전한 삭제" |
+| 5 | 설정 / 다크 모드 | "나에게 맞는 커스터마이징" |
+
+**앱 미리보기 영상:**
+- 30초 이내
+- 스와이프 정리 → 세션 요약 → 대시보드 확인 흐름
+- 자막 포함 (한국어 + 영어)
+
+**버전 넘버링:**
+
+```
+형식: Major.Minor.Patch+Build
+예시: 1.0.0+1, 1.1.0+15, 1.1.1+16
+
+Major: 대규모 기능 변경 또는 비호환 변경
+Minor: 새 기능 추가
+Patch: 버그 수정
+Build: CI에서 자동 증가
+```
+
+- Conventional Commits 기반 CHANGELOG 자동 생성
+- 매 릴리즈 시 `CHANGELOG.md` 업데이트
+
+### 15.5 Android Google Play (Post-MVP)
+
+iOS 안정화 후 Android 배포를 진행한다.
+
+**트랙 운영:**
+
+| 트랙 | 대상 | 비고 |
+|------|------|------|
+| Internal Testing | 개발팀 (최대 100명) | 심사 없이 즉시 배포 |
+| Closed Testing (Alpha) | 초대된 테스터 | Play Console에서 관리 |
+| Open Testing (Beta) | 누구나 참여 가능 | 스토어에 "베타" 표시 |
+| Production | 전체 사용자 | 단계적 출시 지원 |
+
+**필수 요구사항:**
+- AAB (Android App Bundle) 포맷 필수
+- Target SDK: 최신 Android API (Google Play 정책 준수)
+- 64-bit 지원 필수
+- 앱 서명: Google Play App Signing 사용
+
+**단계적 출시:**
+- 5% → 20% → 50% → 100% 순차 확대
+- 각 단계에서 크래시율/ANR 모니터링 후 확대 결정
+- 문제 발생 시 즉시 출시 중단 (Halt rollout)
+
+### 15.6 OTA 업데이트
+
+**MVP:**
+- `upgrader` 패키지를 사용한 인앱 업데이트 안내
+- 강제 업데이트: 최소 지원 버전 미달 시 앱 사용 차단 + 스토어 이동
+- 권장 업데이트: 새 버전 알림 + "나중에" 옵션
+
+**Post-MVP 검토:**
+- **Shorebird** (Flutter OTA): 심사 없이 Dart 코드 핫패치
+- 적용 시 네이티브 코드 변경 없는 UI/로직 수정에 한정
+- Apple 정책 준수 여부 지속 모니터링
+
+### 15.7 릴리즈 주기
+
+| 유형 | 주기 | 설명 |
+|------|------|------|
+| **정기 릴리즈** | 격주 (2주) | 새 기능 + 개선사항 |
+| **핫픽스** | 즉시 | 크리티컬 버그 수정 |
+| **긴급 패치** | 24시간 이내 | 보안 취약점, 데이터 손실 이슈 |
+
+**릴리즈 체크리스트:**
+
+- [ ] 모든 테스트 통과 (Unit + Widget + Integration)
+- [ ] 커버리지 목표 달성 (래칫 통과)
+- [ ] TestFlight에서 내부 테스트 완료
+- [ ] 성능 벤치마크 통과
+- [ ] 접근성 테스트 통과
+- [ ] CHANGELOG 업데이트
+- [ ] 스토어 메타데이터 업데이트 (필요 시)
+- [ ] 스크린샷 업데이트 (UI 변경 시)
+- [ ] 릴리즈 노트 작성
+- [ ] 팀 내 릴리즈 공지
+
+### 15.8 롤백 전략
+
+| 상황 | 대응 |
+|------|------|
+| **심사 중 문제 발견** | App Store Connect에서 빌드 취소 |
+| **출시 후 크리티컬 버그** | 판매 중단 (Remove from Sale) → 핫픽스 빌드 긴급 제출 |
+| **특정 버전 문제** | 이전 안정 빌드 재활성화 (Re-enable previous build) |
+| **Android 단계적 출시 중 문제** | 출시 중단 (Halt rollout) → 이전 버전 유지 |
+
+**데이터 안전 장치:**
+- 로컬 DB 마이그레이션에는 반드시 롤백 스크립트 포함
+- 마이그레이션 실패 시 이전 스키마로 자동 복원
+- Feature flag로 신규 기능 원격 비활성화 가능
+
+### 15.9 모니터링
+
+**도구:**
+
+| 도구 | 용도 |
+|------|------|
+| Firebase Crashlytics | 크래시 리포트, 비치명적 오류 추적 |
+| Firebase Analytics | 사용자 행동 분석, 이벤트 트래킹 |
+| Firebase Performance | 앱 성능 모니터링 (시작 시간, 네트워크 등) |
+
+**알림 기준:**
+
+| 지표 | 경고 기준 | 긴급 기준 |
+|------|----------|----------|
+| 크래시율 | 0.5% 이상 | 1.0% 이상 |
+| ANR 비율 (Android) | 0.2% 이상 | 0.5% 이상 |
+| 앱 시작 시간 | 3초 초과 | 5초 초과 |
+
+**핵심 이벤트 트래킹:**
+
+| 이벤트 | 설명 | 파라미터 |
+|--------|------|----------|
+| `cleaning_session_start` | 정리 세션 시작 | filter_type, is_resume |
+| `cleaning_session_end` | 정리 세션 종료 | total_reviewed, total_deleted, duration_sec |
+| `swipe_decision` | 개별 스와이프 판단 | decision (keep/delete/favorite), photo_type |
+| `permission_result` | 사진 권한 요청 결과 | status (granted/limited/denied) |
+| `trash_action` | 휴지통 액션 | action (restore/permanent_delete/empty_all) |
+| `onboarding_complete` | 온보딩 완료 | skip_count, total_step |
+| `storage_analysis_view` | 대시보드 조회 | total_photos, total_size_mb |
+| `daily_goal_achieved` | 일일 목표 달성 | goal_count, actual_count |
