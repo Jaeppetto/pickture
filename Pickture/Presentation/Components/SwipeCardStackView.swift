@@ -43,14 +43,14 @@ struct SwipeCardStackView: View {
             if let thumbnail = thumbnails[photo.id] {
                 Image(uiImage: thumbnail)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
             } else {
                 Rectangle()
                     .fill(AppColors.surface)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .clipped()
+        .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large))
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
         .scaleEffect(1 - CGFloat(stackOffset) * 0.05)

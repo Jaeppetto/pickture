@@ -136,12 +136,8 @@ struct CleaningActiveView: View {
             Button("세션 완료") {
                 Task { await viewModel.completeSession() }
             }
-            .font(AppTypography.bodySemibold)
-            .foregroundStyle(.white)
+            .glassPrimaryButton()
             .padding(.horizontal, AppSpacing.xxl)
-            .padding(.vertical, AppSpacing.sm)
-            .background(AppColors.primaryGradient)
-            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
         }
     }
 }

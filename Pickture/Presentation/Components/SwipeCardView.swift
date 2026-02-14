@@ -33,7 +33,7 @@ struct SwipeCardView: View {
             if let thumbnail {
                 Image(uiImage: thumbnail)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
             } else {
                 Rectangle()
                     .fill(AppColors.surface)
@@ -43,7 +43,7 @@ struct SwipeCardView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .clipped()
+        .background(AppColors.surface)
     }
 
     // MARK: - Direction Overlay

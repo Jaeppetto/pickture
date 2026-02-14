@@ -23,6 +23,10 @@ final class CleanViewModel {
     private(set) var selectedMetadataPhoto: Photo?
     private(set) var hasMorePhotos = true
 
+    // MARK: - Offset
+
+    private var initialOffset: Int = 0
+
     // MARK: - Undo
 
     private var undoStack: [(Photo, Decision)] = []
@@ -74,26 +78,28 @@ final class CleanViewModel {
         screenState = .filterSelection
     }
 
-    func startNewSession(filter: CleaningFilter? = nil) async {
-        await startCleaning(filter: filter, resuming: false)
+    func startNewSession(filter: CleaningFilter? = nil, startOffset: Int = 0) async {
+        await startCleaning(filter: filter, resuming: false, startOffset: startOffset)
     }
 
     func applyPendingFilter(_ filter: CleaningFilter?) async {
         await startCleaning(filter: filter, resuming: false)
     }
 
-    private func startCleaning(filter: CleaningFilter?, resuming: Bool) async {
+    private func startCleaning(filter: CleaningFilter?, resuming: Bool, startOffset: Int = 0) async {
         do {
             if !resuming {
                 currentSession = try await startSessionUseCase.execute(filter: filter)
                 currentIndex = 0
+                initialOffset = startOffset
                 photos = []
                 thumbnails = [:]
                 undoStack = []
                 hasMorePhotos = true
             }
 
-            totalPhotoCount = try await photoRepository.fetchPhotoCount(filter: filter)
+            let fullCount = try await photoRepository.fetchPhotoCount(filter: filter)
+            totalPhotoCount = max(0, fullCount - initialOffset)
             await loadNextPage(filter: filter)
             screenState = .cleaning
         } catch {
@@ -215,7 +221,7 @@ final class CleanViewModel {
         defer { isLoadingPhotos = false }
 
         do {
-            let offset = photos.count
+            let offset = initialOffset + photos.count
             let newPhotos = try await photoRepository.fetchPhotos(
                 offset: offset,
                 limit: pageSize,

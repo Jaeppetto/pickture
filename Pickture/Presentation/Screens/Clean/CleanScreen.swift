@@ -5,9 +5,11 @@ struct CleanScreen: View {
     @State var permissionViewModel: PhotoPermissionViewModel
     var navigationCoordinator: NavigationCoordinator
     var deletionQueueViewModelFactory: () -> DeletionQueueViewModel
+    var photoRepository: any PhotoRepositoryProtocol
 
     @State private var showFilterSheet = false
     @State private var showDeletionQueue = false
+    @State private var showStartPicker = false
 
     var body: some View {
         NavigationStack {
@@ -44,6 +46,11 @@ struct CleanScreen: View {
         }
         .sheet(isPresented: $showDeletionQueue) {
             DeletionQueueScreen(viewModel: deletionQueueViewModelFactory())
+        }
+        .sheet(isPresented: $showStartPicker) {
+            PhotoStartPickerView(photoRepository: photoRepository) { offset in
+                Task { await viewModel.startNewSession(startOffset: offset) }
+            }
         }
     }
 
@@ -96,12 +103,7 @@ struct CleanScreen: View {
                         Image(systemName: "sparkles")
                         Text("정리 시작")
                     }
-                    .font(AppTypography.bodySemibold)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, AppSpacing.md)
-                    .background(AppColors.primaryGradient)
-                    .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+                    .glassPrimaryButton()
                 }
 
                 Button {
@@ -110,6 +112,17 @@ struct CleanScreen: View {
                     Text("필터 없이 바로 시작")
                         .font(AppTypography.bodyMedium)
                         .foregroundStyle(AppColors.primary)
+                }
+
+                Button {
+                    showStartPicker = true
+                } label: {
+                    HStack(spacing: AppSpacing.xxs) {
+                        Image(systemName: "photo.on.rectangle")
+                        Text("시작 위치 선택하기")
+                    }
+                    .font(AppTypography.bodyMedium)
+                    .foregroundStyle(AppColors.textSecondary)
                 }
             }
             .padding(.horizontal, AppSpacing.xxl)

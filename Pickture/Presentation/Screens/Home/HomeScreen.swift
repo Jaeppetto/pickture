@@ -113,12 +113,7 @@ struct HomeScreen: View {
                 Image(systemName: "sparkles")
                 Text("정리 시작")
             }
-            .font(AppTypography.bodySemibold)
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.md)
-            .background(AppColors.primaryGradient)
-            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+            .glassPrimaryButton()
         }
     }
 }

@@ -10,7 +10,7 @@ struct MainTabView: View {
         )) {
             HomeScreen(
                 viewModel: container.makeHomeViewModel(),
-                permissionViewModel: container.makePhotoPermissionViewModel()
+                permissionViewModel: container.photoPermissionViewModel
             )
             .tabItem {
                 Label("홈", systemImage: "house.fill")
@@ -19,11 +19,12 @@ struct MainTabView: View {
 
             CleanScreen(
                 viewModel: container.makeCleanViewModel(),
-                permissionViewModel: container.makePhotoPermissionViewModel(),
+                permissionViewModel: container.photoPermissionViewModel,
                 navigationCoordinator: container.navigationCoordinator,
                 deletionQueueViewModelFactory: { [container] in
                     container.makeDeletionQueueViewModel()
-                }
+                },
+                photoRepository: container.photoRepository
             )
             .tabItem {
                 Label("정리", systemImage: "sparkles")

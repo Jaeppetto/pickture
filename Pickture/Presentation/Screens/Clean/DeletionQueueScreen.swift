@@ -8,6 +8,7 @@ struct DeletionQueueScreen: View {
         GridItem(.flexible(), spacing: 2),
         GridItem(.flexible(), spacing: 2),
         GridItem(.flexible(), spacing: 2),
+        GridItem(.flexible(), spacing: 2),
     ]
 
     var body: some View {
@@ -74,53 +75,46 @@ struct DeletionQueueScreen: View {
         return Button {
             viewModel.toggleSelection(id: item.id)
         } label: {
-            ZStack(alignment: .topTrailing) {
-                if let thumbnail = viewModel.thumbnails[item.photoId] {
-                    Image(uiImage: thumbnail)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(minWidth: 0, maxWidth: .infinity)
-                        .aspectRatio(1, contentMode: .fill)
-                        .clipped()
-                } else {
-                    Rectangle()
-                        .fill(AppColors.surface)
-                        .aspectRatio(1, contentMode: .fill)
-                        .overlay {
-                            Image(systemName: "photo")
-                                .foregroundStyle(AppColors.textSecondary)
-                        }
-                }
-
-                // Selection indicator
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 22))
-                    .foregroundStyle(isSelected ? AppColors.primary : .white)
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                    .padding(6)
-
-                // File size label
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Text(item.fileSize.formattedBytesShort)
-                            .font(AppTypography.monoCaption)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 4)
-                            .padding(.vertical, 2)
-                            .background(.black.opacity(0.5))
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .padding(4)
+            Color.clear
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    if let thumbnail = viewModel.thumbnails[item.photoId] {
+                        Image(uiImage: thumbnail)
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        Rectangle()
+                            .fill(AppColors.surface)
+                            .overlay {
+                                Image(systemName: "photo")
+                                    .foregroundStyle(AppColors.textSecondary)
+                            }
                     }
                 }
-            }
-            .overlay {
-                if isSelected {
-                    RoundedRectangle(cornerRadius: 2)
-                        .stroke(AppColors.primary, lineWidth: 3)
+                .clipped()
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 20))
+                        .foregroundStyle(isSelected ? AppColors.primary : .white)
+                        .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
+                        .padding(4)
                 }
-            }
+                .overlay(alignment: .bottomTrailing) {
+                    Text(item.fileSize.formattedBytesShort)
+                        .font(AppTypography.monoCaption)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                        .background(.black.opacity(0.5))
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                        .padding(4)
+                }
+                .overlay {
+                    if isSelected {
+                        RoundedRectangle(cornerRadius: 2)
+                            .stroke(AppColors.primary, lineWidth: 3)
+                    }
+                }
         }
         .buttonStyle(.plain)
     }
@@ -161,12 +155,7 @@ struct DeletionQueueScreen: View {
                     }
                 } label: {
                     Text(viewModel.hasSelection ? "선택 삭제" : "전체 삭제")
-                        .font(AppTypography.bodySemibold)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, AppSpacing.sm)
-                        .background(AppColors.deleteGradient)
-                        .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+                        .glassDestructiveButton()
                 }
                 .disabled(viewModel.isDeleting)
             }

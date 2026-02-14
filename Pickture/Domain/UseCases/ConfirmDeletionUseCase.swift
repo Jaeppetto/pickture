@@ -22,12 +22,9 @@ final class ConfirmDeletionUseCase: Sendable {
     func executeSelected(ids: Set<String>) async throws -> DeletionResult {
         let items = try await trashRepository.getTrashItems()
         let selectedItems = items.filter { ids.contains($0.id) }
-        var freedBytes: Int64 = 0
+        let freedBytes = selectedItems.reduce(Int64(0)) { $0 + $1.fileSize }
 
-        for item in selectedItems {
-            try await trashRepository.permanentlyDelete(id: item.id)
-            freedBytes += item.fileSize
-        }
+        try await trashRepository.permanentlyDeleteBatch(ids: ids)
 
         return DeletionResult(deletedCount: selectedItems.count, freedBytes: freedBytes)
     }

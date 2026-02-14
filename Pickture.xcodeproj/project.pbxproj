@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -47,6 +47,7 @@
 		788F46D5D917BE9F63F2CA46 /* TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB19833A499933BD62DD9E3 /* TestFixtures.swift */; };
 		7953024B574A175B81DE126C /* InsightCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2666DFCCB19500D286F7715A /* InsightCardView.swift */; };
 		7AA584BC19B2C883A4C90AC5 /* AppSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BB4BD1F3C77C781112F383 /* AppSpacing.swift */; };
+		7B9E66BFE7EBC619CB341955 /* PhotoStartPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DB49F1A54CA70E989E60F6 /* PhotoStartPickerView.swift */; };
 		7F1198D6473B4ED19F41880B /* CleaningSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDDCEAA39D123EC5D5DCD8A /* CleaningSession.swift */; };
 		80CB8AB39D9F2C426C2CFDCE /* UserPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7432258D7DF84C8EE855DA2 /* UserPreference.swift */; };
 		81F30EFCBDE17CF738E001A9 /* CleanScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A44E5E81F1A87308D6B76D /* CleanScreen.swift */; };
@@ -111,6 +112,7 @@
 		19627C734F1AAF80C38F0EEE /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		1A5D55DA8310177BA0AE10E3 /* ThemeMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeMode.swift; sourceTree = "<group>"; };
 		2666DFCCB19500D286F7715A /* InsightCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightCardView.swift; sourceTree = "<group>"; };
+		26DB49F1A54CA70E989E60F6 /* PhotoStartPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStartPickerView.swift; sourceTree = "<group>"; };
 		28AE19D9B9C3BC8AD565DB9E /* TrashItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashItem.swift; sourceTree = "<group>"; };
 		2EC31830984EBDEB0564D5DF /* StorageAnalysisRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAnalysisRepositoryProtocol.swift; sourceTree = "<group>"; };
 		302C8A90E14F21A41D078326 /* CleaningSessionRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleaningSessionRepositoryProtocol.swift; sourceTree = "<group>"; };
@@ -121,7 +123,7 @@
 		42A44E5E81F1A87308D6B76D /* CleanScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanScreen.swift; sourceTree = "<group>"; };
 		42B6050AA24E79A0438ED3F0 /* AnimatedCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedCounterView.swift; sourceTree = "<group>"; };
 		433B993C6EED4F54F158A78A /* PicktureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktureApp.swift; sourceTree = "<group>"; };
-		49AD798B21009E7DF4896D3A /* Pickture.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pickture.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49AD798B21009E7DF4896D3A /* Pickture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pickture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E219388F55A8DCDAC2D80B7 /* Coordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinate.swift; sourceTree = "<group>"; };
 		4FD37D567217F7AA5810E3D2 /* CleaningDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleaningDecision.swift; sourceTree = "<group>"; };
 		504A4C674B0C528D257860BA /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 				2666DFCCB19500D286F7715A /* InsightCardView.swift */,
 				BA30567C45CF77CC8FB216C3 /* PhotoMetadataOverlay.swift */,
 				72883D701670010219F7BC10 /* PhotoPermissionView.swift */,
+				26DB49F1A54CA70E989E60F6 /* PhotoStartPickerView.swift */,
 				34EC6BEC15E6FDAD980D0FC2 /* StorageChartView.swift */,
 				406835205E299FBA0AC68C2D /* SwipeCardStackView.swift */,
 				019AF73D70FA41A11B3B5E50 /* SwipeCardView.swift */,
@@ -584,7 +587,6 @@
 			);
 			mainGroup = 9032081AF7D414DEB4BED2BB;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -663,6 +665,7 @@
 				AE54FFF2FA9113C96D3A0CD1 /* PhotoPermissionViewModel.swift in Sources */,
 				0E7C4802830D519000507FB8 /* PhotoRepository.swift in Sources */,
 				2F30A33C47E843C2229FB228 /* PhotoRepositoryProtocol.swift in Sources */,
+				7B9E66BFE7EBC619CB341955 /* PhotoStartPickerView.swift in Sources */,
 				5C0C4976DB2BC771EE13F05C /* PhotoType.swift in Sources */,
 				026296A5AB83D6C7B9D796C5 /* PicktureApp.swift in Sources */,
 				5751D45FE17055D50C3177D2 /* ProcessSwipeDecisionUseCase.swift in Sources */,
@@ -724,7 +727,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.pickture.app.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaeppetto.pickture.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pickture.app/Pickture";
@@ -805,7 +808,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.pickture.app.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaeppetto.pickture.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pickture.app/Pickture";
@@ -819,6 +822,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7QU4Q5G6MC;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Pickture/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -827,7 +831,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.pickture.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaeppetto.pickture;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -899,6 +903,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7QU4Q5G6MC;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Pickture/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -907,7 +912,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.pickture.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaeppetto.pickture;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -925,7 +930,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.pickture.app.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaeppetto.pickture.uitests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Pickture;
@@ -942,7 +947,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.pickture.app.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaeppetto.pickture.uitests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Pickture;

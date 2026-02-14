@@ -33,6 +33,20 @@ final class TrashRepository: TrashRepositoryProtocol, @unchecked Sendable {
         try await localStorage.removeTrashItem(id: id)
     }
 
+    func permanentlyDeleteBatch(ids: Set<String>) async throws {
+        let items = await localStorage.loadTrashItems()
+        let selected = items.filter { ids.contains($0.id) }
+        let photoIds = selected.map(\.photoId)
+
+        if !photoIds.isEmpty {
+            try await photoDataSource.deleteAssets(identifiers: photoIds)
+        }
+
+        for id in ids {
+            try await localStorage.removeTrashItem(id: id)
+        }
+    }
+
     func emptyTrash() async throws {
         let items = await localStorage.loadTrashItems()
         let photoIds = items.map(\.photoId)

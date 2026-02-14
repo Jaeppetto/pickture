@@ -43,16 +43,11 @@ struct PhotoPermissionView<Content: View>: View {
                 HStack(spacing: AppSpacing.xs) {
                     if viewModel.isRequesting {
                         ProgressView()
-                            .tint(.white)
+                            .tint(AppColors.primary)
                     }
                     Text("접근 허용하기")
-                        .font(AppTypography.bodySemibold)
                 }
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, AppSpacing.md)
-                .background(AppColors.primaryGradient)
-                .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+                .glassPrimaryButton()
             }
             .disabled(viewModel.isRequesting)
             .padding(.horizontal, AppSpacing.xxl)
@@ -84,12 +79,7 @@ struct PhotoPermissionView<Content: View>: View {
                 viewModel.openSettings()
             } label: {
                 Text("설정으로 이동")
-                    .font(AppTypography.bodySemibold)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, AppSpacing.md)
-                    .background(AppColors.primaryGradient)
-                    .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+                    .glassPrimaryButton()
             }
             .padding(.horizontal, AppSpacing.xxl)
 

@@ -63,11 +63,13 @@ final class AppContainer {
         ConfirmDeletionUseCase(trashRepository: trashRepository)
     }
 
-    // MARK: - ViewModel Factories
+    // MARK: - Shared ViewModels
 
-    func makePhotoPermissionViewModel() -> PhotoPermissionViewModel {
-        PhotoPermissionViewModel(photoRepository: photoRepository)
-    }
+    private(set) lazy var photoPermissionViewModel = PhotoPermissionViewModel(
+        photoRepository: photoRepository
+    )
+
+    // MARK: - ViewModel Factories
 
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(

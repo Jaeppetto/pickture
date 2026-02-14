@@ -5,6 +5,7 @@ protocol TrashRepositoryProtocol: Sendable {
     func getTrashItems() async throws -> [TrashItem]
     func restoreFromTrash(id: String) async throws
     func permanentlyDelete(id: String) async throws
+    func permanentlyDeleteBatch(ids: Set<String>) async throws
     func emptyTrash() async throws
     func removeExpiredItems() async throws -> Int
     func getTrashStorageBytes() async throws -> Int64

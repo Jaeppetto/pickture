@@ -61,23 +61,13 @@ struct SessionSummaryView: View {
                                 Image(systemName: "trash")
                                 Text("삭제 대기열 확인 (\(session.totalDeleted))")
                             }
-                            .font(AppTypography.bodyMedium)
-                            .foregroundStyle(AppColors.delete)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, AppSpacing.sm)
-                            .background(AppColors.delete.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+                            .glassDestructiveButton()
                         }
                     }
 
                     Button(action: onDone) {
                         Text("완료")
-                            .font(AppTypography.bodySemibold)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, AppSpacing.md)
-                            .background(AppColors.primaryGradient)
-                            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
+                            .glassPrimaryButton()
                     }
                 }
                 .padding(.horizontal, AppSpacing.xl)
