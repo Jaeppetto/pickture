@@ -15,12 +15,6 @@ struct CleaningActiveView: View {
                 .padding(.top, AppSpacing.xs)
             }
 
-            if viewModel.currentIndex < viewModel.photos.count {
-                topStatusBar
-                    .padding(.horizontal, AppSpacing.md)
-                    .padding(.top, AppSpacing.sm)
-            }
-
             // Card stack
             ZStack {
                 if viewModel.currentIndex < viewModel.photos.count {
@@ -30,14 +24,10 @@ struct CleaningActiveView: View {
                         thumbnails: viewModel.thumbnails,
                         onSwiped: { decision in
                             Task { await viewModel.processSwipe(decision) }
-                        },
-                        onTapped: { photo in
-                            viewModel.showMetadata(for: photo)
                         }
                     )
                 } else if viewModel.isLoadingPhotos {
-                    ProgressView("사진 로딩 중...")
-                        .foregroundStyle(AppColors.textSecondary)
+                    cardSkeleton
                 } else {
                     emptyState
                 }
@@ -49,63 +39,9 @@ struct CleaningActiveView: View {
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.bottom, AppSpacing.md)
         }
-        .overlay {
-            if let photo = viewModel.selectedMetadataPhoto {
-                PhotoMetadataOverlay(photo: photo) {
-                    viewModel.hideMetadata()
-                }
-                .transition(.opacity)
-            }
-        }
-        .animation(.easeInOut(duration: AppConstants.Animation.quickDuration), value: viewModel.selectedMetadataPhoto != nil)
     }
 
     // MARK: - Action Bar
-
-    private var topStatusBar: some View {
-        HStack(spacing: AppSpacing.xs) {
-            Image(systemName: "shuffle")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(AppColors.textPrimary)
-
-            Spacer()
-
-            Text(captureTimeText)
-                .font(AppTypography.captionMedium)
-                .foregroundStyle(AppColors.textSecondary)
-
-            Spacer()
-
-            HStack(spacing: AppSpacing.xxxs) {
-                Image(systemName: "photo")
-                Text("\(remainingCount)")
-            }
-            .font(AppTypography.captionMedium)
-            .foregroundStyle(AppColors.textPrimary)
-        }
-        .padding(.horizontal, AppSpacing.sm)
-        .padding(.vertical, AppSpacing.xs)
-        .background(AppColors.surface, in: Capsule())
-        .overlay {
-            Capsule().stroke(AppColors.cardBorder, lineWidth: 1)
-        }
-    }
-
-    private var remainingCount: Int {
-        max(0, viewModel.photos.count - viewModel.currentIndex)
-    }
-
-    private var captureTimeText: String {
-        guard viewModel.currentIndex < viewModel.photos.count else { return "--:--" }
-        return Self.timeFormatter.string(from: viewModel.photos[viewModel.currentIndex].createdAt)
-    }
-
-    private static let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
 
     private var actionBar: some View {
         HStack(spacing: AppSpacing.lg) {
@@ -118,10 +54,6 @@ struct CleaningActiveView: View {
             }
             .opacity(viewModel.canUndo ? 1 : 0.35)
             .disabled(!viewModel.canUndo)
-
-            actionButton(icon: "star.fill", color: AppColors.favorite, size: 40) {
-                Task { await viewModel.favoriteCurrentPhoto() }
-            }
 
             actionButton(icon: "checkmark", color: AppColors.keep, size: 44) {
                 Task { await viewModel.keepCurrentPhoto() }
@@ -154,6 +86,20 @@ struct CleaningActiveView: View {
                 .overlay(Circle().stroke(.white.opacity(0.08), lineWidth: 1))
         }
         .disabled(viewModel.currentIndex >= viewModel.photos.count)
+    }
+
+    // MARK: - Card Skeleton
+
+    private var cardSkeleton: some View {
+        RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+            .fill(AppColors.surface)
+            .aspectRatio(3.0 / 4.0, contentMode: .fit)
+            .overlay {
+                RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+                    .strokeBorder(AppColors.cardBorder, lineWidth: 1)
+            }
+            .padding(.horizontal, AppSpacing.lg)
+            .shimmer()
     }
 
     // MARK: - Empty State

@@ -6,20 +6,6 @@ struct SettingsScreen: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("테마") {
-                    Picker("화면 모드", selection: Binding(
-                        get: { viewModel.preferences.themeMode },
-                        set: { newValue in
-                            Task { await viewModel.updateThemeMode(newValue) }
-                        }
-                    )) {
-                        Text("시스템").tag(ThemeMode.system)
-                        Text("라이트").tag(ThemeMode.light)
-                        Text("다크").tag(ThemeMode.dark)
-                    }
-                    .tint(AppColors.chrome)
-                }
-
                 Section("정리") {
                     Toggle("햅틱 피드백", isOn: Binding(
                         get: { viewModel.preferences.hapticEnabled },
@@ -27,6 +13,21 @@ struct SettingsScreen: View {
                             Task { await viewModel.updateHapticEnabled(newValue) }
                         }
                     ))
+                    .tint(AppColors.chrome)
+                }
+
+                Section("언어") {
+                    Picker("앱 언어", selection: Binding(
+                        get: { viewModel.preferences.locale },
+                        set: { newValue in
+                            Task { await viewModel.updateLocale(newValue) }
+                        }
+                    )) {
+                        Text("한국어").tag("ko")
+                        Text("English").tag("en")
+                        Text("日本語").tag("ja")
+                        Text("中文").tag("zh-Hans")
+                    }
                     .tint(AppColors.chrome)
                 }
 

@@ -4,13 +4,12 @@ struct SwipeCardView: View {
     let photo: Photo
     let thumbnail: UIImage?
     let onSwiped: (Decision) -> Void
-    let onTapped: () -> Void
 
     @State private var offset: CGSize = .zero
     @State private var isRemoved = false
+    @State private var appeared = false
 
     private let swipeThreshold: CGFloat = 120
-    private let verticalThreshold: CGFloat = -100
     private let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
 
     var body: some View {
@@ -27,12 +26,18 @@ struct SwipeCardView: View {
             shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
+        .scaleEffect(appeared ? 1.0 : 0.965)
+        .offset(y: appeared ? 0 : 12)
         .rotationEffect(.degrees(Double(offset.width) / 20.0))
         .offset(x: offset.width, y: offset.height)
         .opacity(isRemoved ? 0 : 1)
         .contentShape(shape)
         .highPriorityGesture(dragGesture)
-        .onTapGesture { onTapped() }
+        .onAppear {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                appeared = true
+            }
+        }
     }
 
     // MARK: - Card Image
@@ -68,9 +73,8 @@ struct SwipeCardView: View {
     @ViewBuilder
     private var directionOverlay: some View {
         if offset.width < -30 {
-            overlayBadge(
-                gradient: AppColors.deleteGradient,
-                icon: "trash.fill",
+            overlayGlow(
+                color: AppColors.delete,
                 text: "삭제",
                 alignment: .topTrailing,
                 opacity: min(1, abs(offset.width) / swipeThreshold)
@@ -78,22 +82,11 @@ struct SwipeCardView: View {
         }
 
         if offset.width > 30 {
-            overlayBadge(
-                gradient: AppColors.keepGradient,
-                icon: "checkmark.circle.fill",
+            overlayGlow(
+                color: AppColors.keep,
                 text: "보관",
                 alignment: .topLeading,
                 opacity: min(1, offset.width / swipeThreshold)
-            )
-        }
-
-        if offset.height < -30 {
-            overlayBadge(
-                gradient: AppColors.favoriteGradient,
-                icon: "star.fill",
-                text: "즐겨찾기",
-                alignment: .bottom,
-                opacity: min(1, abs(offset.height) / abs(verticalThreshold))
             )
         }
     }
@@ -130,28 +123,30 @@ struct SwipeCardView: View {
         .padding(.vertical, AppSpacing.xxs)
     }
 
-    private func overlayBadge(
-        gradient: LinearGradient,
-        icon: String,
+    private func overlayGlow(
+        color: Color,
         text: String,
         alignment: Alignment,
         opacity: Double
     ) -> some View {
         ZStack(alignment: alignment) {
-            Color.clear
+            // Inner glow — colored border + blur
+            shape
+                .strokeBorder(color, lineWidth: 3)
+                .blur(radius: 6)
+                .opacity(opacity * 0.7)
 
-            HStack(spacing: AppSpacing.xxs) {
-                Image(systemName: icon)
-                Text(text)
-            }
-            .font(AppTypography.bodySemibold)
-            .foregroundStyle(.white)
-            .padding(AppSpacing.sm)
-            .background(
-                RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small, style: .continuous)
-                    .fill(gradient.opacity(0.9))
-            )
-            .padding(AppSpacing.md)
+            shape
+                .strokeBorder(color, lineWidth: 2)
+                .opacity(opacity)
+
+            // Text label with glow
+            Text(text)
+                .font(.title2.weight(.heavy))
+                .foregroundStyle(color)
+                .shadow(color: color.opacity(0.6), radius: 8, x: 0, y: 0)
+                .shadow(color: color.opacity(0.3), radius: 16, x: 0, y: 0)
+                .padding(AppSpacing.lg)
         }
         .opacity(opacity)
     }
@@ -183,9 +178,6 @@ struct SwipeCardView: View {
     }
 
     private func resolveDirection(translation: CGSize) -> Decision? {
-        if translation.height < verticalThreshold {
-            return .favorite
-        }
         if translation.width < -swipeThreshold {
             return .delete
         }
@@ -201,15 +193,10 @@ struct SwipeCardView: View {
             offset = CGSize(width: -500, height: 0)
         case .keep:
             offset = CGSize(width: 500, height: 0)
-        case .favorite:
-            offset = CGSize(width: 0, height: -600)
         }
     }
 
     private var activeDecision: Decision? {
-        if offset.height < -30 {
-            return .favorite
-        }
         if offset.width < -30 {
             return .delete
         }
@@ -220,16 +207,14 @@ struct SwipeCardView: View {
     }
 
     private var tintOpacity: Double {
-        let horizontal = abs(offset.width) / swipeThreshold
-        let vertical = abs(offset.height) / abs(verticalThreshold)
-        return min(0.08, max(horizontal, vertical) * 0.08)
+        let progress = abs(offset.width) / swipeThreshold
+        return min(0.08, progress * 0.08)
     }
 
     private func decisionColor(_ decision: Decision) -> Color {
         switch decision {
         case .delete: AppColors.delete
         case .keep: AppColors.keep
-        case .favorite: AppColors.favorite
         }
     }
 

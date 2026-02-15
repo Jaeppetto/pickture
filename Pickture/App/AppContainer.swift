@@ -74,7 +74,8 @@ final class AppContainer {
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(
             analyzeStorageUseCase: makeAnalyzeStorageUseCase(),
-            navigationCoordinator: navigationCoordinator
+            navigationCoordinator: navigationCoordinator,
+            trashRepository: trashRepository
         )
     }
 
@@ -96,7 +97,7 @@ final class AppContainer {
         )
     }
 
-    func makeSettingsViewModel() -> SettingsViewModel {
-        SettingsViewModel(preferenceRepository: userPreferenceRepository)
-    }
+    private(set) lazy var settingsViewModel = SettingsViewModel(
+        preferenceRepository: userPreferenceRepository
+    )
 }

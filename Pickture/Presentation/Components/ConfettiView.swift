@@ -11,7 +11,6 @@ struct ConfettiView: View {
         AppColors.screenshot,
         AppColors.keep,
         AppColors.delete,
-        AppColors.favorite,
     ]
 
     var body: some View {

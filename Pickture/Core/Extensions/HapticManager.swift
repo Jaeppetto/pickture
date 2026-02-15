@@ -10,10 +10,6 @@ enum HapticManager {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
-    static func swipeFavorite() {
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-    }
-
     static func undo() {
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }

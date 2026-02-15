@@ -15,13 +15,13 @@ final class SettingsViewModel {
         preferences = await preferenceRepository.getPreferences()
     }
 
-    func updateThemeMode(_ mode: ThemeMode) async {
-        preferences.themeMode = mode
-        try? await preferenceRepository.updateThemeMode(mode)
-    }
-
     func updateHapticEnabled(_ enabled: Bool) async {
         preferences.hapticEnabled = enabled
         try? await preferenceRepository.updateHapticEnabled(enabled)
+    }
+
+    func updateLocale(_ locale: String) async {
+        preferences.locale = locale
+        try? await preferenceRepository.updateLocale(locale)
     }
 }

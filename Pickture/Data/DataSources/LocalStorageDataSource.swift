@@ -11,6 +11,7 @@ actor LocalStorageDataSource {
         static let sessions = "cleaning_sessions"
         static let decisions = "cleaning_decisions"
         static let trashItems = "trash_items"
+        static let filterSessionIndices = "filter_session_indices"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -123,5 +124,35 @@ actor LocalStorageDataSource {
 
     func clearAllTrashItems() {
         defaults.removeObject(forKey: Keys.trashItems)
+    }
+
+    // MARK: - Filter Session Indices
+
+    func saveFilterIndex(_ index: Int, forKey key: String) {
+        var indices = loadAllFilterIndices()
+        indices[key] = index
+        if let data = try? encoder.encode(indices) {
+            defaults.set(data, forKey: Keys.filterSessionIndices)
+        }
+    }
+
+    func loadFilterIndex(forKey key: String) -> Int? {
+        loadAllFilterIndices()[key]
+    }
+
+    func clearFilterIndex(forKey key: String) {
+        var indices = loadAllFilterIndices()
+        indices.removeValue(forKey: key)
+        if let data = try? encoder.encode(indices) {
+            defaults.set(data, forKey: Keys.filterSessionIndices)
+        }
+    }
+
+    private func loadAllFilterIndices() -> [String: Int] {
+        guard let data = defaults.data(forKey: Keys.filterSessionIndices),
+              let indices = try? decoder.decode([String: Int].self, from: data) else {
+            return [:]
+        }
+        return indices
     }
 }

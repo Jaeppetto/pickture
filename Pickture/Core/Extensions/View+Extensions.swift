@@ -63,4 +63,50 @@ extension View {
                 shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
             }
     }
+
+    // MARK: - Shimmer
+
+    func shimmer(active: Bool = true) -> some View {
+        modifier(ShimmerModifier(active: active))
+    }
+}
+
+// MARK: - Shimmer Modifier
+
+private struct ShimmerModifier: ViewModifier {
+    let active: Bool
+    @State private var phase: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        if active {
+            content
+                .overlay {
+                    GeometryReader { geometry in
+                        let width = geometry.size.width
+                        LinearGradient(
+                            colors: [
+                                .clear,
+                                Color.white.opacity(0.3),
+                                .clear,
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                        .frame(width: width * 0.6)
+                        .offset(x: -width * 0.3 + phase * (width * 1.6))
+                    }
+                    .clipped()
+                }
+                .onAppear {
+                    withAnimation(
+                        .linear(duration: 1.5)
+                        .repeatForever(autoreverses: false)
+                    ) {
+                        phase = 1
+                    }
+                }
+        } else {
+            content
+        }
+    }
 }

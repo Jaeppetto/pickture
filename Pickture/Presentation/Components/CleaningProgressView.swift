@@ -37,7 +37,6 @@ struct CleaningProgressView: View {
                 HStack(spacing: AppSpacing.sm) {
                     statBadge(count: session.totalDeleted, icon: "trash.fill", color: AppColors.delete)
                     statBadge(count: session.totalKept, icon: "checkmark", color: AppColors.keep)
-                    statBadge(count: session.totalFavorited, icon: "star.fill", color: AppColors.favorite)
                 }
             }
         }

@@ -29,6 +29,20 @@ public struct CleaningFilter: Sendable, Equatable, Codable {
         Self(minimumFileSize: minimumBytes)
     }
 
+    public var persistenceKey: String {
+        var parts: [String] = ["filter"]
+        if let photoType {
+            parts.append(photoType.rawValue)
+        }
+        if let minimumFileSize {
+            parts.append("min\(minimumFileSize)")
+        }
+        if let dateRange {
+            parts.append("date\(Int(dateRange.lowerBound.timeIntervalSince1970))")
+        }
+        return parts.joined(separator: "_")
+    }
+
     // MARK: - Custom Codable for ClosedRange<Date>
 
     private enum CodingKeys: String, CodingKey {

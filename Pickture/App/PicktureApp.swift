@@ -6,8 +6,59 @@ struct PicktureApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView(container: container)
-                .preferredColorScheme(container.theme.colorScheme)
+            RootView(container: container)
+        }
+    }
+}
+
+private struct RootView: View {
+    let container: AppContainer
+    @State private var showLanguageToast = false
+    @State private var toastMessage = ""
+    @State private var toastWorkItem: DispatchWorkItem?
+
+    var body: some View {
+        MainTabView(container: container)
+            .preferredColorScheme(container.theme.colorScheme)
+            .environment(\.locale, Locale(identifier: container.settingsViewModel.preferences.locale))
+            .task {
+                await container.settingsViewModel.loadPreferences()
+            }
+            .onChange(of: container.settingsViewModel.preferences.locale) { _, newLocale in
+                toastWorkItem?.cancel()
+                toastMessage = languageChangeMessage(for: newLocale)
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    showLanguageToast = true
+                }
+                let workItem = DispatchWorkItem {
+                    withAnimation(.easeOut(duration: 0.3)) {
+                        showLanguageToast = false
+                    }
+                }
+                toastWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: workItem)
+            }
+            .overlay(alignment: .top) {
+                if showLanguageToast {
+                    Text(toastMessage)
+                        .font(.subheadline.weight(.medium))
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(.regularMaterial, in: Capsule())
+                        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                        .padding(.top, 60)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+    }
+
+    private func languageChangeMessage(for locale: String) -> String {
+        switch locale {
+        case "ko": "언어가 한국어로 변경되었습니다"
+        case "en": "Language changed to English"
+        case "ja": "言語が日本語に変更されました"
+        case "zh-Hans": "语言已更改为中文"
+        default: "Language changed"
         }
     }
 }

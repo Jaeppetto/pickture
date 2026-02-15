@@ -5,7 +5,6 @@ struct SwipeCardStackView: View {
     let currentIndex: Int
     let thumbnails: [String: UIImage]
     let onSwiped: (Decision) -> Void
-    let onTapped: (Photo) -> Void
 
     private let visibleCardCount = 3
 
@@ -18,8 +17,7 @@ struct SwipeCardStackView: View {
                     SwipeCardView(
                         photo: item.element,
                         thumbnail: thumbnails[item.element.id],
-                        onSwiped: onSwiped,
-                        onTapped: { onTapped(item.element) }
+                        onSwiped: onSwiped
                     )
                     .zIndex(Double(visibleCardCount - stackOffset))
                 } else {
@@ -64,5 +62,6 @@ struct SwipeCardStackView: View {
         .offset(y: CGFloat(stackOffset) * 12)
         .opacity(1 - CGFloat(stackOffset) * 0.2)
         .allowsHitTesting(false)
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: currentIndex)
     }
 }

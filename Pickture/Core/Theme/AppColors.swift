@@ -7,9 +7,8 @@ enum AppColors {
     static let surface = Color(uiColor: .systemBackground)
     static let primary = Color.black
     static let secondary = Color(uiColor: .secondaryLabel)
-    static let delete = Color(uiColor: .label)
-    static let keep = Color(uiColor: .secondaryLabel)
-    static let favorite = Color(uiColor: .tertiaryLabel)
+    static let delete = Color.red
+    static let keep = Color.green
     static let textPrimary = Color(uiColor: .label)
     static let textSecondary = Color(uiColor: .secondaryLabel)
     static let cardBorder = Color.primary.opacity(0.12)
@@ -31,19 +30,13 @@ enum AppColors {
     )
 
     static let deleteGradient = LinearGradient(
-        colors: [chrome, Color(uiColor: .systemGray2)],
+        colors: [Color.red, Color.red.opacity(0.7)],
         startPoint: .leading,
         endPoint: .trailing
     )
 
     static let keepGradient = LinearGradient(
-        colors: [Color(uiColor: .systemGray2), Color(uiColor: .systemGray4)],
-        startPoint: .leading,
-        endPoint: .trailing
-    )
-
-    static let favoriteGradient = LinearGradient(
-        colors: [Color(uiColor: .systemGray3), Color(uiColor: .systemGray5)],
+        colors: [Color.green, Color.green.opacity(0.7)],
         startPoint: .leading,
         endPoint: .trailing
     )

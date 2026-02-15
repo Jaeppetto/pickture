@@ -103,12 +103,6 @@ struct SessionSummaryView: View {
                 icon: "checkmark",
                 color: AppColors.keep
             )
-            statCard(
-                value: session.totalFavorited,
-                label: "즐겨찾기",
-                icon: "star.fill",
-                color: AppColors.favorite
-            )
         }
         .padding(.horizontal, AppSpacing.md)
     }

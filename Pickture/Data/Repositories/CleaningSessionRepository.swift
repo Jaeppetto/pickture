@@ -49,6 +49,21 @@ final class CleaningSessionRepository: CleaningSessionRepositoryProtocol, @unche
     func getDecisions(forSession sessionId: String) async throws -> [CleaningDecision] {
         await localStorage.loadDecisions(forSession: sessionId)
     }
+
+    func saveFilterIndex(_ index: Int, forFilter filter: CleaningFilter?) async {
+        let key = filter?.persistenceKey ?? "filter_all"
+        await localStorage.saveFilterIndex(index, forKey: key)
+    }
+
+    func loadFilterIndex(forFilter filter: CleaningFilter?) async -> Int? {
+        let key = filter?.persistenceKey ?? "filter_all"
+        return await localStorage.loadFilterIndex(forKey: key)
+    }
+
+    func clearFilterIndex(forFilter filter: CleaningFilter?) async {
+        let key = filter?.persistenceKey ?? "filter_all"
+        await localStorage.clearFilterIndex(forKey: key)
+    }
 }
 
 enum RepositoryError: Error, LocalizedError {

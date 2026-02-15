@@ -10,7 +10,11 @@ struct MainTabView: View {
         )) {
             HomeScreen(
                 viewModel: container.makeHomeViewModel(),
-                permissionViewModel: container.photoPermissionViewModel
+                permissionViewModel: container.photoPermissionViewModel,
+                settingsViewModel: container.settingsViewModel,
+                deletionQueueViewModelFactory: { [container] in
+                    container.makeDeletionQueueViewModel()
+                }
             )
             .tabItem {
                 Label("홈", systemImage: "house.fill")
@@ -30,12 +34,6 @@ struct MainTabView: View {
                 Label("정리", systemImage: "sparkles")
             }
             .tag(AppTab.clean)
-
-            SettingsScreen(viewModel: container.makeSettingsViewModel())
-                .tabItem {
-                    Label("설정", systemImage: "gearshape.fill")
-                }
-                .tag(AppTab.settings)
         }
         .tint(AppColors.chrome)
         .toolbarBackground(AppColors.surface, for: .tabBar)
@@ -46,5 +44,4 @@ struct MainTabView: View {
 enum AppTab: Hashable {
     case home
     case clean
-    case settings
 }

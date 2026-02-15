@@ -37,8 +37,6 @@ final class ProcessSwipeDecisionUseCase: Sendable {
             _ = try await trashRepository.addToTrash(photoId: photo.id, fileSize: photo.fileSize)
         case .keep:
             updatedSession.totalKept += 1
-        case .favorite:
-            updatedSession.totalFavorited += 1
         }
 
         try await sessionRepository.updateSession(updatedSession)

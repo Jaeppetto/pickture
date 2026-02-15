@@ -7,7 +7,6 @@ struct CleanScreen: View {
     var deletionQueueViewModelFactory: () -> DeletionQueueViewModel
     var photoRepository: any PhotoRepositoryProtocol
 
-    @State private var showFilterSheet = false
     @State private var showDeletionQueue = false
     @State private var showStartPicker = false
 
@@ -38,12 +37,6 @@ struct CleanScreen: View {
                 Task { await viewModel.applyPendingFilter(filter) }
             }
         }
-        .sheet(isPresented: $showFilterSheet) {
-            FilterSelectionSheet { filter in
-                Task { await viewModel.startNewSession(filter: filter) }
-            }
-            .presentationDetents([.medium])
-        }
         .sheet(isPresented: $showDeletionQueue) {
             DeletionQueueScreen(
                 viewModel: deletionQueueViewModelFactory(),
@@ -58,6 +51,16 @@ struct CleanScreen: View {
                 Task { await viewModel.startNewSession(startOffset: offset) }
             }
         }
+        .alert("이전 위치에서 계속할까요?", isPresented: $viewModel.showResumeAlert) {
+            Button("이어서 하기") {
+                Task { await viewModel.resumeFromSavedIndex() }
+            }
+            Button("처음부터") {
+                Task { await viewModel.startFresh() }
+            }
+        } message: {
+            Text("이전에 \(viewModel.pendingResumeIndex)번째 사진까지 진행했습니다.")
+        }
     }
 
     @ViewBuilder
@@ -65,9 +68,6 @@ struct CleanScreen: View {
         switch viewModel.screenState {
         case .idle:
             idleView
-        case .filterSelection:
-            idleView
-                .onAppear { showFilterSheet = true }
         case .cleaning:
             CleaningActiveView(viewModel: viewModel)
         case .summary(let session):
@@ -85,50 +85,98 @@ struct CleanScreen: View {
 
     private var idleView: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                    Label("스와이프 정리", systemImage: "sparkles")
-                        .font(AppTypography.title2)
-                        .foregroundStyle(AppColors.textPrimary)
-
-                    Text("사진을 빠르게 검토하고 삭제 대기열로 모아 공간을 확보하세요.")
-                        .font(AppTypography.body)
-                        .foregroundStyle(AppColors.textSecondary)
-                }
-                .padding(AppSpacing.md)
-                .surfaceStyle()
+            VStack(spacing: AppSpacing.md) {
+                Text("스와이프 정리")
+                    .font(.title.bold())
+                    .foregroundStyle(AppColors.textPrimary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, AppSpacing.sm)
 
                 VStack(spacing: AppSpacing.sm) {
-                    Button {
-                        showFilterSheet = true
-                    } label: {
-                        HStack(spacing: AppSpacing.xs) {
-                            Image(systemName: "line.3.horizontal.decrease.circle")
-                            Text("필터 선택 후 시작")
-                        }
-                        .glassPrimaryButton()
-                    }
-
-                    Button {
+                    cleaningModeButton(
+                        title: "전체사진",
+                        subtitle: "모든 사진을 순서대로 정리",
+                        icon: "photo.on.rectangle",
+                        color: AppColors.textPrimary
+                    ) {
                         Task { await viewModel.startNewSession() }
-                    } label: {
-                        Text("필터 없이 바로 시작")
-                            .subtleButton()
                     }
 
-                    Button {
+                    cleaningModeButton(
+                        title: "스크린샷",
+                        subtitle: "스크린샷만 빠르게 정리",
+                        icon: "camera.viewfinder",
+                        color: AppColors.textSecondary
+                    ) {
+                        Task { await viewModel.startNewSession(filter: .screenshotsOnly()) }
+                    }
+
+                    cleaningModeButton(
+                        title: "동영상",
+                        subtitle: "용량 큰 동영상 정리",
+                        icon: "video.fill",
+                        color: AppColors.textSecondary
+                    ) {
+                        Task { await viewModel.startNewSession(filter: .videosOnly()) }
+                    }
+
+                    cleaningModeButton(
+                        title: "시작위치 선택하기",
+                        subtitle: "특정 시점부터 정리 시작",
+                        icon: "photo.on.rectangle.angled",
+                        color: AppColors.textSecondary
+                    ) {
                         showStartPicker = true
-                    } label: {
-                        HStack(spacing: AppSpacing.xxs) {
-                            Image(systemName: "photo.on.rectangle.angled")
-                            Text("시작 위치 선택하기")
-                        }
-                        .subtleButton(tint: AppColors.textSecondary)
+                    }
+
+                    cleaningModeButton(
+                        title: "랜덤",
+                        subtitle: "사진을 랜덤으로 섞어서 정리",
+                        icon: "shuffle",
+                        color: AppColors.textSecondary
+                    ) {
+                        Task { await viewModel.startNewSession(shuffled: true) }
                     }
                 }
             }
             .padding(AppSpacing.md)
             .padding(.bottom, AppSpacing.xl)
         }
+    }
+
+    private func cleaningModeButton(
+        title: String,
+        subtitle: String,
+        icon: String,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: AppSpacing.sm) {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(color)
+                    .frame(width: 44, height: 44)
+                    .background(AppColors.background, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+
+                VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
+                    Text(title)
+                        .font(AppTypography.bodyMedium)
+                        .foregroundStyle(AppColors.textPrimary)
+                    Text(subtitle)
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.textSecondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(AppColors.textSecondary)
+            }
+            .padding(AppSpacing.sm)
+            .surfaceStyle()
+        }
+        .buttonStyle(.plain)
     }
 }

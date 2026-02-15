@@ -3,7 +3,6 @@ import UIKit
 
 enum CleanScreenState: Equatable {
     case idle
-    case filterSelection
     case cleaning
     case summary(CleaningSession)
 }
@@ -20,12 +19,18 @@ final class CleanViewModel {
     private(set) var totalPhotoCount: Int = 0
     private(set) var thumbnails: [String: UIImage] = [:]
     private(set) var isLoadingPhotos = false
-    private(set) var selectedMetadataPhoto: Photo?
     private(set) var hasMorePhotos = true
+
+    // MARK: - Resume Alert
+
+    var showResumeAlert = false
+    private(set) var pendingResumeFilter: CleaningFilter?
+    private(set) var pendingResumeIndex: Int = 0
 
     // MARK: - Offset
 
     private var initialOffset: Int = 0
+    private var isShuffled = false
 
     // MARK: - Undo
 
@@ -74,15 +79,33 @@ final class CleanViewModel {
         }
     }
 
-    func showFilterSelection() {
-        screenState = .filterSelection
-    }
+    func startNewSession(filter: CleaningFilter? = nil, startOffset: Int = 0, shuffled: Bool = false) async {
+        // Check for saved index if not shuffled
+        if !shuffled, let savedIndex = await sessionRepository.loadFilterIndex(forFilter: filter), savedIndex > 0 {
+            pendingResumeFilter = filter
+            pendingResumeIndex = savedIndex
+            showResumeAlert = true
+            return
+        }
 
-    func startNewSession(filter: CleaningFilter? = nil, startOffset: Int = 0) async {
+        isShuffled = shuffled
         await startCleaning(filter: filter, resuming: false, startOffset: startOffset)
     }
 
+    func resumeFromSavedIndex() async {
+        isShuffled = false
+        await startCleaning(filter: pendingResumeFilter, resuming: false, startOffset: pendingResumeIndex)
+    }
+
+    func startFresh() async {
+        let filter = pendingResumeFilter
+        await sessionRepository.clearFilterIndex(forFilter: filter)
+        isShuffled = false
+        await startCleaning(filter: filter, resuming: false)
+    }
+
     func applyPendingFilter(_ filter: CleaningFilter?) async {
+        isShuffled = false
         await startCleaning(filter: filter, resuming: false)
     }
 
@@ -140,7 +163,6 @@ final class CleanViewModel {
         switch decision {
         case .delete: HapticManager.swipeDelete()
         case .keep: HapticManager.swipeKeep()
-        case .favorite: HapticManager.swipeFavorite()
         }
 
         // Record undo
@@ -156,6 +178,12 @@ final class CleanViewModel {
                 session: session
             )
             currentIndex += 1
+
+            // Save filter index for resume
+            await sessionRepository.saveFilterIndex(
+                initialOffset + currentIndex,
+                forFilter: session.filter
+            )
 
             // Update caching window
             await updateCachingWindow()
@@ -199,20 +227,6 @@ final class CleanViewModel {
         await processSwipe(.keep)
     }
 
-    func favoriteCurrentPhoto() async {
-        await processSwipe(.favorite)
-    }
-
-    // MARK: - Metadata
-
-    func showMetadata(for photo: Photo) {
-        selectedMetadataPhoto = photo
-    }
-
-    func hideMetadata() {
-        selectedMetadataPhoto = nil
-    }
-
     // MARK: - Photo Loading
 
     private func loadNextPage(filter: CleaningFilter?) async {
@@ -232,8 +246,9 @@ final class CleanViewModel {
                 hasMorePhotos = false
             }
 
-            photos.append(contentsOf: newPhotos)
-            await loadThumbnails(for: newPhotos)
+            let pagePhotos = isShuffled ? newPhotos.shuffled() : newPhotos
+            photos.append(contentsOf: pagePhotos)
+            await loadThumbnails(for: pagePhotos)
         } catch {
             hasMorePhotos = false
         }
@@ -264,7 +279,9 @@ final class CleanViewModel {
             await photoRepository.startCachingThumbnails(for: aheadIds, targetSize: size)
 
             // Load thumbnails that we haven't loaded yet
+            // Re-check bounds after each await since photos may have changed
             for index in aheadStart..<aheadEnd {
+                guard index < photos.count else { break }
                 let photo = photos[index]
                 if thumbnails[photo.id] == nil {
                     if let image = await photoRepository.requestPreviewImage(for: photo.id, size: size) {
@@ -276,7 +293,7 @@ final class CleanViewModel {
 
         // Stop caching behind (keep recent few for undo)
         let behindEnd = max(0, currentIndex - cacheBehindCount)
-        if behindEnd > 0 {
+        if behindEnd > 0 && behindEnd <= photos.count {
             let oldIds = (0..<behindEnd).map { photos[$0].id }
             await photoRepository.stopCachingThumbnails(for: oldIds, targetSize: size)
             // Free memory for old thumbnails

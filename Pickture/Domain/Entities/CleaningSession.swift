@@ -9,7 +9,6 @@ public struct CleaningSession: Sendable, Equatable, Identifiable, Codable {
     public var totalReviewed: Int
     public var totalDeleted: Int
     public var totalKept: Int
-    public var totalFavorited: Int
     public var freedBytes: Int64
     public var filter: CleaningFilter?
 
@@ -22,7 +21,6 @@ public struct CleaningSession: Sendable, Equatable, Identifiable, Codable {
         totalReviewed: Int = 0,
         totalDeleted: Int = 0,
         totalKept: Int = 0,
-        totalFavorited: Int = 0,
         freedBytes: Int64 = 0,
         filter: CleaningFilter? = nil
     ) {
@@ -34,7 +32,6 @@ public struct CleaningSession: Sendable, Equatable, Identifiable, Codable {
         self.totalReviewed = totalReviewed
         self.totalDeleted = totalDeleted
         self.totalKept = totalKept
-        self.totalFavorited = totalFavorited
         self.freedBytes = freedBytes
         self.filter = filter
     }

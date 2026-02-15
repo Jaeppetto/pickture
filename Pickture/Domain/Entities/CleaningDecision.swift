@@ -22,5 +22,4 @@ public struct CleaningDecision: Sendable, Equatable, Codable {
 public enum Decision: String, Sendable, Equatable, CaseIterable, Codable {
     case delete
     case keep
-    case favorite
 }

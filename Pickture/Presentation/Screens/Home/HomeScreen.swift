@@ -3,6 +3,10 @@ import SwiftUI
 struct HomeScreen: View {
     @State var viewModel: HomeViewModel
     @State var permissionViewModel: PhotoPermissionViewModel
+    var settingsViewModel: SettingsViewModel
+    var deletionQueueViewModelFactory: () -> DeletionQueueViewModel
+
+    @State private var showDeletionQueue = false
 
     var body: some View {
         NavigationStack {
@@ -12,8 +16,14 @@ struct HomeScreen: View {
             .background(AppColors.background)
             .navigationTitle("홈")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    languageMenu
+                }
+            }
         }
         .task {
+            await viewModel.loadTrashCount()
             if permissionViewModel.hasAnyAccess {
                 await viewModel.loadStorageInfo()
             }
@@ -23,15 +33,49 @@ struct HomeScreen: View {
                 Task { await viewModel.loadStorageInfo() }
             }
         }
+        .sheet(isPresented: $showDeletionQueue, onDismiss: {
+            Task { await viewModel.loadTrashCount() }
+        }) {
+            DeletionQueueScreen(
+                viewModel: deletionQueueViewModelFactory(),
+                onDeletionCompleted: {}
+            )
+        }
     }
+
+    // MARK: - Language Menu
+
+    private var languageMenu: some View {
+        Menu {
+            Picker("언어", selection: Binding(
+                get: { settingsViewModel.preferences.locale },
+                set: { newValue in
+                    Task { await settingsViewModel.updateLocale(newValue) }
+                }
+            )) {
+                Text("한국어").tag("ko")
+                Text("English").tag("en")
+                Text("日本語").tag("ja")
+                Text("中文").tag("zh-Hans")
+            }
+        } label: {
+            Image(systemName: "globe")
+                .font(.body.weight(.medium))
+                .foregroundStyle(AppColors.textPrimary)
+                .frame(width: 32, height: 32)
+                .background(.ultraThinMaterial, in: Circle())
+        }
+    }
+
+    // MARK: - Dashboard
 
     private var dashboardContent: some View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
-                quickActionCard
                 storageCard
                 statsRow
-                insightsSection
+                startCleaningButton
+                trashQueueButton
             }
             .padding(AppSpacing.md)
             .padding(.bottom, AppSpacing.xl)
@@ -39,31 +83,6 @@ struct HomeScreen: View {
         .refreshable {
             await viewModel.loadStorageInfo()
         }
-    }
-
-    private var quickActionCard: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            HStack {
-                Text("오늘의 정리")
-                    .font(AppTypography.title3)
-                    .foregroundStyle(AppColors.textPrimary)
-                Spacer()
-                Text("추천")
-                    .font(AppTypography.captionMedium)
-                    .foregroundStyle(AppColors.textSecondary)
-                    .padding(.horizontal, AppSpacing.xs)
-                    .padding(.vertical, AppSpacing.xxxs)
-                    .background(AppColors.background, in: Capsule())
-            }
-
-            Text("최근 사진부터 빠르게 넘기며 보관/삭제를 진행하세요.")
-                .font(AppTypography.footnote)
-                .foregroundStyle(AppColors.textSecondary)
-
-            startCleaningButton
-        }
-        .padding(AppSpacing.md)
-        .surfaceStyle()
     }
 
     // MARK: - Storage Chart Card
@@ -79,8 +98,7 @@ struct HomeScreen: View {
             }
 
             if viewModel.isLoading && !viewModel.hasLoaded {
-                ProgressView()
-                    .frame(maxWidth: .infinity, minHeight: 200)
+                storageSkeleton
             } else {
                 StorageChartView(storageInfo: viewModel.storageInfo)
             }
@@ -115,23 +133,17 @@ struct HomeScreen: View {
         }
     }
 
-    // MARK: - Insights Section
-
-    @ViewBuilder
-    private var insightsSection: some View {
-        if !viewModel.insights.isEmpty {
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                Text("인사이트")
-                    .font(AppTypography.title3)
-                    .foregroundStyle(AppColors.textPrimary)
-
-                ForEach(viewModel.insights) { insight in
-                    InsightCardView(insight: insight) {
-                        viewModel.startCleaning(with: insight.suggestedFilter)
-                    }
-                }
-            }
+    private var storageSkeleton: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            RoundedRectangle(cornerRadius: 4)
+                .fill(AppColors.background)
+                .frame(height: 20)
+                .frame(maxWidth: 120)
+            RoundedRectangle(cornerRadius: 8)
+                .fill(AppColors.background)
+                .frame(height: 160)
         }
+        .shimmer()
     }
 
     // MARK: - Start Cleaning CTA
@@ -142,9 +154,26 @@ struct HomeScreen: View {
         } label: {
             HStack(spacing: AppSpacing.xs) {
                 Image(systemName: "sparkles")
-                Text("정리 시작")
+                Text("스와이프 정리 시작")
             }
             .glassPrimaryButton()
+        }
+    }
+
+    // MARK: - Trash Queue Button
+
+    @ViewBuilder
+    private var trashQueueButton: some View {
+        if viewModel.trashItemCount > 0 {
+            Button {
+                showDeletionQueue = true
+            } label: {
+                HStack(spacing: AppSpacing.xs) {
+                    Image(systemName: "trash")
+                    Text("삭제 대기열 보기 (\(viewModel.trashItemCount))")
+                }
+                .subtleButton()
+            }
         }
     }
 }
