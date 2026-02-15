@@ -19,11 +19,11 @@ struct PhotoPermissionView<Content: View>: View {
     }
 
     private var requestPermissionView: some View {
-        VStack(spacing: AppSpacing.xl) {
+        VStack(spacing: AppSpacing.lg) {
             Spacer()
 
             Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 72, weight: .light))
+                .font(.system(size: 64, weight: .light))
                 .foregroundStyle(AppColors.primaryGradient)
 
             VStack(spacing: AppSpacing.xs) {
@@ -36,6 +36,7 @@ struct PhotoPermissionView<Content: View>: View {
                     .foregroundStyle(AppColors.textSecondary)
                     .multilineTextAlignment(.center)
             }
+            .padding(.horizontal, AppSpacing.md)
 
             Button {
                 Task { await viewModel.requestPermission() }
@@ -50,18 +51,19 @@ struct PhotoPermissionView<Content: View>: View {
                 .glassPrimaryButton()
             }
             .disabled(viewModel.isRequesting)
-            .padding(.horizontal, AppSpacing.xxl)
+            .padding(.horizontal, AppSpacing.xl)
 
             Spacer()
         }
+        .padding(.horizontal, AppSpacing.md)
     }
 
     private var deniedView: some View {
-        VStack(spacing: AppSpacing.xl) {
+        VStack(spacing: AppSpacing.lg) {
             Spacer()
 
             Image(systemName: "lock.shield")
-                .font(.system(size: 72, weight: .light))
+                .font(.system(size: 64, weight: .light))
                 .foregroundStyle(AppColors.textSecondary)
 
             VStack(spacing: AppSpacing.xs) {
@@ -74,6 +76,7 @@ struct PhotoPermissionView<Content: View>: View {
                     .foregroundStyle(AppColors.textSecondary)
                     .multilineTextAlignment(.center)
             }
+            .padding(.horizontal, AppSpacing.md)
 
             Button {
                 viewModel.openSettings()
@@ -81,9 +84,10 @@ struct PhotoPermissionView<Content: View>: View {
                 Text("설정으로 이동")
                     .glassPrimaryButton()
             }
-            .padding(.horizontal, AppSpacing.xxl)
+            .padding(.horizontal, AppSpacing.xl)
 
             Spacer()
         }
+        .padding(.horizontal, AppSpacing.md)
     }
 }

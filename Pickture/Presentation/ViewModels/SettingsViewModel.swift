@@ -24,9 +24,4 @@ final class SettingsViewModel {
         preferences.hapticEnabled = enabled
         try? await preferenceRepository.updateHapticEnabled(enabled)
     }
-
-    func updateDailyGoal(_ goal: Int) async {
-        preferences.dailyGoal = goal
-        try? await preferenceRepository.updateDailyGoal(goal)
-    }
 }

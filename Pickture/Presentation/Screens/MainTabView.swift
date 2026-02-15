@@ -37,7 +37,9 @@ struct MainTabView: View {
                 }
                 .tag(AppTab.settings)
         }
-        .tint(AppColors.primary)
+        .tint(AppColors.chrome)
+        .toolbarBackground(AppColors.surface, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
     }
 }
 

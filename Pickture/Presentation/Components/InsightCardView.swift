@@ -8,11 +8,10 @@ struct InsightCardView: View {
         Button(action: onTap) {
             HStack(spacing: AppSpacing.sm) {
                 Image(systemName: insight.iconName)
-                    .font(.system(size: 24))
+                    .font(.title3)
                     .foregroundStyle(iconColor)
                     .frame(width: 44, height: 44)
-                    .background(iconColor.opacity(0.12))
-                    .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+                    .background(AppColors.background, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
                     Text(insight.title)
@@ -27,25 +26,23 @@ struct InsightCardView: View {
 
                 if insight.suggestedFilter != nil {
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.footnote.weight(.semibold))
                         .foregroundStyle(AppColors.textSecondary)
                 }
             }
             .padding(AppSpacing.sm)
-            .background(AppColors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
-            .cardShadow()
+            .surfaceStyle()
         }
         .buttonStyle(.plain)
     }
 
     private var iconColor: Color {
         switch insight.category {
-        case .screenshots: Color(hex: 0xFF9500)
-        case .videos: Color(hex: 0x7C3AED)
-        case .largeFiles: Color(hex: 0xFF3B30)
+        case .screenshots: AppColors.textSecondary
+        case .videos: AppColors.textSecondary
+        case .largeFiles: AppColors.delete
         case .oldPhotos: AppColors.textSecondary
-        case .general: AppColors.primary
+        case .general: AppColors.textPrimary
         }
     }
 }

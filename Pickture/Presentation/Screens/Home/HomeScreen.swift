@@ -11,6 +11,7 @@ struct HomeScreen: View {
             }
             .background(AppColors.background)
             .navigationTitle("홈")
+            .navigationBarTitleDisplayMode(.large)
         }
         .task {
             if permissionViewModel.hasAnyAccess {
@@ -26,26 +27,56 @@ struct HomeScreen: View {
 
     private var dashboardContent: some View {
         ScrollView {
-            VStack(spacing: AppSpacing.lg) {
+            VStack(spacing: AppSpacing.md) {
+                quickActionCard
                 storageCard
                 statsRow
                 insightsSection
-                startCleaningButton
             }
             .padding(AppSpacing.md)
+            .padding(.bottom, AppSpacing.xl)
         }
         .refreshable {
             await viewModel.loadStorageInfo()
         }
     }
 
+    private var quickActionCard: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            HStack {
+                Text("오늘의 정리")
+                    .font(AppTypography.title3)
+                    .foregroundStyle(AppColors.textPrimary)
+                Spacer()
+                Text("추천")
+                    .font(AppTypography.captionMedium)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .padding(.horizontal, AppSpacing.xs)
+                    .padding(.vertical, AppSpacing.xxxs)
+                    .background(AppColors.background, in: Capsule())
+            }
+
+            Text("최근 사진부터 빠르게 넘기며 보관/삭제를 진행하세요.")
+                .font(AppTypography.footnote)
+                .foregroundStyle(AppColors.textSecondary)
+
+            startCleaningButton
+        }
+        .padding(AppSpacing.md)
+        .surfaceStyle()
+    }
+
     // MARK: - Storage Chart Card
 
     private var storageCard: some View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            Text("스토리지 현황")
-                .font(AppTypography.title3)
-                .foregroundStyle(AppColors.textPrimary)
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: "externaldrive.fill.badge.checkmark")
+                    .foregroundStyle(AppColors.primary)
+                Text("스토리지 현황")
+                    .font(AppTypography.title3)
+                    .foregroundStyle(AppColors.textPrimary)
+            }
 
             if viewModel.isLoading && !viewModel.hasLoaded {
                 ProgressView()
@@ -62,24 +93,24 @@ struct HomeScreen: View {
     // MARK: - Stats Row
 
     private var statsRow: some View {
-        HStack(spacing: AppSpacing.sm) {
+        LazyVGrid(
+            columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
+            spacing: AppSpacing.sm
+        ) {
             StatBadge(
                 count: viewModel.storageInfo.totalPhotoCount,
                 label: "사진",
-                iconName: "photo",
-                color: AppColors.primary
+                iconName: "photo"
             )
             StatBadge(
                 count: viewModel.storageInfo.totalVideoCount,
                 label: "동영상",
-                iconName: "video.fill",
-                color: Color(hex: 0x7C3AED)
+                iconName: "video.fill"
             )
             StatBadge(
                 count: viewModel.storageInfo.totalScreenshotCount,
                 label: "스크린샷",
-                iconName: "camera.viewfinder",
-                color: Color(hex: 0xFF9500)
+                iconName: "camera.viewfinder"
             )
         }
     }
@@ -124,13 +155,14 @@ private struct StatBadge: View {
     let count: Int
     let label: String
     let iconName: String
-    let color: Color
 
     var body: some View {
         VStack(spacing: AppSpacing.xs) {
             Image(systemName: iconName)
-                .font(.system(size: 20))
-                .foregroundStyle(color)
+                .font(.headline)
+                .foregroundStyle(AppColors.textPrimary)
+                .frame(width: 30, height: 30)
+                .background(AppColors.background, in: Circle())
 
             Text("\(count)")
                 .font(AppTypography.monoBody)
@@ -142,8 +174,6 @@ private struct StatBadge: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.sm)
-        .background(AppColors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
-        .cardShadow()
+        .surfaceStyle()
     }
 }

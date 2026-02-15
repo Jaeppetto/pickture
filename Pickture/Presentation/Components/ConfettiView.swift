@@ -6,12 +6,12 @@ struct ConfettiView: View {
 
     private let particleCount = 50
     private let colors: [Color] = [
-        Color(hex: 0x2D5BFF),
-        Color(hex: 0x7C3AED),
-        Color(hex: 0xFF9500),
-        Color(hex: 0x34C759),
-        Color(hex: 0xFF3B30),
-        Color(hex: 0xFFD60A),
+        AppColors.primary,
+        AppColors.video,
+        AppColors.screenshot,
+        AppColors.keep,
+        AppColors.delete,
+        AppColors.favorite,
     ]
 
     var body: some View {

@@ -45,7 +45,13 @@ struct CleanScreen: View {
             .presentationDetents([.medium])
         }
         .sheet(isPresented: $showDeletionQueue) {
-            DeletionQueueScreen(viewModel: deletionQueueViewModelFactory())
+            DeletionQueueScreen(
+                viewModel: deletionQueueViewModelFactory(),
+                onDeletionCompleted: {
+                    viewModel.returnToIdle()
+                    navigationCoordinator.selectedTab = .home
+                }
+            )
         }
         .sheet(isPresented: $showStartPicker) {
             PhotoStartPickerView(photoRepository: photoRepository) { offset in
@@ -78,56 +84,51 @@ struct CleanScreen: View {
     }
 
     private var idleView: some View {
-        VStack(spacing: AppSpacing.xl) {
-            Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                    Label("스와이프 정리", systemImage: "sparkles")
+                        .font(AppTypography.title2)
+                        .foregroundStyle(AppColors.textPrimary)
 
-            Image(systemName: "sparkles")
-                .font(.system(size: 64))
-                .foregroundStyle(AppColors.primaryGradient)
-
-            VStack(spacing: AppSpacing.xs) {
-                Text("사진 정리")
-                    .font(AppTypography.title2)
-                    .foregroundStyle(AppColors.textPrimary)
-
-                Text("스와이프로 빠르게 정리하세요")
-                    .font(AppTypography.body)
-                    .foregroundStyle(AppColors.textSecondary)
-            }
-
-            VStack(spacing: AppSpacing.sm) {
-                Button {
-                    showFilterSheet = true
-                } label: {
-                    HStack(spacing: AppSpacing.xs) {
-                        Image(systemName: "sparkles")
-                        Text("정리 시작")
-                    }
-                    .glassPrimaryButton()
+                    Text("사진을 빠르게 검토하고 삭제 대기열로 모아 공간을 확보하세요.")
+                        .font(AppTypography.body)
+                        .foregroundStyle(AppColors.textSecondary)
                 }
+                .padding(AppSpacing.md)
+                .surfaceStyle()
 
-                Button {
-                    Task { await viewModel.startNewSession() }
-                } label: {
-                    Text("필터 없이 바로 시작")
-                        .font(AppTypography.bodyMedium)
-                        .foregroundStyle(AppColors.primary)
-                }
-
-                Button {
-                    showStartPicker = true
-                } label: {
-                    HStack(spacing: AppSpacing.xxs) {
-                        Image(systemName: "photo.on.rectangle")
-                        Text("시작 위치 선택하기")
+                VStack(spacing: AppSpacing.sm) {
+                    Button {
+                        showFilterSheet = true
+                    } label: {
+                        HStack(spacing: AppSpacing.xs) {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
+                            Text("필터 선택 후 시작")
+                        }
+                        .glassPrimaryButton()
                     }
-                    .font(AppTypography.bodyMedium)
-                    .foregroundStyle(AppColors.textSecondary)
+
+                    Button {
+                        Task { await viewModel.startNewSession() }
+                    } label: {
+                        Text("필터 없이 바로 시작")
+                            .subtleButton()
+                    }
+
+                    Button {
+                        showStartPicker = true
+                    } label: {
+                        HStack(spacing: AppSpacing.xxs) {
+                            Image(systemName: "photo.on.rectangle.angled")
+                            Text("시작 위치 선택하기")
+                        }
+                        .subtleButton(tint: AppColors.textSecondary)
+                    }
                 }
             }
-            .padding(.horizontal, AppSpacing.xxl)
-
-            Spacer()
+            .padding(AppSpacing.md)
+            .padding(.bottom, AppSpacing.xl)
         }
     }
 }

@@ -16,8 +16,8 @@ struct PhotoMetadataOverlay: View {
                     Spacer()
                     Button(action: onDismiss) {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 24))
-                            .foregroundStyle(.white.opacity(0.7))
+                            .font(.title3)
+                            .foregroundStyle(.white.opacity(0.72))
                     }
                 }
 
@@ -38,11 +38,14 @@ struct PhotoMetadataOverlay: View {
                 }
             }
             .padding(AppSpacing.md)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large))
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+                    .stroke(.white.opacity(0.16), lineWidth: 1)
+            }
             .padding(AppSpacing.md)
         }
-        .background(Color.black.opacity(0.3))
+        .background(AppColors.overlayScrim)
         .onTapGesture { onDismiss() }
     }
 

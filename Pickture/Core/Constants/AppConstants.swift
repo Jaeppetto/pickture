@@ -2,14 +2,13 @@ import Foundation
 
 enum AppConstants {
     static let appName = "Pickture"
-    static let bundleId = "com.pickture.app"
+    static let bundleId = "com.jaeppetto.pickture"
 
     enum Trash {
         static let retentionDays = 30
     }
 
     enum Cleaning {
-        static let defaultDailyGoal = 30
         static let comboThreshold = 5
     }
 

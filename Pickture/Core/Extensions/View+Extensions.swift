@@ -2,58 +2,65 @@ import SwiftUI
 
 extension View {
     func cardShadow() -> some View {
-        shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+        shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 5)
     }
 
     func surfaceStyle() -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium)
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
         return self
-            .background(.thinMaterial, in: shape)
+            .background(shape.fill(AppColors.surface))
             .overlay {
-                shape.strokeBorder(.white.opacity(0.15), lineWidth: 0.5)
+                shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
             }
             .cardShadow()
     }
 
-    // MARK: - Glassmorphism Buttons
+    // MARK: - Buttons
 
     func glassPrimaryButton() -> some View {
-        self
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+        return self
             .font(AppTypography.bodySemibold)
-            .foregroundStyle(AppColors.primary)
+            .foregroundStyle(Color(uiColor: .systemBackground))
             .frame(maxWidth: .infinity)
             .padding(.vertical, AppSpacing.md)
-            .glassBackground(tint: AppColors.primary)
+            .background {
+                shape.fill(AppColors.chrome)
+            }
+            .overlay {
+                shape.strokeBorder(.white.opacity(0.08), lineWidth: 1)
+            }
+            .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 4)
     }
 
     func glassDestructiveButton() -> some View {
-        self
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+        return self
             .font(AppTypography.bodySemibold)
-            .foregroundStyle(AppColors.delete)
+            .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.sm)
-            .glassBackground(tint: AppColors.delete)
+            .padding(.vertical, AppSpacing.md)
+            .background {
+                shape.fill(AppColors.delete)
+            }
+            .overlay {
+                shape.strokeBorder(.white.opacity(0.12), lineWidth: 1)
+            }
+            .shadow(color: AppColors.delete.opacity(0.28), radius: 10, x: 0, y: 4)
     }
 
-    private func glassBackground(tint: Color) -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large)
+    func subtleButton(tint: Color = AppColors.primary) -> some View {
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
         return self
+            .font(AppTypography.bodySemibold)
+            .foregroundStyle(tint)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, AppSpacing.md)
             .background {
-                shape.fill(.ultraThinMaterial)
-                    .overlay {
-                        shape.fill(tint.opacity(0.12))
-                    }
+                shape.fill(AppColors.surface)
             }
-            .clipShape(shape)
             .overlay {
-                shape.strokeBorder(
-                    LinearGradient(
-                        colors: [tint.opacity(0.3), .white.opacity(0.2)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1
-                )
+                shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
             }
     }
 }

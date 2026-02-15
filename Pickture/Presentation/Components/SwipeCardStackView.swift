@@ -28,7 +28,8 @@ struct SwipeCardStackView: View {
                 }
             }
         }
-        .padding(.horizontal, AppSpacing.md)
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.vertical, AppSpacing.sm)
     }
 
     private var visibleCards: [(offset: Int, element: Photo)] {
@@ -39,22 +40,28 @@ struct SwipeCardStackView: View {
     }
 
     private func backgroundCard(for photo: Photo, at stackOffset: Int) -> some View {
-        Group {
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+
+        return Group {
             if let thumbnail = thumbnails[photo.id] {
                 Image(uiImage: thumbnail)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
             } else {
                 Rectangle()
                     .fill(AppColors.surface)
             }
         }
+        .aspectRatio(3.0 / 4.0, contentMode: .fit)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppColors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
-        .scaleEffect(1 - CGFloat(stackOffset) * 0.05)
-        .offset(y: CGFloat(stackOffset) * 8)
+        .clipShape(shape)
+        .overlay {
+            shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 5)
+        .scaleEffect(1 - CGFloat(stackOffset) * 0.035)
+        .offset(y: CGFloat(stackOffset) * 12)
         .opacity(1 - CGFloat(stackOffset) * 0.2)
         .allowsHitTesting(false)
     }

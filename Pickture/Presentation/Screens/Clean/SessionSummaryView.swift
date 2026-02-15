@@ -21,7 +21,7 @@ struct SessionSummaryView: View {
 
                 // Celebration icon
                 Image(systemName: "party.popper.fill")
-                    .font(.system(size: 64))
+                    .font(.system(size: 58))
                     .foregroundStyle(AppColors.primaryGradient)
                     .scaleEffect(showStats ? 1 : 0.5)
                     .opacity(showStats ? 1 : 0)
@@ -29,7 +29,7 @@ struct SessionSummaryView: View {
                 // Title
                 VStack(spacing: AppSpacing.xs) {
                     Text("정리 완료!")
-                        .font(AppTypography.title1)
+                        .font(AppTypography.largeTitle)
                         .foregroundStyle(AppColors.textPrimary)
 
                     if session.freedBytes > 0 {
@@ -61,7 +61,7 @@ struct SessionSummaryView: View {
                                 Image(systemName: "trash")
                                 Text("삭제 대기열 확인 (\(session.totalDeleted))")
                             }
-                            .glassDestructiveButton()
+                            .subtleButton(tint: AppColors.delete)
                         }
                     }
 
@@ -116,8 +116,10 @@ struct SessionSummaryView: View {
     private func statCard(value: Int, label: String, icon: String, color: Color) -> some View {
         VStack(spacing: AppSpacing.xs) {
             Image(systemName: icon)
-                .font(.system(size: 20))
+                .font(.headline)
                 .foregroundStyle(color)
+                .frame(width: 28, height: 28)
+                .background(color.opacity(0.12), in: Circle())
 
             AnimatedCounterView(
                 targetValue: value,
@@ -131,9 +133,7 @@ struct SessionSummaryView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.sm)
-        .background(AppColors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
-        .cardShadow()
+        .surfaceStyle()
     }
 
     // MARK: - Helpers

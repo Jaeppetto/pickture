@@ -15,6 +15,12 @@ struct CleaningActiveView: View {
                 .padding(.top, AppSpacing.xs)
             }
 
+            if viewModel.currentIndex < viewModel.photos.count {
+                topStatusBar
+                    .padding(.horizontal, AppSpacing.md)
+                    .padding(.top, AppSpacing.sm)
+            }
+
             // Card stack
             ZStack {
                 if viewModel.currentIndex < viewModel.photos.count {
@@ -40,7 +46,7 @@ struct CleaningActiveView: View {
 
             // Action buttons
             actionBar
-                .padding(.horizontal, AppSpacing.xl)
+                .padding(.horizontal, AppSpacing.md)
                 .padding(.bottom, AppSpacing.md)
         }
         .overlay {
@@ -56,46 +62,78 @@ struct CleaningActiveView: View {
 
     // MARK: - Action Bar
 
+    private var topStatusBar: some View {
+        HStack(spacing: AppSpacing.xs) {
+            Image(systemName: "shuffle")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(AppColors.textPrimary)
+
+            Spacer()
+
+            Text(captureTimeText)
+                .font(AppTypography.captionMedium)
+                .foregroundStyle(AppColors.textSecondary)
+
+            Spacer()
+
+            HStack(spacing: AppSpacing.xxxs) {
+                Image(systemName: "photo")
+                Text("\(remainingCount)")
+            }
+            .font(AppTypography.captionMedium)
+            .foregroundStyle(AppColors.textPrimary)
+        }
+        .padding(.horizontal, AppSpacing.sm)
+        .padding(.vertical, AppSpacing.xs)
+        .background(AppColors.surface, in: Capsule())
+        .overlay {
+            Capsule().stroke(AppColors.cardBorder, lineWidth: 1)
+        }
+    }
+
+    private var remainingCount: Int {
+        max(0, viewModel.photos.count - viewModel.currentIndex)
+    }
+
+    private var captureTimeText: String {
+        guard viewModel.currentIndex < viewModel.photos.count else { return "--:--" }
+        return Self.timeFormatter.string(from: viewModel.photos[viewModel.currentIndex].createdAt)
+    }
+
+    private static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
+
     private var actionBar: some View {
-        HStack(spacing: AppSpacing.xxl) {
-            // Delete button
-            actionButton(
-                icon: "trash.fill",
-                color: AppColors.delete,
-                size: 56
-            ) {
+        HStack(spacing: AppSpacing.lg) {
+            actionButton(icon: "trash.fill", color: AppColors.delete, size: 44) {
                 Task { await viewModel.deleteCurrentPhoto() }
             }
 
-            // Undo button
-            actionButton(
-                icon: "arrow.uturn.backward",
-                color: AppColors.textSecondary,
-                size: 44
-            ) {
+            actionButton(icon: "arrow.uturn.backward", color: .white.opacity(0.86), size: 40) {
                 Task { await viewModel.undoLastDecision() }
             }
-            .opacity(viewModel.canUndo ? 1 : 0.3)
+            .opacity(viewModel.canUndo ? 1 : 0.35)
             .disabled(!viewModel.canUndo)
 
-            // Favorite button
-            actionButton(
-                icon: "star.fill",
-                color: AppColors.favorite,
-                size: 44
-            ) {
+            actionButton(icon: "star.fill", color: AppColors.favorite, size: 40) {
                 Task { await viewModel.favoriteCurrentPhoto() }
             }
 
-            // Keep button
-            actionButton(
-                icon: "checkmark",
-                color: AppColors.keep,
-                size: 56
-            ) {
+            actionButton(icon: "checkmark", color: AppColors.keep, size: 44) {
                 Task { await viewModel.keepCurrentPhoto() }
             }
         }
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.vertical, AppSpacing.sm)
+        .background(AppColors.chrome, in: Capsule())
+        .overlay {
+            Capsule().stroke(.white.opacity(0.08), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.2), radius: 12, x: 0, y: 6)
     }
 
     private func actionButton(
@@ -112,11 +150,8 @@ struct CleaningActiveView: View {
                 .font(.system(size: size * 0.36, weight: .semibold))
                 .foregroundStyle(color)
                 .frame(width: size, height: size)
-                .background(
-                    Circle()
-                        .fill(AppColors.surface)
-                        .shadow(color: color.opacity(0.2), radius: 8, x: 0, y: 4)
-                )
+                .background(Circle().fill(.white.opacity(0.08)))
+                .overlay(Circle().stroke(.white.opacity(0.08), lineWidth: 1))
         }
         .disabled(viewModel.currentIndex >= viewModel.photos.count)
     }
@@ -136,7 +171,7 @@ struct CleaningActiveView: View {
             Button("세션 완료") {
                 Task { await viewModel.completeSession() }
             }
-            .glassPrimaryButton()
+            .subtleButton()
             .padding(.horizontal, AppSpacing.xxl)
         }
     }

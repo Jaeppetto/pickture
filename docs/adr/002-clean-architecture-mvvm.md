@@ -1,26 +1,29 @@
 # ADR-002: Clean Architecture + MVVM
 
 ## Status
+
 Accepted
 
 ## Date
+
 2026-02-15
 
 ## Context
 
 Pickture needs a scalable architecture that supports:
+
 - Testability: Domain logic must be testable without UI or framework dependencies.
 - Separation of concerns: Photo library access, business logic, and UI must be independent.
 - Swift Concurrency: Architecture must work naturally with async/await and actors.
 
 ### Options Considered
 
-| Option | Pros | Cons |
-|--------|------|------|
-| **Clean Architecture + MVVM** | Clear layer separation, testable, proven | More boilerplate |
-| MV (Model-View) | Simple, less code | Business logic bleeds into views |
-| TCA (The Composable Architecture) | Excellent testability, unidirectional | Heavy dependency, steep learning curve |
-| VIPER | Very strict separation | Excessive boilerplate for this scale |
+| Option                            | Pros                                     | Cons                                   |
+| --------------------------------- | ---------------------------------------- | -------------------------------------- |
+| **Clean Architecture + MVVM**     | Clear layer separation, testable, proven | More boilerplate                       |
+| MV (Model-View)                   | Simple, less code                        | Business logic bleeds into views       |
+| TCA (The Composable Architecture) | Excellent testability, unidirectional    | Heavy dependency, steep learning curve |
+| VIPER                             | Very strict separation                   | Excessive boilerplate for this scale   |
 
 ## Decision
 

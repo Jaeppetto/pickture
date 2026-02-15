@@ -11,18 +11,27 @@ struct SwipeCardView: View {
 
     private let swipeThreshold: CGFloat = 120
     private let verticalThreshold: CGFloat = -100
+    private let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
 
     var body: some View {
         ZStack {
             cardImage
+            decisionTintOverlay
+            metadataOverlay
             directionOverlay
+                .allowsHitTesting(false)
         }
-        .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large))
+        .aspectRatio(3.0 / 4.0, contentMode: .fit)
+        .clipShape(shape)
+        .overlay {
+            shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
+        }
         .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
         .rotationEffect(.degrees(Double(offset.width) / 20.0))
         .offset(x: offset.width, y: offset.height)
         .opacity(isRemoved ? 0 : 1)
-        .gesture(dragGesture)
+        .contentShape(shape)
+        .highPriorityGesture(dragGesture)
         .onTapGesture { onTapped() }
     }
 
@@ -33,7 +42,7 @@ struct SwipeCardView: View {
             if let thumbnail {
                 Image(uiImage: thumbnail)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
             } else {
                 Rectangle()
                     .fill(AppColors.surface)
@@ -44,13 +53,20 @@ struct SwipeCardView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppColors.surface)
+        .clipped()
     }
 
-    // MARK: - Direction Overlay
+    @ViewBuilder
+    private var decisionTintOverlay: some View {
+        if let decision = activeDecision {
+            decisionColor(decision)
+                .opacity(tintOpacity)
+                .allowsHitTesting(false)
+        }
+    }
 
     @ViewBuilder
     private var directionOverlay: some View {
-        // Delete overlay (swipe left)
         if offset.width < -30 {
             overlayBadge(
                 gradient: AppColors.deleteGradient,
@@ -61,7 +77,6 @@ struct SwipeCardView: View {
             )
         }
 
-        // Keep overlay (swipe right)
         if offset.width > 30 {
             overlayBadge(
                 gradient: AppColors.keepGradient,
@@ -72,7 +87,6 @@ struct SwipeCardView: View {
             )
         }
 
-        // Favorite overlay (swipe up)
         if offset.height < -30 {
             overlayBadge(
                 gradient: AppColors.favoriteGradient,
@@ -82,6 +96,38 @@ struct SwipeCardView: View {
                 opacity: min(1, abs(offset.height) / abs(verticalThreshold))
             )
         }
+    }
+
+    private var metadataOverlay: some View {
+        VStack {
+            Spacer()
+
+            HStack(spacing: AppSpacing.xs) {
+                metadataChip(icon: photoTypeIcon, text: photoTypeText)
+                metadataChip(icon: "calendar", text: formattedDate)
+                Spacer()
+                if let duration = photo.duration, duration > 0 {
+                    metadataChip(icon: "play.fill", text: formattedDuration(duration))
+                }
+                metadataChip(icon: "internaldrive", text: photo.fileSize.formattedBytesShort)
+            }
+            .padding(.horizontal, AppSpacing.xs)
+            .padding(.vertical, AppSpacing.xs)
+            .background(.regularMaterial, in: Capsule())
+        }
+        .padding(AppSpacing.sm)
+        .allowsHitTesting(false)
+    }
+
+    private func metadataChip(icon: String, text: String) -> some View {
+        HStack(spacing: AppSpacing.xxxs) {
+            Image(systemName: icon)
+            Text(text)
+        }
+        .font(AppTypography.captionMedium)
+        .foregroundStyle(AppColors.textPrimary)
+        .padding(.horizontal, AppSpacing.xxs)
+        .padding(.vertical, AppSpacing.xxs)
     }
 
     private func overlayBadge(
@@ -98,11 +144,13 @@ struct SwipeCardView: View {
                 Image(systemName: icon)
                 Text(text)
             }
-            .font(AppTypography.title3)
+            .font(AppTypography.bodySemibold)
             .foregroundStyle(.white)
             .padding(AppSpacing.sm)
-            .background(gradient.opacity(0.9))
-            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+            .background(
+                RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small, style: .continuous)
+                    .fill(gradient.opacity(0.9))
+            )
             .padding(AppSpacing.md)
         }
         .opacity(opacity)
@@ -156,5 +204,70 @@ struct SwipeCardView: View {
         case .favorite:
             offset = CGSize(width: 0, height: -600)
         }
+    }
+
+    private var activeDecision: Decision? {
+        if offset.height < -30 {
+            return .favorite
+        }
+        if offset.width < -30 {
+            return .delete
+        }
+        if offset.width > 30 {
+            return .keep
+        }
+        return nil
+    }
+
+    private var tintOpacity: Double {
+        let horizontal = abs(offset.width) / swipeThreshold
+        let vertical = abs(offset.height) / abs(verticalThreshold)
+        return min(0.08, max(horizontal, vertical) * 0.08)
+    }
+
+    private func decisionColor(_ decision: Decision) -> Color {
+        switch decision {
+        case .delete: AppColors.delete
+        case .keep: AppColors.keep
+        case .favorite: AppColors.favorite
+        }
+    }
+
+    private var photoTypeText: String {
+        switch photo.type {
+        case .image: "사진"
+        case .video: "동영상"
+        case .screenshot: "스크린샷"
+        case .gif: "GIF"
+        case .livePhoto: "Live"
+        }
+    }
+
+    private var photoTypeIcon: String {
+        switch photo.type {
+        case .image: "photo"
+        case .video: "video.fill"
+        case .screenshot: "camera.viewfinder"
+        case .gif: "square.stack.3d.forward.dottedline"
+        case .livePhoto: "livephoto"
+        }
+    }
+
+    private var formattedDate: String {
+        Self.dateFormatter.string(from: photo.createdAt)
+    }
+
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter
+    }()
+
+    private func formattedDuration(_ duration: TimeInterval) -> String {
+        let minutes = Int(duration) / 60
+        let seconds = Int(duration) % 60
+        return String(format: "%d:%02d", minutes, seconds)
     }
 }

@@ -27,12 +27,6 @@ final class UserPreferenceRepository: UserPreferenceRepositoryProtocol, @uncheck
         try await updatePreferences(prefs)
     }
 
-    func updateDailyGoal(_ goal: Int) async throws {
-        var prefs = await getPreferences()
-        prefs.dailyGoal = goal
-        try await updatePreferences(prefs)
-    }
-
     func updateHapticEnabled(_ enabled: Bool) async throws {
         var prefs = await getPreferences()
         prefs.hapticEnabled = enabled

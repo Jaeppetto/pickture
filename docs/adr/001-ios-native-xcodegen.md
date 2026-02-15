@@ -1,9 +1,11 @@
 # ADR-001: iOS Native with XcodeGen
 
 ## Status
+
 Accepted
 
 ## Date
+
 2026-02-15
 
 ## Context
@@ -19,12 +21,12 @@ Pickture was originally planned as a Flutter cross-platform app. After evaluatio
 
 CLI-based development (Claude Code) cannot manipulate `.xcodeproj` binary plists directly. Options considered:
 
-| Option | Pros | Cons |
-|--------|------|------|
-| **XcodeGen** | Declarative YAML, deterministic output, easy CI | Extra tooling dependency |
-| Manual xcodeproj | No dependencies | Impossible from CLI |
-| Swift Package (executable) | SPM native | Not suitable for iOS app targets |
-| Tuist | Full project generation | Heavier tooling, steeper learning curve |
+| Option                     | Pros                                            | Cons                                    |
+| -------------------------- | ----------------------------------------------- | --------------------------------------- |
+| **XcodeGen**               | Declarative YAML, deterministic output, easy CI | Extra tooling dependency                |
+| Manual xcodeproj           | No dependencies                                 | Impossible from CLI                     |
+| Swift Package (executable) | SPM native                                      | Not suitable for iOS app targets        |
+| Tuist                      | Full project generation                         | Heavier tooling, steeper learning curve |
 
 ## Decision
 

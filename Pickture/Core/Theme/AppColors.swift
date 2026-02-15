@@ -1,40 +1,49 @@
 import SwiftUI
 
 enum AppColors {
-    // MARK: - Semantic Colors (from Asset Catalog)
+    // MARK: - Semantic Colors
 
-    static let background = Color("Background")
-    static let surface = Color("Surface")
-    static let primary = Color("Primary")
-    static let secondary = Color("Secondary")
-    static let delete = Color("Delete")
-    static let keep = Color("Keep")
-    static let favorite = Color("Favorite")
-    static let textPrimary = Color("TextPrimary")
-    static let textSecondary = Color("TextSecondary")
+    static let background = Color(uiColor: .systemGray6)
+    static let surface = Color(uiColor: .systemBackground)
+    static let primary = Color.black
+    static let secondary = Color(uiColor: .secondaryLabel)
+    static let delete = Color(uiColor: .label)
+    static let keep = Color(uiColor: .secondaryLabel)
+    static let favorite = Color(uiColor: .tertiaryLabel)
+    static let textPrimary = Color(uiColor: .label)
+    static let textSecondary = Color(uiColor: .secondaryLabel)
+    static let cardBorder = Color.primary.opacity(0.12)
+    static let overlayScrim = Color.black.opacity(0.4)
+    static let video = Color(uiColor: .tertiaryLabel)
+    static let screenshot = Color(uiColor: .tertiaryLabel)
+    static let chrome = Color.black
+    static let chartPhoto = Color(uiColor: .label)
+    static let chartVideo = Color(uiColor: .systemGray2)
+    static let chartScreenshot = Color(uiColor: .systemGray3)
+    static let chartOther = Color(uiColor: .systemGray4)
 
     // MARK: - Gradients
 
     static let primaryGradient = LinearGradient(
-        colors: [Color(hex: 0x2D5BFF), Color(hex: 0x7C3AED)],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
+        colors: [chrome, chrome.opacity(0.78)],
+        startPoint: .leading,
+        endPoint: .trailing
     )
 
     static let deleteGradient = LinearGradient(
-        colors: [Color(hex: 0xFF3B30), Color(hex: 0xFF6B6B)],
+        colors: [chrome, Color(uiColor: .systemGray2)],
         startPoint: .leading,
         endPoint: .trailing
     )
 
     static let keepGradient = LinearGradient(
-        colors: [Color(hex: 0x34C759), Color(hex: 0x7AE5A0)],
+        colors: [Color(uiColor: .systemGray2), Color(uiColor: .systemGray4)],
         startPoint: .leading,
         endPoint: .trailing
     )
 
     static let favoriteGradient = LinearGradient(
-        colors: [Color(hex: 0xFF9500), Color(hex: 0xFFD60A)],
+        colors: [Color(uiColor: .systemGray3), Color(uiColor: .systemGray5)],
         startPoint: .leading,
         endPoint: .trailing
     )

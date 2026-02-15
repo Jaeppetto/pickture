@@ -18,7 +18,7 @@ struct FilterSelectionSheet: View {
                         title: "전체 사진",
                         subtitle: "모든 사진을 순서대로 정리",
                         icon: "photo.on.rectangle",
-                        color: AppColors.primary
+                        color: AppColors.textPrimary
                     ) {
                         select(filter: nil)
                     }
@@ -27,7 +27,7 @@ struct FilterSelectionSheet: View {
                         title: "스크린샷",
                         subtitle: "스크린샷만 빠르게 정리",
                         icon: "camera.viewfinder",
-                        color: Color(hex: 0xFF9500)
+                        color: AppColors.textSecondary
                     ) {
                         select(filter: .screenshotsOnly())
                     }
@@ -36,7 +36,7 @@ struct FilterSelectionSheet: View {
                         title: "동영상",
                         subtitle: "용량 큰 동영상 정리",
                         icon: "video.fill",
-                        color: Color(hex: 0x7C3AED)
+                        color: AppColors.textSecondary
                     ) {
                         select(filter: .videosOnly())
                     }
@@ -45,7 +45,7 @@ struct FilterSelectionSheet: View {
                         title: "용량 큰 파일",
                         subtitle: "10MB 이상 파일만 정리",
                         icon: "doc.fill",
-                        color: Color(hex: 0xFF3B30)
+                        color: AppColors.delete
                     ) {
                         select(filter: .largeFiles())
                     }
@@ -74,11 +74,10 @@ struct FilterSelectionSheet: View {
         Button(action: action) {
             HStack(spacing: AppSpacing.sm) {
                 Image(systemName: icon)
-                    .font(.system(size: 24))
+                    .font(.title3)
                     .foregroundStyle(color)
                     .frame(width: 44, height: 44)
-                    .background(color.opacity(0.12))
-                    .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+                    .background(AppColors.background, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
                     Text(title)
@@ -92,13 +91,11 @@ struct FilterSelectionSheet: View {
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.footnote.weight(.semibold))
                     .foregroundStyle(AppColors.textSecondary)
             }
             .padding(AppSpacing.sm)
-            .background(AppColors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium))
-            .cardShadow()
+            .surfaceStyle()
         }
         .buttonStyle(.plain)
     }

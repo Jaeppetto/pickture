@@ -247,7 +247,7 @@ final class CleanViewModel {
 
         // Load thumbnails for upcoming photos
         for photo in newPhotos {
-            if let image = await photoRepository.requestThumbnail(for: photo.id, size: size) {
+            if let image = await photoRepository.requestPreviewImage(for: photo.id, size: size) {
                 thumbnails[photo.id] = image
             }
         }
@@ -267,7 +267,7 @@ final class CleanViewModel {
             for index in aheadStart..<aheadEnd {
                 let photo = photos[index]
                 if thumbnails[photo.id] == nil {
-                    if let image = await photoRepository.requestThumbnail(for: photo.id, size: size) {
+                    if let image = await photoRepository.requestPreviewImage(for: photo.id, size: size) {
                         thumbnails[photo.id] = image
                     }
                 }

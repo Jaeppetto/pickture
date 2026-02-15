@@ -6,10 +6,10 @@ struct StorageChartView: View {
 
     private var chartData: [StorageCategory] {
         [
-            StorageCategory(name: "사진", bytes: storageInfo.photoStorageBytes, color: AppColors.primary),
-            StorageCategory(name: "동영상", bytes: storageInfo.videoStorageBytes, color: Color(hex: 0x7C3AED)),
-            StorageCategory(name: "스크린샷", bytes: storageInfo.screenshotStorageBytes, color: Color(hex: 0xFF9500)),
-            StorageCategory(name: "기타", bytes: storageInfo.otherMediaBytes, color: AppColors.textSecondary),
+            StorageCategory(name: "사진", bytes: storageInfo.photoStorageBytes, color: AppColors.chartPhoto),
+            StorageCategory(name: "동영상", bytes: storageInfo.videoStorageBytes, color: AppColors.chartVideo),
+            StorageCategory(name: "스크린샷", bytes: storageInfo.screenshotStorageBytes, color: AppColors.chartScreenshot),
+            StorageCategory(name: "기타", bytes: storageInfo.otherMediaBytes, color: AppColors.chartOther),
         ].filter { $0.bytes > 0 }
     }
 
