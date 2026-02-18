@@ -23,20 +23,23 @@ struct SessionSummaryView: View {
                 // Celebration icon
                 Image(systemName: "party.popper.fill")
                     .font(.system(size: 58))
-                    .foregroundStyle(AppColors.primaryGradient)
+                    .foregroundStyle(AppColors.accentYellow)
                     .scaleEffect(showStats ? 1 : 0.5)
                     .opacity(showStats ? 1 : 0)
 
                 // Title
                 VStack(spacing: AppSpacing.xs) {
                     Text("정리 완료!")
-                        .font(AppTypography.largeTitle)
-                        .foregroundStyle(AppColors.textPrimary)
+                        .font(AppTypography.heroTitle)
+                        .foregroundStyle(AppColors.ink)
 
                     if session.freedBytes > 0 {
                         Text("\(session.freedBytes.formattedBytes) 확보")
-                            .font(AppTypography.title3)
-                            .foregroundStyle(AppColors.primary)
+                            .font(AppTypography.sectionTitle)
+                            .foregroundStyle(AppColors.ink)
+                            .padding(.horizontal, AppSpacing.sm)
+                            .padding(.vertical, AppSpacing.xxs)
+                            .background(AppColors.accentYellow)
                     }
                 }
 
@@ -49,7 +52,7 @@ struct SessionSummaryView: View {
                 if let duration = sessionDuration {
                     Text("소요 시간: \(duration)")
                         .font(AppTypography.footnote)
-                        .foregroundStyle(AppColors.textSecondary)
+                        .foregroundStyle(AppColors.inkMuted)
                 }
 
                 Spacer()
@@ -62,13 +65,13 @@ struct SessionSummaryView: View {
                                 Image(systemName: "trash")
                                 Text("삭제 대기열 확인 (\(session.totalDeleted))")
                             }
-                            .subtleButton(tint: AppColors.delete)
+                            .brutalistSecondaryButton()
                         }
                     }
 
                     Button(action: onDone) {
                         Text("완료")
-                            .glassPrimaryButton()
+                            .brutalistPrimaryButton()
                     }
                 }
                 .padding(.horizontal, AppSpacing.xl)
@@ -90,19 +93,19 @@ struct SessionSummaryView: View {
                 value: session.totalReviewed,
                 label: "검토",
                 icon: "eye.fill",
-                color: AppColors.primary
+                color: AppColors.accentBlue
             )
             statCard(
                 value: session.totalDeleted,
                 label: "삭제",
                 icon: "trash.fill",
-                color: AppColors.delete
+                color: AppColors.accentRed
             )
             statCard(
                 value: session.totalKept,
                 label: "보관",
                 icon: "checkmark",
-                color: AppColors.keep
+                color: AppColors.accentGreen
             )
         }
         .padding(.horizontal, AppSpacing.md)
@@ -112,23 +115,26 @@ struct SessionSummaryView: View {
         VStack(spacing: AppSpacing.xs) {
             Image(systemName: icon)
                 .font(.headline)
-                .foregroundStyle(color)
+                .foregroundStyle(AppColors.ink)
                 .frame(width: 28, height: 28)
-                .background(color.opacity(0.12), in: Circle())
+                .background(color.opacity(0.2), in: Circle())
+                .overlay {
+                    Circle().strokeBorder(AppColors.border, lineWidth: 1.5)
+                }
 
             AnimatedCounterView(
                 targetValue: value,
                 font: AppTypography.monoTitle,
-                color: AppColors.textPrimary
+                color: AppColors.ink
             )
 
             Text(label)
                 .font(AppTypography.caption)
-                .foregroundStyle(AppColors.textSecondary)
+                .foregroundStyle(AppColors.inkMuted)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.sm)
-        .surfaceStyle()
+        .brutalistCard(accent: color)
     }
 
     // MARK: - Helpers

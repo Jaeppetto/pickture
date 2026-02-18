@@ -11,7 +11,7 @@ struct SwipeCardView: View {
     @State private var appeared = false
 
     private let swipeThreshold: CGFloat = 120
-    private let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+    private let shape = RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
 
     var body: some View {
         ZStack {
@@ -24,9 +24,13 @@ struct SwipeCardView: View {
         .aspectRatio(3.0 / 4.0, contentMode: .fit)
         .clipShape(shape)
         .overlay {
-            shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
+            shape.strokeBorder(AppColors.border, lineWidth: AppSpacing.BrutalistTokens.borderWidth)
         }
-        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
+        .background(
+            shape
+                .fill(AppColors.shadowColor)
+                .offset(x: AppSpacing.BrutalistTokens.shadowOffset, y: AppSpacing.BrutalistTokens.shadowOffsetLarge)
+        )
         .scaleEffect(appeared ? 1.0 : 0.965)
         .offset(y: appeared ? 0 : 12)
         .rotationEffect(.degrees(Double(offset.width) / 20.0))
@@ -35,7 +39,7 @@ struct SwipeCardView: View {
         .contentShape(shape)
         .highPriorityGesture(dragGesture)
         .onAppear {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
                 appeared = true
             }
         }
@@ -74,20 +78,20 @@ struct SwipeCardView: View {
     @ViewBuilder
     private var directionOverlay: some View {
         if offset.width < -30 {
-            overlayGlow(
-                color: AppColors.delete,
+            stampOverlay(
                 text: String(localized: "삭제", locale: locale),
-                alignment: .topTrailing,
-                opacity: min(1, abs(offset.width) / swipeThreshold)
+                color: AppColors.delete,
+                rotation: 12,
+                progress: min(1, abs(offset.width) / swipeThreshold)
             )
         }
 
         if offset.width > 30 {
-            overlayGlow(
-                color: AppColors.keep,
+            stampOverlay(
                 text: String(localized: "보관", locale: locale),
-                alignment: .topLeading,
-                opacity: min(1, offset.width / swipeThreshold)
+                color: AppColors.keep,
+                rotation: -12,
+                progress: min(1, offset.width / swipeThreshold)
             )
         }
     }
@@ -107,7 +111,13 @@ struct SwipeCardView: View {
             }
             .padding(.horizontal, AppSpacing.xs)
             .padding(.vertical, AppSpacing.xs)
-            .background(.regularMaterial, in: Capsule())
+            .background(
+                Capsule()
+                    .fill(AppColors.surface)
+                    .overlay {
+                        Capsule().strokeBorder(AppColors.border, lineWidth: 1.5)
+                    }
+            )
         }
         .padding(AppSpacing.sm)
         .allowsHitTesting(false)
@@ -119,37 +129,31 @@ struct SwipeCardView: View {
             Text(text)
         }
         .font(AppTypography.captionMedium)
-        .foregroundStyle(AppColors.textPrimary)
+        .foregroundStyle(AppColors.ink)
         .padding(.horizontal, AppSpacing.xxs)
         .padding(.vertical, AppSpacing.xxs)
     }
 
-    private func overlayGlow(
-        color: Color,
+    private func stampOverlay(
         text: String,
-        alignment: Alignment,
-        opacity: Double
+        color: Color,
+        rotation: Double,
+        progress: Double
     ) -> some View {
-        ZStack(alignment: alignment) {
-            // Inner glow — colored border + blur
-            shape
-                .strokeBorder(color, lineWidth: 3)
-                .blur(radius: 6)
-                .opacity(opacity * 0.7)
-
-            shape
-                .strokeBorder(color, lineWidth: 2)
-                .opacity(opacity)
-
-            // Text label with glow
+        ZStack {
             Text(text)
-                .font(.title2.weight(.heavy))
+                .font(.system(size: 48, weight: .black))
                 .foregroundStyle(color)
-                .shadow(color: color.opacity(0.6), radius: 8, x: 0, y: 0)
-                .shadow(color: color.opacity(0.3), radius: 16, x: 0, y: 0)
-                .padding(AppSpacing.lg)
+                .padding(.horizontal, AppSpacing.lg)
+                .padding(.vertical, AppSpacing.sm)
+                .overlay {
+                    RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadiusSmall, style: .continuous)
+                        .strokeBorder(color, lineWidth: 4)
+                }
+                .rotationEffect(.degrees(rotation))
+                .scaleEffect(0.6 + progress * 0.4)
         }
-        .opacity(opacity)
+        .opacity(progress)
     }
 
     // MARK: - Drag Gesture
@@ -163,7 +167,7 @@ struct SwipeCardView: View {
                 let direction = resolveDirection(translation: value.translation)
 
                 if let direction {
-                    withAnimation(.spring(response: AppConstants.Animation.springResponse, dampingFraction: AppConstants.Animation.springDamping)) {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
                         applyFinalOffset(for: direction)
                         isRemoved = true
                     }
@@ -171,7 +175,7 @@ struct SwipeCardView: View {
                         onSwiped(direction)
                     }
                 } else {
-                    withAnimation(.spring(response: AppConstants.Animation.springResponse, dampingFraction: AppConstants.Animation.springDamping)) {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
                         offset = .zero
                     }
                 }

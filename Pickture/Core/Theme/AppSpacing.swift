@@ -17,10 +17,22 @@ enum AppSpacing {
     // MARK: - Corner Radius Scale
 
     enum CornerRadius {
-        static let small: CGFloat = 8
-        static let medium: CGFloat = 12
-        static let large: CGFloat = 16
-        static let extraLarge: CGFloat = 24
+        static let small: CGFloat = 6
+        static let medium: CGFloat = 10
+        static let large: CGFloat = 10
+        static let extraLarge: CGFloat = 14
         static let full: CGFloat = 9999
+    }
+
+    // MARK: - Brutalist Tokens
+
+    enum BrutalistTokens {
+        static let borderWidth: CGFloat = 2.5
+        static let borderWidthThick: CGFloat = 3.5
+        static let shadowOffset: CGFloat = 4
+        static let shadowOffsetLarge: CGFloat = 6
+        static let cornerRadius: CGFloat = 10
+        static let cornerRadiusSmall: CGFloat = 6
+        static let cornerRadiusLarge: CGFloat = 14
     }
 }

@@ -81,7 +81,7 @@ struct DeletionQueueScreen: View {
 
     private func gridCell(for item: TrashItem) -> some View {
         let isSelected = viewModel.selectedIds.contains(item.id)
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
 
         return Button {
             viewModel.toggleSelection(id: item.id)
@@ -99,7 +99,7 @@ struct DeletionQueueScreen: View {
                             .fill(AppColors.surface)
                             .overlay {
                                 Image(systemName: "photo")
-                                    .foregroundStyle(AppColors.textSecondary)
+                                    .foregroundStyle(AppColors.inkMuted)
                             }
                     }
                 }
@@ -126,40 +126,41 @@ struct DeletionQueueScreen: View {
                 .allowsHitTesting(false)
 
                 HStack(spacing: AppSpacing.xxs) {
-                    Text(expirationLabel(for: item))
-                        .font(AppTypography.caption)
-                        .foregroundStyle(expirationColor(for: item))
-                        .padding(.horizontal, AppSpacing.xs)
-                        .padding(.vertical, AppSpacing.xxs)
-                        .background(.black.opacity(0.42), in: Capsule())
+                    expirationBadge(for: item)
 
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .font(.title3)
-                        .foregroundStyle(isSelected ? AppColors.primary : .white.opacity(0.92))
-                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 1)
+                        .foregroundStyle(isSelected ? AppColors.accentYellow : .white.opacity(0.92))
                 }
                 .padding(AppSpacing.xs)
             }
             .clipShape(shape)
             .overlay {
-                shape.strokeBorder(isSelected ? AppColors.primary : AppColors.cardBorder, lineWidth: isSelected ? 2 : 1)
+                shape.strokeBorder(
+                    AppColors.border,
+                    lineWidth: isSelected ? AppSpacing.BrutalistTokens.borderWidthThick : 2
+                )
             }
-            .shadow(color: .black.opacity(isSelected ? 0.16 : 0.08), radius: isSelected ? 8 : 5, x: 0, y: 3)
-            .overlay(alignment: .topLeading) {
-                if isSelected {
-                    RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.medium, style: .continuous)
-                        .fill(AppColors.primary.opacity(0.16))
-                        .allowsHitTesting(false)
-                }
-            }
+            .background(
+                isSelected
+                    ? AnyView(
+                        shape
+                            .fill(AppColors.accentYellow)
+                            .offset(x: AppSpacing.BrutalistTokens.shadowOffset, y: AppSpacing.BrutalistTokens.shadowOffset)
+                    )
+                    : AnyView(EmptyView())
+            )
             .overlay(alignment: .topLeading) {
                 if isSelected {
                     Text("선택됨")
-                        .font(AppTypography.caption)
-                        .foregroundStyle(.white)
+                        .font(AppTypography.captionMedium)
+                        .foregroundStyle(AppColors.ink)
                         .padding(.horizontal, AppSpacing.xs)
                         .padding(.vertical, AppSpacing.xxs)
-                        .background(AppColors.primary, in: Capsule())
+                        .background(AppColors.accentYellow)
+                        .overlay {
+                            Rectangle().strokeBorder(AppColors.border, lineWidth: 1)
+                        }
                         .padding(AppSpacing.xs)
                 }
             }
@@ -168,30 +169,46 @@ struct DeletionQueueScreen: View {
         .buttonStyle(.plain)
     }
 
+    private func expirationBadge(for item: TrashItem) -> some View {
+        let days = daysUntilExpiration(for: item)
+        let badgeColor: Color = days <= 1 ? AppColors.accentRed : (days <= 3 ? AppColors.accentYellow : AppColors.surface)
+        let textColor: Color = days <= 1 ? .white : AppColors.ink
+
+        return Text(expirationLabel(for: item))
+            .font(AppTypography.captionSmall)
+            .foregroundStyle(textColor)
+            .padding(.horizontal, AppSpacing.xs)
+            .padding(.vertical, AppSpacing.xxs)
+            .background(badgeColor)
+            .overlay {
+                Rectangle().strokeBorder(AppColors.border, lineWidth: 1)
+            }
+    }
+
     private var summaryHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("삭제 대기 사진 \(viewModel.trashItems.count)개")
-                .font(AppTypography.title3)
-                .foregroundStyle(AppColors.textPrimary)
+                .font(AppTypography.sectionTitle)
+                .foregroundStyle(AppColors.ink)
 
             HStack {
                 Label("예상 확보", systemImage: "internaldrive")
                     .font(AppTypography.footnote)
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.inkMuted)
                 Spacer()
                 Text(totalQueueBytes.formattedBytes)
                     .font(AppTypography.monoBody)
-                    .foregroundStyle(AppColors.textPrimary)
+                    .foregroundStyle(AppColors.ink)
             }
 
             if nearExpirationCount > 0 {
                 Text("곧 만료: \(nearExpirationCount)개")
                     .font(AppTypography.captionMedium)
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.accentRed)
             }
         }
         .padding(AppSpacing.md)
-        .surfaceStyle()
+        .brutalistCard()
     }
 
     private var totalQueueBytes: Int64 {
@@ -214,13 +231,6 @@ struct DeletionQueueScreen: View {
         if days <= 0 { return String(localized: "오늘 만료", locale: locale) }
         let format = String(localized: "%@일 남음", locale: locale)
         return String(format: format, locale: locale, String(days))
-    }
-
-    private func expirationColor(for item: TrashItem) -> Color {
-        let days = daysUntilExpiration(for: item)
-        if days <= 1 { return AppColors.textPrimary }
-        if days <= 3 { return AppColors.textSecondary }
-        return .white
     }
 
     private func deletedLabel(for item: TrashItem) -> String {
@@ -249,11 +259,11 @@ struct DeletionQueueScreen: View {
             if viewModel.hasSelection {
                 Text("\(viewModel.selectedIds.count)개 선택 (\(viewModel.totalSelectedBytes.formattedBytes))")
                     .font(AppTypography.footnoteMedium)
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.inkMuted)
             } else {
                 Text("복원하거나 완전 삭제할 항목을 선택하세요")
                     .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.inkMuted)
             }
 
             HStack(spacing: AppSpacing.sm) {
@@ -261,7 +271,7 @@ struct DeletionQueueScreen: View {
                     Task { await viewModel.restoreSelected() }
                 } label: {
                     Text("복원")
-                        .subtleButton()
+                        .brutalistSecondaryButton()
                 }
                 .disabled(!viewModel.hasSelection)
                 .opacity(viewModel.hasSelection ? 1 : 0.5)
@@ -276,15 +286,17 @@ struct DeletionQueueScreen: View {
                     }
                 } label: {
                     Text(viewModel.hasSelection ? LocalizedStringKey("선택 삭제") : LocalizedStringKey("전체 삭제"))
-                        .glassDestructiveButton()
+                        .brutalistDestructiveButton()
                 }
                 .disabled(viewModel.isDeleting)
             }
         }
         .padding(AppSpacing.md)
-        .background(.regularMaterial)
+        .background(AppColors.surface)
         .overlay(alignment: .top) {
-            Divider()
+            Rectangle()
+                .fill(AppColors.border)
+                .frame(height: AppSpacing.BrutalistTokens.borderWidth)
         }
     }
 
@@ -294,15 +306,15 @@ struct DeletionQueueScreen: View {
         VStack(spacing: AppSpacing.md) {
             Image(systemName: "trash.slash")
                 .font(.system(size: 56))
-                .foregroundStyle(AppColors.textSecondary)
+                .foregroundStyle(AppColors.inkMuted)
 
             Text("삭제 대기열이 비어있습니다")
-                .font(AppTypography.title3)
-                .foregroundStyle(AppColors.textPrimary)
+                .font(AppTypography.sectionTitle)
+                .foregroundStyle(AppColors.ink)
 
             Text("정리 시 삭제한 사진이 여기에 표시됩니다")
                 .font(AppTypography.body)
-                .foregroundStyle(AppColors.textSecondary)
+                .foregroundStyle(AppColors.inkMuted)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

@@ -38,7 +38,7 @@ struct SwipeCardStackView: View {
     }
 
     private func backgroundCard(for photo: Photo, at stackOffset: Int) -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
 
         return Group {
             if let thumbnail = thumbnails[photo.id] {
@@ -55,13 +55,12 @@ struct SwipeCardStackView: View {
         .background(AppColors.surface)
         .clipShape(shape)
         .overlay {
-            shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
+            shape.strokeBorder(AppColors.border, lineWidth: 1)
         }
-        .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 5)
         .scaleEffect(1 - CGFloat(stackOffset) * 0.035)
         .offset(y: CGFloat(stackOffset) * 12)
         .opacity(1 - CGFloat(stackOffset) * 0.2)
         .allowsHitTesting(false)
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: currentIndex)
+        .animation(.spring(response: 0.3, dampingFraction: 0.72), value: currentIndex)
     }
 }

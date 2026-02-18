@@ -71,6 +71,10 @@ struct PhotoStartPickerView: View {
                     }
                 }
                 .clipped()
+                .overlay {
+                    Rectangle()
+                        .strokeBorder(AppColors.border, lineWidth: 2)
+                }
         }
         .buttonStyle(.plain)
     }

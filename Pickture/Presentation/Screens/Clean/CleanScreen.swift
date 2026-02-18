@@ -87,8 +87,8 @@ struct CleanScreen: View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
                 Text("스와이프 정리")
-                    .font(.title.bold())
-                    .foregroundStyle(AppColors.textPrimary)
+                    .font(AppTypography.heroTitle)
+                    .foregroundStyle(AppColors.ink)
                     .frame(maxWidth: .infinity)
                     .padding(.top, AppSpacing.sm)
 
@@ -97,7 +97,7 @@ struct CleanScreen: View {
                         title: "전체사진",
                         subtitle: "모든 사진을 순서대로 정리",
                         icon: "photo.on.rectangle",
-                        color: AppColors.textPrimary
+                        accentColor: AppColors.accentYellow
                     ) {
                         Task { await viewModel.startNewSession() }
                     }
@@ -106,7 +106,7 @@ struct CleanScreen: View {
                         title: "스크린샷",
                         subtitle: "스크린샷만 빠르게 정리",
                         icon: "camera.viewfinder",
-                        color: AppColors.textSecondary
+                        accentColor: AppColors.accentPurple
                     ) {
                         Task { await viewModel.startNewSession(filter: .screenshotsOnly()) }
                     }
@@ -115,7 +115,7 @@ struct CleanScreen: View {
                         title: "동영상",
                         subtitle: "용량 큰 동영상 정리",
                         icon: "video.fill",
-                        color: AppColors.textSecondary
+                        accentColor: AppColors.accentBlue
                     ) {
                         Task { await viewModel.startNewSession(filter: .videosOnly()) }
                     }
@@ -124,7 +124,7 @@ struct CleanScreen: View {
                         title: "시작위치 선택하기",
                         subtitle: "특정 시점부터 정리 시작",
                         icon: "photo.on.rectangle.angled",
-                        color: AppColors.textSecondary
+                        accentColor: AppColors.accentGreen
                     ) {
                         showStartPicker = true
                     }
@@ -133,7 +133,7 @@ struct CleanScreen: View {
                         title: "랜덤",
                         subtitle: "사진을 랜덤으로 섞어서 정리",
                         icon: "shuffle",
-                        color: AppColors.textSecondary
+                        accentColor: AppColors.accentRed
                     ) {
                         Task { await viewModel.startNewSession(shuffled: true) }
                     }
@@ -148,34 +148,38 @@ struct CleanScreen: View {
         title: LocalizedStringKey,
         subtitle: LocalizedStringKey,
         icon: String,
-        color: Color,
+        accentColor: Color,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
             HStack(spacing: AppSpacing.sm) {
                 Image(systemName: icon)
                     .font(.title3)
-                    .foregroundStyle(color)
+                    .foregroundStyle(AppColors.ink)
                     .frame(width: 44, height: 44)
-                    .background(AppColors.background, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+                    .background(accentColor.opacity(0.2), in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small)
+                            .strokeBorder(AppColors.border, lineWidth: 1.5)
+                    }
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
                     Text(title)
                         .font(AppTypography.bodyMedium)
-                        .foregroundStyle(AppColors.textPrimary)
+                        .foregroundStyle(AppColors.ink)
                     Text(subtitle)
                         .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.textSecondary)
+                        .foregroundStyle(AppColors.inkMuted)
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.inkMuted)
             }
             .padding(AppSpacing.sm)
-            .surfaceStyle()
+            .brutalistCard(accent: accentColor)
         }
         .buttonStyle(.plain)
     }

@@ -9,17 +9,20 @@ struct InsightCardView: View {
             HStack(spacing: AppSpacing.sm) {
                 Image(systemName: insight.iconName)
                     .font(.title3)
-                    .foregroundStyle(iconColor)
+                    .foregroundStyle(AppColors.ink)
                     .frame(width: 44, height: 44)
-                    .background(AppColors.background, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.small))
+                    .background(iconBackgroundColor, in: Circle())
+                    .overlay {
+                        Circle().strokeBorder(AppColors.border, lineWidth: 2)
+                    }
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
                     Text(insight.title)
                         .font(AppTypography.bodyMedium)
-                        .foregroundStyle(AppColors.textPrimary)
+                        .foregroundStyle(AppColors.ink)
                     Text(insight.description)
                         .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.textSecondary)
+                        .foregroundStyle(AppColors.inkMuted)
                 }
 
                 Spacer()
@@ -27,22 +30,22 @@ struct InsightCardView: View {
                 if insight.suggestedFilter != nil {
                     Image(systemName: "chevron.right")
                         .font(.footnote.weight(.semibold))
-                        .foregroundStyle(AppColors.textSecondary)
+                        .foregroundStyle(AppColors.inkMuted)
                 }
             }
             .padding(AppSpacing.sm)
-            .surfaceStyle()
+            .brutalistCard()
         }
         .buttonStyle(.plain)
     }
 
-    private var iconColor: Color {
+    private var iconBackgroundColor: Color {
         switch insight.category {
-        case .screenshots: AppColors.textSecondary
-        case .videos: AppColors.textSecondary
-        case .largeFiles: AppColors.delete
-        case .oldPhotos: AppColors.textSecondary
-        case .general: AppColors.textPrimary
+        case .screenshots: AppColors.accentPurple.opacity(0.3)
+        case .videos: AppColors.accentBlue.opacity(0.3)
+        case .largeFiles: AppColors.accentRed.opacity(0.3)
+        case .oldPhotos: AppColors.accentYellow.opacity(0.3)
+        case .general: AppColors.background
         }
     }
 }

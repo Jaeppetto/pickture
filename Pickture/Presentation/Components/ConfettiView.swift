@@ -2,15 +2,14 @@ import SwiftUI
 
 struct ConfettiView: View {
     @State private var particles: [ConfettiParticle] = []
-    @State private var animationTick: Int = 0
 
     private let particleCount = 50
     private let colors: [Color] = [
-        AppColors.primary,
-        AppColors.video,
-        AppColors.screenshot,
-        AppColors.keep,
-        AppColors.delete,
+        AppColors.accentYellow,
+        AppColors.accentRed,
+        AppColors.accentGreen,
+        AppColors.accentBlue,
+        AppColors.accentPurple,
     ]
 
     var body: some View {
@@ -23,10 +22,10 @@ struct ConfettiView: View {
                         width: particle.size,
                         height: particle.size * particle.aspectRatio
                     )
-                    context.fill(
-                        Path(roundedRect: rect, cornerRadius: 2),
-                        with: .color(particle.color)
-                    )
+
+                    let path = Path(roundedRect: rect, cornerRadius: 2)
+                    context.fill(path, with: .color(particle.color))
+                    context.stroke(path, with: .color(AppColors.ink), lineWidth: 1)
                 }
             }
             .onChange(of: timeline.date) { _, _ in
@@ -44,7 +43,7 @@ struct ConfettiView: View {
             ConfettiParticle(
                 x: CGFloat.random(in: 0.1...0.9),
                 y: CGFloat.random(in: -0.3...(-0.05)),
-                size: CGFloat.random(in: 4...10),
+                size: CGFloat.random(in: 8...16),
                 aspectRatio: CGFloat.random(in: 0.5...2.0),
                 color: colors.randomElement() ?? .blue,
                 velocityX: CGFloat.random(in: -0.002...0.002),
@@ -57,7 +56,7 @@ struct ConfettiView: View {
         for index in particles.indices {
             particles[index].x += particles[index].velocityX
             particles[index].y += particles[index].velocityY
-            particles[index].velocityY += 0.0001 // gravity
+            particles[index].velocityY += 0.0001
         }
     }
 }

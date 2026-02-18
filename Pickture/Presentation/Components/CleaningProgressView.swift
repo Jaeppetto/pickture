@@ -14,23 +14,27 @@ struct CleaningProgressView: View {
             // Progress bar
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: 5)
                         .fill(AppColors.surface)
-                        .frame(height: 6)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5)
+                                .strokeBorder(AppColors.border, lineWidth: 2)
+                        }
+                        .frame(height: 10)
 
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(AppColors.primaryGradient)
-                        .frame(width: geometry.size.width * progress, height: 6)
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(AppColors.accentYellow)
+                        .frame(width: max(0, geometry.size.width * progress), height: 10)
                         .animation(.easeInOut(duration: AppConstants.Animation.quickDuration), value: progress)
                 }
             }
-            .frame(height: 6)
+            .frame(height: 10)
 
             // Stats row
             HStack(spacing: AppSpacing.md) {
                 Text("\(session.totalReviewed)/\(totalPhotos)")
                     .font(AppTypography.monoCaption)
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.inkMuted)
 
                 Spacer()
 

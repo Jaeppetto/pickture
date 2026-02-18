@@ -62,9 +62,12 @@ struct HomeScreen: View {
         } label: {
             Image(systemName: "globe")
                 .font(.body.weight(.medium))
-                .foregroundStyle(AppColors.textPrimary)
+                .foregroundStyle(AppColors.ink)
                 .frame(width: 32, height: 32)
-                .background(.ultraThinMaterial, in: Circle())
+                .background(AppColors.surface, in: Circle())
+                .overlay {
+                    Circle().strokeBorder(AppColors.border, lineWidth: 1.5)
+                }
         }
     }
 
@@ -92,10 +95,10 @@ struct HomeScreen: View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
             HStack(spacing: AppSpacing.xs) {
                 Image(systemName: "externaldrive.fill.badge.checkmark")
-                    .foregroundStyle(AppColors.primary)
+                    .foregroundStyle(AppColors.ink)
                 Text("스토리지 현황")
-                    .font(AppTypography.title3)
-                    .foregroundStyle(AppColors.textPrimary)
+                    .font(AppTypography.sectionTitle)
+                    .foregroundStyle(AppColors.ink)
             }
 
             if viewModel.isLoading && !viewModel.hasLoaded {
@@ -106,7 +109,7 @@ struct HomeScreen: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(AppSpacing.md)
-        .surfaceStyle()
+        .brutalistCard()
     }
 
     // MARK: - Stats Row
@@ -119,17 +122,20 @@ struct HomeScreen: View {
             StatBadge(
                 count: viewModel.storageInfo.totalPhotoCount,
                 label: "사진",
-                iconName: "photo"
+                iconName: "photo",
+                accentColor: AppColors.accentYellow
             )
             StatBadge(
                 count: viewModel.storageInfo.totalVideoCount,
                 label: "동영상",
-                iconName: "video.fill"
+                iconName: "video.fill",
+                accentColor: AppColors.accentPurple
             )
             StatBadge(
                 count: viewModel.storageInfo.totalScreenshotCount,
                 label: "스크린샷",
-                iconName: "camera.viewfinder"
+                iconName: "camera.viewfinder",
+                accentColor: AppColors.accentBlue
             )
         }
     }
@@ -144,7 +150,6 @@ struct HomeScreen: View {
                 .fill(AppColors.background)
                 .frame(height: 160)
         }
-        .shimmer()
     }
 
     // MARK: - Start Cleaning CTA
@@ -157,7 +162,7 @@ struct HomeScreen: View {
                 Image(systemName: "sparkles")
                 Text("스와이프 정리 시작")
             }
-            .glassPrimaryButton()
+            .brutalistPrimaryButton()
         }
     }
 
@@ -172,8 +177,9 @@ struct HomeScreen: View {
                 HStack(spacing: AppSpacing.xs) {
                     Image(systemName: "trash")
                     Text("삭제 대기열 보기 (\(viewModel.trashItemCount))")
+                        .foregroundStyle(AppColors.accentRed)
                 }
-                .subtleButton()
+                .brutalistSecondaryButton()
             }
         }
     }
@@ -185,25 +191,29 @@ private struct StatBadge: View {
     let count: Int
     let label: LocalizedStringKey
     let iconName: String
+    let accentColor: Color
 
     var body: some View {
         VStack(spacing: AppSpacing.xs) {
             Image(systemName: iconName)
                 .font(.headline)
-                .foregroundStyle(AppColors.textPrimary)
+                .foregroundStyle(AppColors.ink)
                 .frame(width: 30, height: 30)
-                .background(AppColors.background, in: Circle())
+                .background(accentColor.opacity(0.2), in: Circle())
+                .overlay {
+                    Circle().strokeBorder(AppColors.border, lineWidth: 1.5)
+                }
 
             Text("\(count)")
                 .font(AppTypography.monoBody)
-                .foregroundStyle(AppColors.textPrimary)
+                .foregroundStyle(AppColors.ink)
 
             Text(label)
                 .font(AppTypography.caption)
-                .foregroundStyle(AppColors.textSecondary)
+                .foregroundStyle(AppColors.inkMuted)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.sm)
-        .surfaceStyle()
+        .brutalistCard(accent: accentColor)
     }
 }

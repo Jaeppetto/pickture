@@ -1,112 +1,173 @@
 import SwiftUI
 
+// MARK: - Brutalist View Modifiers
+
 extension View {
-    func cardShadow() -> some View {
-        shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 5)
+    func brutalistCard(
+        accent: Color = AppColors.shadowColor,
+        shadowOffset: CGFloat = AppSpacing.BrutalistTokens.shadowOffset,
+        borderWidth: CGFloat = AppSpacing.BrutalistTokens.borderWidth
+    ) -> some View {
+        modifier(BrutalistCardModifier(accent: accent, shadowOffset: shadowOffset, borderWidth: borderWidth))
     }
+
+    func brutalistPrimaryButton() -> some View {
+        modifier(BrutalistButtonModifier(style: .primary))
+    }
+
+    func brutalistSecondaryButton() -> some View {
+        modifier(BrutalistButtonModifier(style: .secondary))
+    }
+
+    func brutalistDestructiveButton() -> some View {
+        modifier(BrutalistButtonModifier(style: .destructive))
+    }
+
+    func brutalistGhostButton() -> some View {
+        modifier(BrutalistButtonModifier(style: .ghost))
+    }
+
+    func brutalistShadow(
+        offset: CGFloat = AppSpacing.BrutalistTokens.shadowOffset,
+        color: Color = AppColors.shadowColor
+    ) -> some View {
+        self
+            .background(
+                RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
+                    .fill(color)
+                    .offset(x: offset, y: offset)
+            )
+    }
+
+    func brutalistBorder(width: CGFloat = AppSpacing.BrutalistTokens.borderWidth) -> some View {
+        self
+            .overlay {
+                RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
+                    .strokeBorder(AppColors.border, lineWidth: width)
+            }
+    }
+
+    // MARK: - Legacy Compatibility
 
     func surfaceStyle() -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
-        return self
-            .background(shape.fill(AppColors.surface))
-            .overlay {
-                shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
-            }
-            .cardShadow()
+        brutalistCard()
     }
 
-    // MARK: - Buttons
-
     func glassPrimaryButton() -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
-        return self
-            .font(AppTypography.bodySemibold)
-            .foregroundStyle(Color(uiColor: .systemBackground))
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.md)
-            .background {
-                shape.fill(AppColors.chrome)
-            }
-            .overlay {
-                shape.strokeBorder(.white.opacity(0.08), lineWidth: 1)
-            }
-            .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 4)
+        brutalistPrimaryButton()
     }
 
     func glassDestructiveButton() -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
-        return self
-            .font(AppTypography.bodySemibold)
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.md)
-            .background {
-                shape.fill(AppColors.delete)
-            }
-            .overlay {
-                shape.strokeBorder(.white.opacity(0.12), lineWidth: 1)
-            }
-            .shadow(color: AppColors.delete.opacity(0.28), radius: 10, x: 0, y: 4)
+        brutalistDestructiveButton()
     }
 
     func subtleButton(tint: Color = AppColors.primary) -> some View {
-        let shape = RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
-        return self
-            .font(AppTypography.bodySemibold)
-            .foregroundStyle(tint)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.md)
-            .background {
-                shape.fill(AppColors.surface)
-            }
-            .overlay {
-                shape.strokeBorder(AppColors.cardBorder, lineWidth: 1)
-            }
+        brutalistSecondaryButton()
     }
 
-    // MARK: - Shimmer
-
-    func shimmer(active: Bool = true) -> some View {
-        modifier(ShimmerModifier(active: active))
+    func cardShadow() -> some View {
+        brutalistShadow()
     }
 }
 
-// MARK: - Shimmer Modifier
+// MARK: - Brutalist Card Modifier
 
-private struct ShimmerModifier: ViewModifier {
-    let active: Bool
-    @State private var phase: CGFloat = 0
+private struct BrutalistCardModifier: ViewModifier {
+    let accent: Color
+    let shadowOffset: CGFloat
+    let borderWidth: CGFloat
+
+    private let cornerRadius = AppSpacing.BrutalistTokens.cornerRadius
 
     func body(content: Content) -> some View {
-        if active {
-            content
-                .overlay {
-                    GeometryReader { geometry in
-                        let width = geometry.size.width
-                        LinearGradient(
-                            colors: [
-                                .clear,
-                                Color.white.opacity(0.3),
-                                .clear,
-                            ],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                        .frame(width: width * 0.6)
-                        .offset(x: -width * 0.3 + phase * (width * 1.6))
-                    }
-                    .clipped()
-                }
-                .onAppear {
-                    withAnimation(
-                        .linear(duration: 1.5)
-                        .repeatForever(autoreverses: false)
-                    ) {
-                        phase = 1
-                    }
-                }
-        } else {
-            content
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        content
+            .background(shape.fill(AppColors.surface))
+            .overlay {
+                shape.strokeBorder(AppColors.border, lineWidth: borderWidth)
+            }
+            .background(
+                shape
+                    .fill(accent)
+                    .offset(x: shadowOffset, y: shadowOffset)
+            )
+    }
+}
+
+// MARK: - Brutalist Button Modifier
+
+private struct BrutalistButtonModifier: ViewModifier {
+    enum Style {
+        case primary, secondary, destructive, ghost
+    }
+
+    let style: Style
+
+    @State private var isPressed = false
+
+    private let shadowOffset = AppSpacing.BrutalistTokens.shadowOffset
+    private let borderWidth = AppSpacing.BrutalistTokens.borderWidth
+    private let cornerRadius = AppSpacing.BrutalistTokens.cornerRadius
+
+    private var fillColor: Color {
+        switch style {
+        case .primary: AppColors.accentYellow
+        case .secondary: AppColors.surface
+        case .destructive: AppColors.accentRed
+        case .ghost: .clear
         }
+    }
+
+    private var textColor: Color {
+        switch style {
+        case .primary: AppColors.ink
+        case .secondary: AppColors.ink
+        case .destructive: .white
+        case .ghost: AppColors.ink
+        }
+    }
+
+    private var shadowColor: Color {
+        switch style {
+        case .primary: AppColors.shadowColor
+        case .secondary: AppColors.shadowColor
+        case .destructive: AppColors.shadowColor
+        case .ghost: .clear
+        }
+    }
+
+    private var hasShadow: Bool {
+        style != .ghost
+    }
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        let currentOffset = isPressed ? shadowOffset : 0
+
+        content
+            .font(AppTypography.bodySemibold)
+            .foregroundStyle(textColor)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, AppSpacing.md)
+            .background(shape.fill(fillColor))
+            .overlay {
+                shape.strokeBorder(AppColors.border, lineWidth: borderWidth)
+            }
+            .background(
+                hasShadow
+                    ? AnyView(
+                        shape
+                            .fill(shadowColor)
+                            .offset(x: shadowOffset, y: shadowOffset)
+                    )
+                    : AnyView(EmptyView())
+            )
+            .offset(x: currentOffset, y: currentOffset)
+            .animation(.easeInOut(duration: 0.1), value: isPressed)
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in isPressed = true }
+                    .onEnded { _ in isPressed = false }
+            )
     }
 }

@@ -23,30 +23,43 @@ struct StorageChartView: View {
                         angularInset: 2
                     )
                     .foregroundStyle(item.color)
-                    .cornerRadius(4)
                 }
                 .frame(height: 180)
 
                 VStack(spacing: AppSpacing.xxs) {
                     Text(storageInfo.totalMediaBytes.formattedBytesShort)
-                        .font(AppTypography.title3)
-                        .foregroundStyle(AppColors.textPrimary)
+                        .font(AppTypography.monoTitle)
+                        .foregroundStyle(AppColors.ink)
                     Text("미디어 총 용량")
                         .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.textSecondary)
+                        .foregroundStyle(AppColors.inkMuted)
                 }
             }
 
-            HStack(spacing: AppSpacing.md) {
+            HStack(spacing: AppSpacing.sm) {
                 ForEach(chartData) { item in
                     HStack(spacing: AppSpacing.xxs) {
-                        Circle()
+                        RoundedRectangle(cornerRadius: 3)
                             .fill(item.color)
-                            .frame(width: 8, height: 8)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 3)
+                                    .strokeBorder(AppColors.border, lineWidth: 1)
+                            }
+                            .frame(width: 14, height: 14)
                         Text(item.name)
-                            .font(AppTypography.caption)
-                            .foregroundStyle(AppColors.textSecondary)
+                            .font(AppTypography.captionMedium)
+                            .foregroundStyle(AppColors.ink)
                     }
+                    .padding(.horizontal, AppSpacing.xs)
+                    .padding(.vertical, AppSpacing.xxs)
+                    .background(
+                        RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadiusSmall)
+                            .fill(item.color.opacity(0.15))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadiusSmall)
+                                    .strokeBorder(AppColors.border, lineWidth: 1)
+                            }
+                    )
                 }
             }
         }

@@ -10,61 +10,87 @@ struct PhotoMetadataOverlay: View {
         VStack {
             Spacer()
 
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Text("상세 정보")
-                        .font(AppTypography.title3)
-                        .foregroundStyle(.white)
+                        .font(AppTypography.sectionTitle)
+                        .foregroundStyle(AppColors.ink)
                     Spacer()
                     Button(action: onDismiss) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3)
-                            .foregroundStyle(.white.opacity(0.72))
+                        Image(systemName: "xmark")
+                            .font(.body.weight(.bold))
+                            .foregroundStyle(AppColors.ink)
+                            .frame(width: 32, height: 32)
+                            .background(AppColors.background, in: Circle())
+                            .overlay {
+                                Circle().strokeBorder(AppColors.border, lineWidth: 2)
+                            }
                     }
                 }
+                .padding(AppSpacing.md)
 
-                Divider()
-                    .background(.white.opacity(0.3))
+                divider
 
                 metadataRow(icon: "calendar", label: "날짜", value: formattedDate)
+                divider
                 metadataRow(icon: "arrow.up.left.and.arrow.down.right", label: "해상도", value: "\(photo.pixelWidth) x \(photo.pixelHeight)")
+                divider
                 metadataRow(icon: "doc", label: "파일 크기", value: photo.fileSize.formattedBytes)
+                divider
                 metadataRow(icon: "photo", label: "종류", value: photoTypeName)
 
                 if let duration = photo.duration, duration > 0 {
+                    divider
                     metadataRow(icon: "clock", label: "길이", value: formattedDuration(duration))
                 }
 
                 if photo.location != nil {
+                    divider
                     metadataRow(icon: "location", label: "위치", value: String(localized: "위치 정보 있음", locale: locale))
                 }
             }
-            .padding(AppSpacing.md)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous))
+            .background(
+                RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
+                    .fill(AppColors.surface)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: AppSpacing.CornerRadius.large, style: .continuous)
-                    .stroke(.white.opacity(0.16), lineWidth: 1)
+                RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
+                    .strokeBorder(AppColors.border, lineWidth: AppSpacing.BrutalistTokens.borderWidth)
             }
+            .background(
+                RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
+                    .fill(AppColors.shadowColor)
+                    .offset(x: AppSpacing.BrutalistTokens.shadowOffset, y: AppSpacing.BrutalistTokens.shadowOffset)
+            )
             .padding(AppSpacing.md)
         }
         .background(AppColors.overlayScrim)
         .onTapGesture { onDismiss() }
     }
 
+    private var divider: some View {
+        Rectangle()
+            .fill(AppColors.border)
+            .frame(height: 1)
+    }
+
     private func metadataRow(icon: String, label: LocalizedStringKey, value: String) -> some View {
         HStack(spacing: AppSpacing.xs) {
             Image(systemName: icon)
-                .font(.system(size: 14))
-                .foregroundStyle(.white.opacity(0.7))
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(AppColors.inkMuted)
                 .frame(width: 20)
             Text(label)
                 .font(AppTypography.footnote)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(AppColors.inkMuted)
             Spacer()
             Text(value)
                 .font(AppTypography.footnoteMedium)
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColors.ink)
         }
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.sm)
     }
 
     private var formattedDate: String {
