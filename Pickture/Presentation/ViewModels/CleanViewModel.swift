@@ -124,10 +124,14 @@ final class CleanViewModel {
                 hasMorePhotos = true
             }
 
+            // Phase 1: metadata only (fast) — UI appears immediately
             let fullCount = try await photoRepository.fetchPhotoCount(filter: filter)
             totalPhotoCount = max(0, fullCount - initialOffset)
-            await loadNextPage(filter: filter)
+            await loadNextPageMetadata(filter: filter)
             screenState = .cleaning
+
+            // Phase 2: thumbnails (async, non-blocking)
+            await loadThumbnailsForCurrentPage()
         } catch {
             screenState = .idle
         }
@@ -261,6 +265,11 @@ final class CleanViewModel {
     // MARK: - Photo Loading
 
     private func loadNextPage(filter: CleaningFilter?) async {
+        await loadNextPageMetadata(filter: filter)
+        await loadThumbnailsForCurrentPage()
+    }
+
+    private func loadNextPageMetadata(filter: CleaningFilter?) async {
         guard !isLoadingPhotos, hasMorePhotos else { return }
         isLoadingPhotos = true
         defer { isLoadingPhotos = false }
@@ -279,21 +288,21 @@ final class CleanViewModel {
 
             let pagePhotos = isShuffled ? newPhotos.shuffled() : newPhotos
             photos.append(contentsOf: pagePhotos)
-            await loadThumbnails(for: pagePhotos)
         } catch {
             hasMorePhotos = false
         }
     }
 
-    private func loadThumbnails(for newPhotos: [Photo]) async {
+    private func loadThumbnailsForCurrentPage() async {
+        let photosNeedingThumbnails = photos.filter { thumbnails[$0.id] == nil }
+        guard !photosNeedingThumbnails.isEmpty else { return }
+
         let size = AppConstants.Photo.previewSize
-        // Start caching for new photos
-        let ids = newPhotos.map(\.id)
+        let ids = photosNeedingThumbnails.map(\.id)
         await photoRepository.startCachingThumbnails(for: ids, targetSize: size)
 
-        // Load thumbnails concurrently
         await withTaskGroup(of: (String, UIImage?).self) { group in
-            for photo in newPhotos {
+            for photo in photosNeedingThumbnails {
                 group.addTask { [photoRepository] in
                     let image = await photoRepository.requestPreviewImage(for: photo.id, size: size)
                     return (photo.id, image)

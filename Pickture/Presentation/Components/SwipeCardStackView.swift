@@ -46,10 +46,9 @@ struct SwipeCardStackView: View {
                 if let thumbnail = thumbnails[photo.id] {
                     Image(uiImage: thumbnail)
                         .resizable()
-                        .scaledToFill()
+                        .scaledToFit()
                 }
             }
-            .clipped()
             .background(AppColors.surface)
             .clipShape(shape)
         .overlay {

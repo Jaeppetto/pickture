@@ -68,4 +68,8 @@ final class PhotoRepository: PhotoRepositoryProtocol, @unchecked Sendable {
     func stopCachingThumbnails(for photoIds: [String], targetSize: CGSize) async {
         await dataSource.stopCaching(assetIds: photoIds, targetSize: targetSize)
     }
+
+    func invalidateAssetCache() async {
+        await dataSource.invalidateCache()
+    }
 }

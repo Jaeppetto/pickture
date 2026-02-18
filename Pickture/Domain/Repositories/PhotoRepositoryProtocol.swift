@@ -11,6 +11,7 @@ protocol PhotoRepositoryProtocol: Sendable {
     func requestPreviewImage(for photoId: String, size: CGSize) async -> UIImage?
     func startCachingThumbnails(for photoIds: [String], targetSize: CGSize) async
     func stopCachingThumbnails(for photoIds: [String], targetSize: CGSize) async
+    func invalidateAssetCache() async
 }
 
 enum PhotoAuthorizationStatus: Sendable, Equatable {

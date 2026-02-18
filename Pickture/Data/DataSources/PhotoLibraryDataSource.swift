@@ -5,6 +5,9 @@ import UIKit
 actor PhotoLibraryDataSource {
     private let imageManager: PHCachingImageManager
     private var changeObserverHelper: PhotoLibraryChangeObserverHelper?
+    private var assetCache: [String: PHAsset] = [:]
+    private var currentFetchResult: PHFetchResult<PHAsset>?
+    private var currentFetchFilter: CleaningFilter?
 
     init() {
         self.imageManager = PHCachingImageManager()
@@ -24,45 +27,61 @@ actor PhotoLibraryDataSource {
     // MARK: - Fetching
 
     func fetchAssets(offset: Int, limit: Int, filter: CleaningFilter?) -> PHFetchResult<PHAsset> {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let fetchResult: PHFetchResult<PHAsset>
 
-        if limit > 0 {
-            options.fetchLimit = offset + limit
-        }
+        if let cached = currentFetchResult, currentFetchFilter == filter {
+            fetchResult = cached
+        } else {
+            let options = PHFetchOptions()
+            options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
 
-        if let filter {
-            var predicates: [NSPredicate] = []
+            if let filter {
+                var predicates: [NSPredicate] = []
 
-            if let photoType = filter.photoType {
-                switch photoType {
-                case .video:
-                    predicates.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.video.rawValue))
-                case .image, .livePhoto, .gif:
-                    predicates.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue))
-                case .screenshot:
-                    predicates.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue))
+                if let photoType = filter.photoType {
+                    switch photoType {
+                    case .video:
+                        predicates.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.video.rawValue))
+                    case .image, .livePhoto, .gif:
+                        predicates.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue))
+                    case .screenshot:
+                        predicates.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue))
+                        predicates.append(NSPredicate(
+                            format: "(mediaSubtypes & %d) != 0",
+                            PHAssetMediaSubtype.photoScreenshot.rawValue
+                        ))
+                    }
+                }
+
+                if let dateRange = filter.dateRange {
                     predicates.append(NSPredicate(
-                        format: "(mediaSubtypes & %d) != 0",
-                        PHAssetMediaSubtype.photoScreenshot.rawValue
+                        format: "creationDate >= %@ AND creationDate <= %@",
+                        dateRange.lowerBound as NSDate,
+                        dateRange.upperBound as NSDate
                     ))
+                }
+
+                if !predicates.isEmpty {
+                    options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
                 }
             }
 
-            if let dateRange = filter.dateRange {
-                predicates.append(NSPredicate(
-                    format: "creationDate >= %@ AND creationDate <= %@",
-                    dateRange.lowerBound as NSDate,
-                    dateRange.upperBound as NSDate
-                ))
-            }
+            fetchResult = PHAsset.fetchAssets(with: options)
+            currentFetchResult = fetchResult
+            currentFetchFilter = filter
+        }
 
-            if !predicates.isEmpty {
-                options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        // Populate asset cache for accessed range
+        let startIndex = min(offset, fetchResult.count)
+        let endIndex = min(offset + limit, fetchResult.count)
+        if startIndex < endIndex {
+            for index in startIndex..<endIndex {
+                let asset = fetchResult.object(at: index)
+                assetCache[asset.localIdentifier] = asset
             }
         }
 
-        return PHAsset.fetchAssets(with: options)
+        return fetchResult
     }
 
     func fetchAssetCount(filter: CleaningFilter?) -> Int {
@@ -118,10 +137,7 @@ actor PhotoLibraryDataSource {
     // MARK: - Image Loading
 
     func requestThumbnail(assetId: String, size: CGSize) async -> UIImage? {
-        guard let asset = PHAsset.fetchAssets(
-            withLocalIdentifiers: [assetId],
-            options: nil
-        ).firstObject else { return nil }
+        guard let asset = resolveAsset(id: assetId) else { return nil }
 
         let options = PHImageRequestOptions()
         options.deliveryMode = .opportunistic
@@ -144,10 +160,7 @@ actor PhotoLibraryDataSource {
     }
 
     func requestPreviewImage(assetId: String, size: CGSize) async -> UIImage? {
-        guard let asset = PHAsset.fetchAssets(
-            withLocalIdentifiers: [assetId],
-            options: nil
-        ).firstObject else { return nil }
+        guard let asset = resolveAsset(id: assetId) else { return nil }
 
         let options = PHImageRequestOptions()
         options.deliveryMode = .opportunistic
@@ -172,7 +185,7 @@ actor PhotoLibraryDataSource {
     // MARK: - Caching
 
     func startCaching(assetIds: [String], targetSize: CGSize) {
-        let assets = fetchAssetsByIdentifiers(assetIds)
+        let assets = resolveAssets(ids: assetIds)
         let options = PHImageRequestOptions()
         options.deliveryMode = .opportunistic
         options.isNetworkAccessAllowed = true
@@ -185,7 +198,7 @@ actor PhotoLibraryDataSource {
     }
 
     func stopCaching(assetIds: [String], targetSize: CGSize) {
-        let assets = fetchAssetsByIdentifiers(assetIds)
+        let assets = resolveAssets(ids: assetIds)
         let options = PHImageRequestOptions()
         options.deliveryMode = .opportunistic
         imageManager.stopCachingImages(
@@ -198,6 +211,45 @@ actor PhotoLibraryDataSource {
 
     func stopCachingAll() {
         imageManager.stopCachingImagesForAllAssets()
+    }
+
+    func invalidateCache() {
+        assetCache.removeAll()
+        currentFetchResult = nil
+        currentFetchFilter = nil
+        imageManager.stopCachingImagesForAllAssets()
+    }
+
+    // MARK: - Asset Resolution
+
+    private func resolveAsset(id: String) -> PHAsset? {
+        if let cached = assetCache[id] {
+            return cached
+        }
+        return PHAsset.fetchAssets(withLocalIdentifiers: [id], options: nil).firstObject
+    }
+
+    private func resolveAssets(ids: [String]) -> [PHAsset] {
+        var resolved: [PHAsset] = []
+        var missingIds: [String] = []
+
+        for id in ids {
+            if let cached = assetCache[id] {
+                resolved.append(cached)
+            } else {
+                missingIds.append(id)
+            }
+        }
+
+        if !missingIds.isEmpty {
+            let fetched = fetchAssetsByIdentifiers(missingIds)
+            for asset in fetched {
+                assetCache[asset.localIdentifier] = asset
+            }
+            resolved.append(contentsOf: fetched)
+        }
+
+        return resolved
     }
 
     // MARK: - Change Observation

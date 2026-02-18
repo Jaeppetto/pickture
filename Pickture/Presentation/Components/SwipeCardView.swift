@@ -53,12 +53,11 @@ struct SwipeCardView: View {
                 if let thumbnail {
                     Image(uiImage: thumbnail)
                         .resizable()
-                        .scaledToFill()
+                        .scaledToFit()
                 } else {
                     ProgressView()
                 }
             }
-            .clipped()
             .background(AppColors.surface)
     }
 
