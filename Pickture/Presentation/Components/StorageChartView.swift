@@ -13,6 +13,7 @@ struct StorageChartView: View {
         ].filter { $0.bytes > 0 }
     }
 
+
     var body: some View {
         VStack(spacing: AppSpacing.md) {
             ZStack {
@@ -68,7 +69,7 @@ struct StorageChartView: View {
 
 private struct StorageCategory: Identifiable {
     let id = UUID()
-    let name: String
+    let name: LocalizedStringKey
     let bytes: Int64
     let color: Color
 }

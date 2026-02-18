@@ -63,7 +63,7 @@ struct SessionSummaryView: View {
                         Button(action: onReviewDeletionQueue) {
                             HStack(spacing: AppSpacing.xs) {
                                 Image(systemName: "trash")
-                                Text("삭제 대기열 확인 (\(session.totalDeleted))")
+                                Text("삭제 대기열 확인 (\(String(session.totalDeleted)))")
                             }
                             .brutalistSecondaryButton()
                         }

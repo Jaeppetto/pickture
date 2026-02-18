@@ -55,7 +55,7 @@ struct DeletionQueueScreen: View {
             }
         } message: {
             if let result = viewModel.deletionResult {
-                Text("\(result.deletedCount)개 항목이 삭제되었습니다.\n\(result.freedBytes.formattedBytes) 확보")
+                Text("\(String(result.deletedCount))개 항목이 삭제되었습니다.\n\(result.freedBytes.formattedBytes) 확보")
             }
         }
     }
@@ -187,7 +187,7 @@ struct DeletionQueueScreen: View {
 
     private var summaryHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xs) {
-            Text("삭제 대기 사진 \(viewModel.trashItems.count)개")
+            Text("삭제 대기 사진 \(String(viewModel.trashItems.count))개")
                 .font(AppTypography.sectionTitle)
                 .foregroundStyle(AppColors.ink)
 
@@ -202,7 +202,7 @@ struct DeletionQueueScreen: View {
             }
 
             if nearExpirationCount > 0 {
-                Text("곧 만료: \(nearExpirationCount)개")
+                Text("곧 만료: \(String(nearExpirationCount))개")
                     .font(AppTypography.captionMedium)
                     .foregroundStyle(AppColors.accentRed)
             }
@@ -257,7 +257,7 @@ struct DeletionQueueScreen: View {
     private var bottomBar: some View {
         VStack(spacing: AppSpacing.xs) {
             if viewModel.hasSelection {
-                Text("\(viewModel.selectedIds.count)개 선택 (\(viewModel.totalSelectedBytes.formattedBytes))")
+                Text("\(String(viewModel.selectedIds.count))개 선택 (\(viewModel.totalSelectedBytes.formattedBytes))")
                     .font(AppTypography.footnoteMedium)
                     .foregroundStyle(AppColors.inkMuted)
             } else {

@@ -173,7 +173,7 @@ struct HomeScreen: View {
                         }
 
                     VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
-                        Text("\(viewModel.expiringItemCount)개 항목이 곧 만료됩니다")
+                        Text("\(String(viewModel.expiringItemCount))개 항목이 곧 만료됩니다")
                             .font(AppTypography.bodySemibold)
                             .foregroundStyle(AppColors.ink)
 
@@ -217,7 +217,7 @@ struct HomeScreen: View {
                         Circle()
                             .fill(AppColors.ink)
                             .frame(width: 6, height: 6)
-                        Text("\(session.totalReviewed)장 검토")
+                        Text("\(String(session.totalReviewed))장 검토")
                             .font(AppTypography.monoCaption)
                             .foregroundStyle(AppColors.ink)
                     }
@@ -225,7 +225,7 @@ struct HomeScreen: View {
                         Circle()
                             .fill(AppColors.accentRed)
                             .frame(width: 6, height: 6)
-                        Text("\(session.totalDeleted)장 삭제")
+                        Text("\(String(session.totalDeleted))장 삭제")
                             .font(AppTypography.monoCaption)
                             .foregroundStyle(AppColors.ink)
                     }
@@ -233,7 +233,7 @@ struct HomeScreen: View {
                         Circle()
                             .fill(AppColors.accentGreen)
                             .frame(width: 6, height: 6)
-                        Text("\(session.totalKept)장 보관")
+                        Text("\(String(session.totalKept))장 보관")
                             .font(AppTypography.monoCaption)
                             .foregroundStyle(AppColors.ink)
                     }
@@ -246,9 +246,6 @@ struct HomeScreen: View {
                     Text("·")
                         .foregroundStyle(AppColors.inkMuted)
                     Text(session.endedAt ?? session.startedAt, style: .relative)
-                        .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.inkMuted)
-                    + Text(" 전")
                         .font(AppTypography.caption)
                         .foregroundStyle(AppColors.inkMuted)
                 }

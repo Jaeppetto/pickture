@@ -59,7 +59,7 @@ struct CleanScreen: View {
                 Task { await viewModel.startFresh() }
             }
         } message: {
-            Text("이전에 \(viewModel.pendingResumeIndex)번째 사진까지 진행했습니다.")
+            Text("이전에 \(String(viewModel.pendingResumeIndex))번째 사진까지 진행했습니다.")
         }
     }
 

@@ -62,11 +62,12 @@ struct SettingsScreen: View {
     // MARK: - Brutalist Settings Components
 
     private func settingsSection<Content: View>(
-        title: String,
+        title: LocalizedStringKey,
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.xs) {
-            Text(title.uppercased())
+            Text(title)
+                .textCase(.uppercase)
                 .font(AppTypography.captionMedium)
                 .foregroundStyle(AppColors.ink)
                 .padding(.bottom, AppSpacing.xxs)
