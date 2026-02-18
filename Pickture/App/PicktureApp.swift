@@ -20,7 +20,7 @@ private struct RootView: View {
     var body: some View {
         MainTabView(container: container)
             .preferredColorScheme(container.theme.colorScheme)
-            .environment(\.locale, Locale(identifier: container.settingsViewModel.preferences.locale))
+            .environment(\.locale, resolvedLocale)
             .task {
                 await container.settingsViewModel.loadPreferences()
             }
@@ -54,11 +54,18 @@ private struct RootView: View {
 
     private func languageChangeMessage(for locale: String) -> String {
         switch locale {
+        case "system": "System language applied"
         case "ko": "언어가 한국어로 변경되었습니다"
         case "en": "Language changed to English"
         case "ja": "言語が日本語に変更されました"
         case "zh-Hans": "语言已更改为中文"
         default: "Language changed"
         }
+    }
+
+    private var resolvedLocale: Locale {
+        let selectedLocale = container.settingsViewModel.preferences.locale
+        guard selectedLocale != "system" else { return .autoupdatingCurrent }
+        return Locale(identifier: selectedLocale)
     }
 }

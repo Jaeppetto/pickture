@@ -7,7 +7,7 @@ public struct UserPreference: Sendable, Equatable, Codable {
 
     public init(
         themeMode: ThemeMode = .system,
-        locale: String = "ko",
+        locale: String = "system",
         hapticEnabled: Bool = true
     ) {
         self.themeMode = themeMode

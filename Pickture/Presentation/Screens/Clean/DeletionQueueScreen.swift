@@ -4,6 +4,7 @@ struct DeletionQueueScreen: View {
     @State var viewModel: DeletionQueueViewModel
     let onDeletionCompleted: () -> Void
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.locale) private var locale
 
     private let columns = [
         GridItem(.adaptive(minimum: 104, maximum: 160), spacing: AppSpacing.xs),
@@ -33,7 +34,7 @@ struct DeletionQueueScreen: View {
                     Button("닫기") { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(viewModel.allSelected ? "선택 해제" : "전체 선택") {
+                    Button(selectAllButtonTitle) {
                         viewModel.selectAll()
                     }
                     .font(AppTypography.bodyMedium)
@@ -210,8 +211,9 @@ struct DeletionQueueScreen: View {
 
     private func expirationLabel(for item: TrashItem) -> String {
         let days = daysUntilExpiration(for: item)
-        if days <= 0 { return "오늘 만료" }
-        return "\(days)일 남음"
+        if days <= 0 { return String(localized: "오늘 만료", locale: locale) }
+        let format = String(localized: "%@일 남음", locale: locale)
+        return String(format: format, locale: locale, String(days))
     }
 
     private func expirationColor(for item: TrashItem) -> Color {
@@ -231,8 +233,13 @@ struct DeletionQueueScreen: View {
             ).day ?? 0
         )
 
-        if days == 0 { return "오늘 삭제됨" }
-        return "\(days)일 전 삭제"
+        if days == 0 { return String(localized: "오늘 삭제됨", locale: locale) }
+        let format = String(localized: "%@일 전 삭제", locale: locale)
+        return String(format: format, locale: locale, String(days))
+    }
+
+    private var selectAllButtonTitle: LocalizedStringKey {
+        viewModel.allSelected ? "선택 해제" : "전체 선택"
     }
 
     // MARK: - Bottom Bar
@@ -268,7 +275,7 @@ struct DeletionQueueScreen: View {
                         }
                     }
                 } label: {
-                    Text(viewModel.hasSelection ? "선택 삭제" : "전체 삭제")
+                    Text(viewModel.hasSelection ? LocalizedStringKey("선택 삭제") : LocalizedStringKey("전체 삭제"))
                         .glassDestructiveButton()
                 }
                 .disabled(viewModel.isDeleting)

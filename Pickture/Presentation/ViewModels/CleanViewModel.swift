@@ -45,6 +45,7 @@ final class CleanViewModel {
     private let processDecisionUseCase: ProcessSwipeDecisionUseCase
     private let completeSessionUseCase: CompleteSessionUseCase
     private let sessionRepository: any CleaningSessionRepositoryProtocol
+    private let trashRepository: any TrashRepositoryProtocol
 
     private let pageSize = AppConstants.Photo.pageSize
     private let prefetchThreshold = 10
@@ -56,13 +57,15 @@ final class CleanViewModel {
         startSessionUseCase: StartCleaningSessionUseCase,
         processDecisionUseCase: ProcessSwipeDecisionUseCase,
         completeSessionUseCase: CompleteSessionUseCase,
-        sessionRepository: any CleaningSessionRepositoryProtocol
+        sessionRepository: any CleaningSessionRepositoryProtocol,
+        trashRepository: any TrashRepositoryProtocol
     ) {
         self.photoRepository = photoRepository
         self.startSessionUseCase = startSessionUseCase
         self.processDecisionUseCase = processDecisionUseCase
         self.completeSessionUseCase = completeSessionUseCase
         self.sessionRepository = sessionRepository
+        self.trashRepository = trashRepository
     }
 
     // MARK: - Session Lifecycle
@@ -205,15 +208,43 @@ final class CleanViewModel {
     }
 
     func undoLastDecision() async {
-        guard let (_, _) = undoStack.last, currentIndex > 0 else { return }
+        guard let (photo, decision) = undoStack.last, currentIndex > 0 else { return }
         undoStack.removeLast()
         currentIndex -= 1
         HapticManager.undo()
 
-        // Update session counters (simplified: reload from repository)
-        if let session = currentSession {
-            currentSession = try? await sessionRepository.getActiveSession()
-            if currentSession == nil { currentSession = session }
+        // Rollback session counters
+        if var session = currentSession {
+            session.totalReviewed -= 1
+            session.lastPhotoIndex -= 1
+
+            switch decision {
+            case .delete:
+                session.totalDeleted -= 1
+                session.freedBytes -= photo.fileSize
+                // Restore from trash
+                try? await trashRepository.restoreFromTrash(id: photo.id)
+            case .keep:
+                session.totalKept -= 1
+            }
+
+            try? await sessionRepository.updateSession(session)
+            currentSession = session
+
+            // Update filter index
+            await sessionRepository.saveFilterIndex(
+                initialOffset + currentIndex,
+                forFilter: session.filter
+            )
+        }
+
+        // Reload thumbnail if evicted by caching window
+        if thumbnails[photo.id] == nil {
+            let size = AppConstants.Photo.previewSize
+            await photoRepository.startCachingThumbnails(for: [photo.id], targetSize: size)
+            if let image = await photoRepository.requestPreviewImage(for: photo.id, size: size) {
+                thumbnails[photo.id] = image
+            }
         }
     }
 

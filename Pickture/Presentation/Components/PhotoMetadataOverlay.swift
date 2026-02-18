@@ -4,6 +4,8 @@ struct PhotoMetadataOverlay: View {
     let photo: Photo
     let onDismiss: () -> Void
 
+    @Environment(\.locale) private var locale
+
     var body: some View {
         VStack {
             Spacer()
@@ -34,7 +36,7 @@ struct PhotoMetadataOverlay: View {
                 }
 
                 if photo.location != nil {
-                    metadataRow(icon: "location", label: "위치", value: "위치 정보 있음")
+                    metadataRow(icon: "location", label: "위치", value: String(localized: "위치 정보 있음", locale: locale))
                 }
             }
             .padding(AppSpacing.md)
@@ -49,7 +51,7 @@ struct PhotoMetadataOverlay: View {
         .onTapGesture { onDismiss() }
     }
 
-    private func metadataRow(icon: String, label: String, value: String) -> some View {
+    private func metadataRow(icon: String, label: LocalizedStringKey, value: String) -> some View {
         HStack(spacing: AppSpacing.xs) {
             Image(systemName: icon)
                 .font(.system(size: 14))
@@ -69,17 +71,17 @@ struct PhotoMetadataOverlay: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.locale = locale
         return formatter.string(from: photo.createdAt)
     }
 
     private var photoTypeName: String {
         switch photo.type {
-        case .image: "사진"
-        case .video: "동영상"
-        case .screenshot: "스크린샷"
-        case .gif: "GIF"
-        case .livePhoto: "라이브 포토"
+        case .image: String(localized: "사진", locale: locale)
+        case .video: String(localized: "동영상", locale: locale)
+        case .screenshot: String(localized: "스크린샷", locale: locale)
+        case .gif: String(localized: "GIF", locale: locale)
+        case .livePhoto: String(localized: "라이브 포토", locale: locale)
         }
     }
 

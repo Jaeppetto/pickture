@@ -85,7 +85,8 @@ final class AppContainer {
             startSessionUseCase: makeStartCleaningSessionUseCase(),
             processDecisionUseCase: makeProcessSwipeDecisionUseCase(),
             completeSessionUseCase: makeCompleteSessionUseCase(),
-            sessionRepository: cleaningSessionRepository
+            sessionRepository: cleaningSessionRepository,
+            trashRepository: trashRepository
         )
     }
 

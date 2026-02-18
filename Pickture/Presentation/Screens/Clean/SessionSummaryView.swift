@@ -5,6 +5,7 @@ struct SessionSummaryView: View {
     let onReviewDeletionQueue: () -> Void
     let onDone: () -> Void
 
+    @Environment(\.locale) private var locale
     @State private var showStats = false
 
     var body: some View {
@@ -107,7 +108,7 @@ struct SessionSummaryView: View {
         .padding(.horizontal, AppSpacing.md)
     }
 
-    private func statCard(value: Int, label: String, icon: String, color: Color) -> some View {
+    private func statCard(value: Int, label: LocalizedStringKey, icon: String, color: Color) -> some View {
         VStack(spacing: AppSpacing.xs) {
             Image(systemName: icon)
                 .font(.headline)
@@ -139,8 +140,10 @@ struct SessionSummaryView: View {
         let seconds = Int(interval) % 60
 
         if minutes > 0 {
-            return "\(minutes)분 \(seconds)초"
+            let format = String(localized: "%@분 %@초", locale: locale)
+            return String(format: format, locale: locale, String(minutes), String(seconds))
         }
-        return "\(seconds)초"
+        let format = String(localized: "%@초", locale: locale)
+        return String(format: format, locale: locale, String(seconds))
     }
 }

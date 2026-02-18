@@ -145,8 +145,8 @@ struct CleanScreen: View {
     }
 
     private func cleaningModeButton(
-        title: String,
-        subtitle: String,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey,
         icon: String,
         color: Color,
         action: @escaping () -> Void

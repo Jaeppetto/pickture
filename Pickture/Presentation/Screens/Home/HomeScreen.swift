@@ -53,6 +53,7 @@ struct HomeScreen: View {
                     Task { await settingsViewModel.updateLocale(newValue) }
                 }
             )) {
+                Text("시스템 언어").tag("system")
                 Text("한국어").tag("ko")
                 Text("English").tag("en")
                 Text("日本語").tag("ja")
@@ -182,7 +183,7 @@ struct HomeScreen: View {
 
 private struct StatBadge: View {
     let count: Int
-    let label: String
+    let label: LocalizedStringKey
     let iconName: String
 
     var body: some View {

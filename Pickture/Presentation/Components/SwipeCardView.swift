@@ -5,6 +5,7 @@ struct SwipeCardView: View {
     let thumbnail: UIImage?
     let onSwiped: (Decision) -> Void
 
+    @Environment(\.locale) private var locale
     @State private var offset: CGSize = .zero
     @State private var isRemoved = false
     @State private var appeared = false
@@ -75,7 +76,7 @@ struct SwipeCardView: View {
         if offset.width < -30 {
             overlayGlow(
                 color: AppColors.delete,
-                text: "삭제",
+                text: String(localized: "삭제", locale: locale),
                 alignment: .topTrailing,
                 opacity: min(1, abs(offset.width) / swipeThreshold)
             )
@@ -84,7 +85,7 @@ struct SwipeCardView: View {
         if offset.width > 30 {
             overlayGlow(
                 color: AppColors.keep,
-                text: "보관",
+                text: String(localized: "보관", locale: locale),
                 alignment: .topLeading,
                 opacity: min(1, offset.width / swipeThreshold)
             )
@@ -220,11 +221,11 @@ struct SwipeCardView: View {
 
     private var photoTypeText: String {
         switch photo.type {
-        case .image: "사진"
-        case .video: "동영상"
-        case .screenshot: "스크린샷"
-        case .gif: "GIF"
-        case .livePhoto: "Live"
+        case .image: String(localized: "사진", locale: locale)
+        case .video: String(localized: "동영상", locale: locale)
+        case .screenshot: String(localized: "스크린샷", locale: locale)
+        case .gif: String(localized: "GIF", locale: locale)
+        case .livePhoto: String(localized: "Live", locale: locale)
         }
     }
 
@@ -239,16 +240,12 @@ struct SwipeCardView: View {
     }
 
     private var formattedDate: String {
-        Self.dateFormatter.string(from: photo.createdAt)
-    }
-
-    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
-        formatter.locale = Locale(identifier: "ko_KR")
-        return formatter
-    }()
+        formatter.locale = locale
+        return formatter.string(from: photo.createdAt)
+    }
 
     private func formattedDuration(_ duration: TimeInterval) -> String {
         let minutes = Int(duration) / 60
