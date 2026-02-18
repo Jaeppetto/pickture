@@ -122,6 +122,23 @@ actor PhotoLibraryDataSource {
         return PHAsset.fetchAssets(with: options).count
     }
 
+    func fetchAssetsByIndices(_ indices: [Int], filter: CleaningFilter?) -> [PHAsset] {
+        let fetchResult: PHFetchResult<PHAsset>
+
+        if let cached = currentFetchResult, currentFetchFilter == filter {
+            fetchResult = cached
+        } else {
+            fetchResult = fetchAssets(offset: 0, limit: 0, filter: filter)
+        }
+
+        return indices.compactMap { index in
+            guard index >= 0, index < fetchResult.count else { return nil }
+            let asset = fetchResult.object(at: index)
+            assetCache[asset.localIdentifier] = asset
+            return asset
+        }
+    }
+
     func fetchAssetsByIdentifiers(_ identifiers: [String]) -> [PHAsset] {
         let result = PHAsset.fetchAssets(
             withLocalIdentifiers: identifiers,

@@ -5,6 +5,7 @@ protocol PhotoRepositoryProtocol: Sendable {
     func requestAuthorization() async -> PhotoAuthorizationStatus
     func checkAuthorizationStatus() -> PhotoAuthorizationStatus
     func fetchPhotos(offset: Int, limit: Int, filter: CleaningFilter?) async throws -> [Photo]
+    func fetchPhotosByIndices(_ indices: [Int], filter: CleaningFilter?) async throws -> [Photo]
     func fetchPhotoCount(filter: CleaningFilter?) async throws -> Int
     func observePhotoLibraryChanges() -> AsyncStream<Void>
     func requestThumbnail(for photoId: String, size: CGSize) async -> UIImage?

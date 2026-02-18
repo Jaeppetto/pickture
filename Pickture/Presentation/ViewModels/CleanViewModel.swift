@@ -31,6 +31,8 @@ final class CleanViewModel {
 
     private var initialOffset: Int = 0
     private var isShuffled = false
+    private var shuffledIndices: [Int] = []
+    private var shuffledPageOffset: Int = 0
 
     // MARK: - Undo
 
@@ -127,11 +129,22 @@ final class CleanViewModel {
             // Phase 1: metadata only (fast) — UI appears immediately
             let fullCount = try await photoRepository.fetchPhotoCount(filter: filter)
             totalPhotoCount = max(0, fullCount - initialOffset)
+
+            if isShuffled {
+                shuffledIndices = Array(0..<fullCount).shuffled()
+                shuffledPageOffset = 0
+            }
+
             await loadNextPageMetadata(filter: filter)
             screenState = .cleaning
 
-            // Phase 2: thumbnails (async, non-blocking)
-            await loadThumbnailsForCurrentPage()
+            // Phase 2: priority thumbnails (current + next few — immediate)
+            await loadPriorityThumbnails()
+
+            // Phase 3: remaining thumbnails (non-blocking background)
+            Task { @MainActor [weak self] in
+                await self?.loadThumbnailsForCurrentPage()
+            }
         } catch {
             screenState = .idle
         }
@@ -158,6 +171,8 @@ final class CleanViewModel {
         thumbnails = [:]
         currentIndex = 0
         undoStack = []
+        shuffledIndices = []
+        shuffledPageOffset = 0
     }
 
     // MARK: - Swipe Decision
@@ -266,7 +281,12 @@ final class CleanViewModel {
 
     private func loadNextPage(filter: CleaningFilter?) async {
         await loadNextPageMetadata(filter: filter)
-        await loadThumbnailsForCurrentPage()
+
+        // Load priority thumbnails immediately, rest in background
+        await loadPriorityThumbnails()
+        Task { @MainActor [weak self] in
+            await self?.loadThumbnailsForCurrentPage()
+        }
     }
 
     private func loadNextPageMetadata(filter: CleaningFilter?) async {
@@ -275,21 +295,70 @@ final class CleanViewModel {
         defer { isLoadingPhotos = false }
 
         do {
-            let offset = initialOffset + photos.count
-            let newPhotos = try await photoRepository.fetchPhotos(
-                offset: offset,
-                limit: pageSize,
-                filter: filter
-            )
+            if isShuffled {
+                let endIndex = min(shuffledPageOffset + pageSize, shuffledIndices.count)
+                guard shuffledPageOffset < endIndex else {
+                    hasMorePhotos = false
+                    return
+                }
 
-            if newPhotos.count < pageSize {
-                hasMorePhotos = false
+                let pageIndices = Array(shuffledIndices[shuffledPageOffset..<endIndex])
+                let newPhotos = try await photoRepository.fetchPhotosByIndices(
+                    pageIndices,
+                    filter: filter
+                )
+                shuffledPageOffset = endIndex
+
+                if endIndex >= shuffledIndices.count {
+                    hasMorePhotos = false
+                }
+
+                photos.append(contentsOf: newPhotos)
+            } else {
+                let offset = initialOffset + photos.count
+                let newPhotos = try await photoRepository.fetchPhotos(
+                    offset: offset,
+                    limit: pageSize,
+                    filter: filter
+                )
+
+                if newPhotos.count < pageSize {
+                    hasMorePhotos = false
+                }
+
+                photos.append(contentsOf: newPhotos)
             }
-
-            let pagePhotos = isShuffled ? newPhotos.shuffled() : newPhotos
-            photos.append(contentsOf: pagePhotos)
         } catch {
             hasMorePhotos = false
+        }
+    }
+
+    private func loadPriorityThumbnails() async {
+        let start = currentIndex
+        let end = min(start + cacheAheadCount + 1, photos.count)
+        guard start < end else { return }
+
+        let priorityPhotos = (start..<end).compactMap { index -> Photo? in
+            let photo = photos[index]
+            return thumbnails[photo.id] == nil ? photo : nil
+        }
+        guard !priorityPhotos.isEmpty else { return }
+
+        let size = AppConstants.Photo.previewSize
+        await photoRepository.startCachingThumbnails(for: priorityPhotos.map(\.id), targetSize: size)
+
+        await withTaskGroup(of: (String, UIImage?).self) { group in
+            for photo in priorityPhotos {
+                group.addTask { [photoRepository] in
+                    let image = await photoRepository.requestPreviewImage(for: photo.id, size: size)
+                    return (photo.id, image)
+                }
+            }
+            for await (id, image) in group {
+                if let image {
+                    thumbnails[id] = image
+                }
+            }
         }
     }
 

@@ -34,6 +34,11 @@ final class PhotoRepository: PhotoRepositoryProtocol, @unchecked Sendable {
         return photos
     }
 
+    func fetchPhotosByIndices(_ indices: [Int], filter: CleaningFilter?) async throws -> [Photo] {
+        let assets = await dataSource.fetchAssetsByIndices(indices, filter: filter)
+        return assets.map { $0.toDomain() }
+    }
+
     func fetchPhotoCount(filter: CleaningFilter?) async throws -> Int {
         await dataSource.fetchAssetCount(filter: filter)
     }
