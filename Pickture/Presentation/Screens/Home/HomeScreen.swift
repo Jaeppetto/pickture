@@ -6,6 +6,7 @@ struct HomeScreen: View {
     var settingsViewModel: SettingsViewModel
     var deletionQueueViewModelFactory: () -> DeletionQueueViewModel
 
+    @Environment(\.locale) private var locale
     @State private var showDeletionQueue = false
 
     var body: some View {
@@ -245,7 +246,7 @@ struct HomeScreen: View {
                         .foregroundStyle(AppColors.inkMuted)
                     Text("·")
                         .foregroundStyle(AppColors.inkMuted)
-                    Text(session.endedAt ?? session.startedAt, style: .relative)
+                    Text(relativeTime(for: session.endedAt ?? session.startedAt))
                         .font(AppTypography.caption)
                         .foregroundStyle(AppColors.inkMuted)
                 }
@@ -254,6 +255,13 @@ struct HomeScreen: View {
             .padding(AppSpacing.md)
             .brutalistCard()
         }
+    }
+
+    private func relativeTime(for date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = locale
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: .now)
     }
 
     // MARK: - Start Cleaning CTA
