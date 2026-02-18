@@ -86,8 +86,8 @@ struct CleanScreen: View {
     private var idleView: some View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
-                Text("스와이프 정리")
-                    .font(AppTypography.heroTitle)
+                Text("Start Pickture")
+                    .font(.custom("PressStart2P-Regular", size: 20))
                     .foregroundStyle(AppColors.ink)
                     .frame(maxWidth: .infinity)
                     .padding(.top, AppSpacing.sm)

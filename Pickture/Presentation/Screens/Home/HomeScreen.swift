@@ -76,8 +76,8 @@ struct HomeScreen: View {
     private var dashboardContent: some View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
-                Text("pickture.")
-                    .font(.system(size: 28, weight: .black, design: .monospaced))
+                Text("Pickture.")
+                    .font(.custom("PressStart2P-Regular", size: 20))
                     .foregroundStyle(AppColors.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -274,10 +274,8 @@ struct HomeScreen: View {
         Button {
             viewModel.startCleaning()
         } label: {
-            HStack(spacing: AppSpacing.xs) {
-                Image(systemName: "sparkles")
-                Text("스와이프 정리 시작")
-            }
+            Text("Start Pickture")
+                .font(.custom("PressStart2P-Regular", size: 14))
         }
         .buttonStyle(.brutalistPrimary)
     }
