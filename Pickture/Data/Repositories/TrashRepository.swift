@@ -69,4 +69,10 @@ final class TrashRepository: TrashRepositoryProtocol, @unchecked Sendable {
         let items = await localStorage.loadTrashItems()
         return items.filter { !$0.isExpired }.reduce(0) { $0 + $1.fileSize }
     }
+
+    func getNearExpiringItems(withinDays days: Int) async throws -> [TrashItem] {
+        let cutoff = Calendar.current.date(byAdding: .day, value: days, to: .now) ?? Date.now
+        return await localStorage.loadTrashItems()
+            .filter { !$0.isExpired && $0.expiresAt <= cutoff }
+    }
 }

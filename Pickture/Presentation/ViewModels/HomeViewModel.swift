@@ -7,19 +7,27 @@ final class HomeViewModel {
     private(set) var isLoading = false
     private(set) var hasLoaded = false
     private(set) var trashItemCount: Int = 0
+    private(set) var lastSession: CleaningSession?
+    private(set) var expiringItems: [TrashItem] = []
+
+    var expiringItemCount: Int { expiringItems.count }
+    var expiringItemsTotalBytes: Int64 { expiringItems.reduce(0) { $0 + $1.fileSize } }
 
     private let analyzeStorageUseCase: AnalyzeStorageUseCase
     private let navigationCoordinator: NavigationCoordinator
     private let trashRepository: any TrashRepositoryProtocol
+    private let cleaningSessionRepository: any CleaningSessionRepositoryProtocol
 
     init(
         analyzeStorageUseCase: AnalyzeStorageUseCase,
         navigationCoordinator: NavigationCoordinator,
-        trashRepository: any TrashRepositoryProtocol
+        trashRepository: any TrashRepositoryProtocol,
+        cleaningSessionRepository: any CleaningSessionRepositoryProtocol
     ) {
         self.analyzeStorageUseCase = analyzeStorageUseCase
         self.navigationCoordinator = navigationCoordinator
         self.trashRepository = trashRepository
+        self.cleaningSessionRepository = cleaningSessionRepository
     }
 
     func loadStorageInfo() async {
@@ -36,14 +44,25 @@ final class HomeViewModel {
         }
 
         await loadTrashCount()
+        await loadLastSession()
     }
 
     func loadTrashCount() async {
         do {
             let items = try await trashRepository.getTrashItems()
             trashItemCount = items.count
+            expiringItems = try await trashRepository.getNearExpiringItems(withinDays: 3)
         } catch {
             trashItemCount = 0
+            expiringItems = []
+        }
+    }
+
+    func loadLastSession() async {
+        do {
+            lastSession = try await cleaningSessionRepository.getLastCompletedSession()
+        } catch {
+            lastSession = nil
         }
     }
 

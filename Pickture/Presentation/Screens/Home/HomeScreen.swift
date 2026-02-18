@@ -77,7 +77,9 @@ struct HomeScreen: View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
                 storageCard
+                expirationWarningBanner
                 statsRow
+                lastSessionCard
                 startCleaningButton
                 trashQueueButton
             }
@@ -152,6 +154,111 @@ struct HomeScreen: View {
         }
     }
 
+    // MARK: - Expiration Warning Banner
+
+    @ViewBuilder
+    private var expirationWarningBanner: some View {
+        if viewModel.expiringItemCount > 0 {
+            Button {
+                showDeletionQueue = true
+            } label: {
+                HStack(spacing: AppSpacing.sm) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(AppColors.accentRed)
+                        .frame(width: 36, height: 36)
+                        .background(AppColors.accentRed.opacity(0.15), in: Circle())
+                        .overlay {
+                            Circle().strokeBorder(AppColors.accentRed, lineWidth: 1.5)
+                        }
+
+                    VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
+                        Text("\(viewModel.expiringItemCount)개 항목이 곧 만료됩니다")
+                            .font(AppTypography.bodySemibold)
+                            .foregroundStyle(AppColors.ink)
+
+                        Text("총 \(formattedBytes(viewModel.expiringItemsTotalBytes)) · 삭제 전 확인")
+                            .font(AppTypography.caption)
+                            .foregroundStyle(AppColors.inkMuted)
+                    }
+
+                    Spacer()
+
+                    Text("지금 확인")
+                        .font(AppTypography.captionMedium)
+                        .foregroundStyle(AppColors.accentRed)
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(AppColors.accentRed)
+                }
+                .padding(AppSpacing.md)
+                .brutalistCard(accent: AppColors.accentRed)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    // MARK: - Last Session Summary Card
+
+    @ViewBuilder
+    private var lastSessionCard: some View {
+        if let session = viewModel.lastSession {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                Text("마지막 정리")
+                    .font(AppTypography.cardTitle)
+                    .foregroundStyle(AppColors.ink)
+
+                Rectangle()
+                    .fill(AppColors.ink)
+                    .frame(height: 2)
+
+                HStack(spacing: AppSpacing.lg) {
+                    HStack(spacing: AppSpacing.xxs) {
+                        Circle()
+                            .fill(AppColors.ink)
+                            .frame(width: 6, height: 6)
+                        Text("\(session.totalReviewed)장 검토")
+                            .font(AppTypography.monoCaption)
+                            .foregroundStyle(AppColors.ink)
+                    }
+                    HStack(spacing: AppSpacing.xxs) {
+                        Circle()
+                            .fill(AppColors.accentRed)
+                            .frame(width: 6, height: 6)
+                        Text("\(session.totalDeleted)장 삭제")
+                            .font(AppTypography.monoCaption)
+                            .foregroundStyle(AppColors.ink)
+                    }
+                    HStack(spacing: AppSpacing.xxs) {
+                        Circle()
+                            .fill(AppColors.accentGreen)
+                            .frame(width: 6, height: 6)
+                        Text("\(session.totalKept)장 보관")
+                            .font(AppTypography.monoCaption)
+                            .foregroundStyle(AppColors.ink)
+                    }
+                }
+
+                HStack(spacing: AppSpacing.xs) {
+                    Text("\(formattedBytes(session.freedBytes)) 확보")
+                        .font(AppTypography.monoCaption)
+                        .foregroundStyle(AppColors.inkMuted)
+                    Text("·")
+                        .foregroundStyle(AppColors.inkMuted)
+                    Text(session.endedAt ?? session.startedAt, style: .relative)
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.inkMuted)
+                    + Text(" 전")
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.inkMuted)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(AppSpacing.md)
+            .brutalistCard()
+        }
+    }
+
     // MARK: - Start Cleaning CTA
 
     private var startCleaningButton: some View {
@@ -183,6 +290,14 @@ struct HomeScreen: View {
             }
         }
     }
+}
+
+// MARK: - Formatted Bytes Helper
+
+private func formattedBytes(_ bytes: Int64) -> String {
+    let formatter = ByteCountFormatter()
+    formatter.countStyle = .file
+    return formatter.string(fromByteCount: bytes)
 }
 
 // MARK: - Stat Badge

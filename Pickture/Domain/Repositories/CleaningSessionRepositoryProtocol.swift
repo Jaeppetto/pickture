@@ -10,4 +10,5 @@ protocol CleaningSessionRepositoryProtocol: Sendable {
     func saveFilterIndex(_ index: Int, forFilter filter: CleaningFilter?) async
     func loadFilterIndex(forFilter filter: CleaningFilter?) async -> Int?
     func clearFilterIndex(forFilter filter: CleaningFilter?) async
+    func getLastCompletedSession() async throws -> CleaningSession?
 }

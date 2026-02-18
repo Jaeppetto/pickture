@@ -9,4 +9,5 @@ protocol TrashRepositoryProtocol: Sendable {
     func emptyTrash() async throws
     func removeExpiredItems() async throws -> Int
     func getTrashStorageBytes() async throws -> Int64
+    func getNearExpiringItems(withinDays days: Int) async throws -> [TrashItem]
 }

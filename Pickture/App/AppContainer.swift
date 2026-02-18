@@ -75,7 +75,8 @@ final class AppContainer {
         HomeViewModel(
             analyzeStorageUseCase: makeAnalyzeStorageUseCase(),
             navigationCoordinator: navigationCoordinator,
-            trashRepository: trashRepository
+            trashRepository: trashRepository,
+            cleaningSessionRepository: cleaningSessionRepository
         )
     }
 

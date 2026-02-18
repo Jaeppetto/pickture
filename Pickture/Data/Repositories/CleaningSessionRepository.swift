@@ -64,6 +64,13 @@ final class CleaningSessionRepository: CleaningSessionRepositoryProtocol, @unche
         let key = filter?.persistenceKey ?? "filter_all"
         await localStorage.clearFilterIndex(forKey: key)
     }
+
+    func getLastCompletedSession() async throws -> CleaningSession? {
+        await localStorage.loadAllSessions()
+            .filter { $0.status == .completed }
+            .sorted { ($0.endedAt ?? .distantPast) > ($1.endedAt ?? .distantPast) }
+            .first
+    }
 }
 
 enum RepositoryError: Error, LocalizedError {
