@@ -291,10 +291,18 @@ final class CleanViewModel {
         let ids = newPhotos.map(\.id)
         await photoRepository.startCachingThumbnails(for: ids, targetSize: size)
 
-        // Load thumbnails for upcoming photos
-        for photo in newPhotos {
-            if let image = await photoRepository.requestPreviewImage(for: photo.id, size: size) {
-                thumbnails[photo.id] = image
+        // Load thumbnails concurrently
+        await withTaskGroup(of: (String, UIImage?).self) { group in
+            for photo in newPhotos {
+                group.addTask { [photoRepository] in
+                    let image = await photoRepository.requestPreviewImage(for: photo.id, size: size)
+                    return (photo.id, image)
+                }
+            }
+            for await (id, image) in group {
+                if let image {
+                    thumbnails[id] = image
+                }
             }
         }
     }
@@ -309,14 +317,24 @@ final class CleanViewModel {
             let aheadIds = (aheadStart..<aheadEnd).map { photos[$0].id }
             await photoRepository.startCachingThumbnails(for: aheadIds, targetSize: size)
 
-            // Load thumbnails that we haven't loaded yet
-            // Re-check bounds after each await since photos may have changed
-            for index in aheadStart..<aheadEnd {
-                guard index < photos.count else { break }
+            // Load missing thumbnails concurrently
+            let photosToLoad = (aheadStart..<aheadEnd).compactMap { index -> Photo? in
+                guard index < photos.count else { return nil }
                 let photo = photos[index]
-                if thumbnails[photo.id] == nil {
-                    if let image = await photoRepository.requestPreviewImage(for: photo.id, size: size) {
-                        thumbnails[photo.id] = image
+                return thumbnails[photo.id] == nil ? photo : nil
+            }
+            if !photosToLoad.isEmpty {
+                await withTaskGroup(of: (String, UIImage?).self) { group in
+                    for photo in photosToLoad {
+                        group.addTask { [photoRepository] in
+                            let image = await photoRepository.requestPreviewImage(for: photo.id, size: size)
+                            return (photo.id, image)
+                        }
+                    }
+                    for await (id, image) in group {
+                        if let image {
+                            thumbnails[id] = image
+                        }
                     }
                 }
             }
@@ -327,7 +345,6 @@ final class CleanViewModel {
         if behindEnd > 0 && behindEnd <= photos.count {
             let oldIds = (0..<behindEnd).map { photos[$0].id }
             await photoRepository.stopCachingThumbnails(for: oldIds, targetSize: size)
-            // Free memory for old thumbnails
             for id in oldIds {
                 thumbnails.removeValue(forKey: id)
             }

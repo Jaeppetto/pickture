@@ -271,8 +271,8 @@ struct DeletionQueueScreen: View {
                     Task { await viewModel.restoreSelected() }
                 } label: {
                     Text("복원")
-                        .brutalistSecondaryButton()
                 }
+                .buttonStyle(.brutalistSecondary)
                 .disabled(!viewModel.hasSelection)
                 .opacity(viewModel.hasSelection ? 1 : 0.5)
 
@@ -286,8 +286,8 @@ struct DeletionQueueScreen: View {
                     }
                 } label: {
                     Text(viewModel.hasSelection ? LocalizedStringKey("선택 삭제") : LocalizedStringKey("전체 삭제"))
-                        .brutalistDestructiveButton()
                 }
+                .buttonStyle(.brutalistDestructive)
                 .disabled(viewModel.isDeleting)
             }
         }

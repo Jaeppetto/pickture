@@ -48,22 +48,18 @@ struct SwipeCardView: View {
     // MARK: - Card Image
 
     private var cardImage: some View {
-        Group {
-            if let thumbnail {
-                Image(uiImage: thumbnail)
-                    .resizable()
-                    .scaledToFit()
-            } else {
-                Rectangle()
-                    .fill(AppColors.surface)
-                    .overlay {
-                        ProgressView()
-                    }
+        Color.clear
+            .overlay {
+                if let thumbnail {
+                    Image(uiImage: thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    ProgressView()
+                }
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppColors.surface)
-        .clipped()
+            .clipped()
+            .background(AppColors.surface)
     }
 
     @ViewBuilder

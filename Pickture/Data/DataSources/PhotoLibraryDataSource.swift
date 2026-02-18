@@ -150,18 +150,21 @@ actor PhotoLibraryDataSource {
         ).firstObject else { return nil }
 
         let options = PHImageRequestOptions()
-        options.deliveryMode = .highQualityFormat
+        options.deliveryMode = .opportunistic
         options.isNetworkAccessAllowed = true
-        options.resizeMode = .exact
+        options.resizeMode = .fast
 
         return await withCheckedContinuation { continuation in
             imageManager.requestImage(
                 for: asset,
                 targetSize: size,
-                contentMode: .aspectFit,
+                contentMode: .aspectFill,
                 options: options
-            ) { image, _ in
-                continuation.resume(returning: image)
+            ) { image, info in
+                let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
+                if !isDegraded {
+                    continuation.resume(returning: image)
+                }
             }
         }
     }

@@ -124,7 +124,7 @@ struct CleaningActiveView: View {
             Button("세션 완료") {
                 Task { await viewModel.completeSession() }
             }
-            .brutalistSecondaryButton()
+            .buttonStyle(.brutalistSecondary)
             .padding(.horizontal, AppSpacing.xxl)
         }
     }

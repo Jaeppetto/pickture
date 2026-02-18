@@ -65,14 +65,14 @@ struct SessionSummaryView: View {
                                 Image(systemName: "trash")
                                 Text("삭제 대기열 확인 (\(String(session.totalDeleted)))")
                             }
-                            .brutalistSecondaryButton()
                         }
+                        .buttonStyle(.brutalistSecondary)
                     }
 
                     Button(action: onDone) {
                         Text("완료")
-                            .brutalistPrimaryButton()
                     }
+                    .buttonStyle(.brutalistPrimary)
                 }
                 .padding(.horizontal, AppSpacing.xl)
                 .padding(.bottom, AppSpacing.lg)

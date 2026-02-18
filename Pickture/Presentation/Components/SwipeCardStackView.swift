@@ -40,20 +40,18 @@ struct SwipeCardStackView: View {
     private func backgroundCard(for photo: Photo, at stackOffset: Int) -> some View {
         let shape = RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
 
-        return Group {
-            if let thumbnail = thumbnails[photo.id] {
-                Image(uiImage: thumbnail)
-                    .resizable()
-                    .scaledToFit()
-            } else {
-                Rectangle()
-                    .fill(AppColors.surface)
+        return Color.clear
+            .aspectRatio(3.0 / 4.0, contentMode: .fit)
+            .overlay {
+                if let thumbnail = thumbnails[photo.id] {
+                    Image(uiImage: thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                }
             }
-        }
-        .aspectRatio(3.0 / 4.0, contentMode: .fit)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppColors.surface)
-        .clipShape(shape)
+            .clipped()
+            .background(AppColors.surface)
+            .clipShape(shape)
         .overlay {
             shape.strokeBorder(AppColors.border, lineWidth: 1)
         }

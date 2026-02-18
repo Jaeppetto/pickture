@@ -11,22 +11,6 @@ extension View {
         modifier(BrutalistCardModifier(accent: accent, shadowOffset: shadowOffset, borderWidth: borderWidth))
     }
 
-    func brutalistPrimaryButton() -> some View {
-        modifier(BrutalistButtonModifier(style: .primary))
-    }
-
-    func brutalistSecondaryButton() -> some View {
-        modifier(BrutalistButtonModifier(style: .secondary))
-    }
-
-    func brutalistDestructiveButton() -> some View {
-        modifier(BrutalistButtonModifier(style: .destructive))
-    }
-
-    func brutalistGhostButton() -> some View {
-        modifier(BrutalistButtonModifier(style: .ghost))
-    }
-
     func brutalistShadow(
         offset: CGFloat = AppSpacing.BrutalistTokens.shadowOffset,
         color: Color = AppColors.shadowColor
@@ -51,18 +35,6 @@ extension View {
 
     func surfaceStyle() -> some View {
         brutalistCard()
-    }
-
-    func glassPrimaryButton() -> some View {
-        brutalistPrimaryButton()
-    }
-
-    func glassDestructiveButton() -> some View {
-        brutalistDestructiveButton()
-    }
-
-    func subtleButton(tint: Color = AppColors.primary) -> some View {
-        brutalistSecondaryButton()
     }
 
     func cardShadow() -> some View {
@@ -94,16 +66,14 @@ private struct BrutalistCardModifier: ViewModifier {
     }
 }
 
-// MARK: - Brutalist Button Modifier
+// MARK: - Brutalist Button Style
 
-private struct BrutalistButtonModifier: ViewModifier {
+struct BrutalistButtonStyle: ButtonStyle {
     enum Style {
         case primary, secondary, destructive, ghost
     }
 
     let style: Style
-
-    @State private var isPressed = false
 
     private let shadowOffset = AppSpacing.BrutalistTokens.shadowOffset
     private let borderWidth = AppSpacing.BrutalistTokens.borderWidth
@@ -140,11 +110,11 @@ private struct BrutalistButtonModifier: ViewModifier {
         style != .ghost
     }
 
-    func body(content: Content) -> some View {
+    func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        let currentOffset = isPressed ? shadowOffset : 0
+        let currentOffset = configuration.isPressed ? shadowOffset : 0
 
-        content
+        configuration.label
             .font(AppTypography.bodySemibold)
             .foregroundStyle(textColor)
             .frame(maxWidth: .infinity)
@@ -163,11 +133,13 @@ private struct BrutalistButtonModifier: ViewModifier {
                     : AnyView(EmptyView())
             )
             .offset(x: currentOffset, y: currentOffset)
-            .animation(.easeInOut(duration: 0.1), value: isPressed)
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in isPressed = true }
-                    .onEnded { _ in isPressed = false }
-            )
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
+}
+
+extension ButtonStyle where Self == BrutalistButtonStyle {
+    static var brutalistPrimary: BrutalistButtonStyle { .init(style: .primary) }
+    static var brutalistSecondary: BrutalistButtonStyle { .init(style: .secondary) }
+    static var brutalistDestructive: BrutalistButtonStyle { .init(style: .destructive) }
+    static var brutalistGhost: BrutalistButtonStyle { .init(style: .ghost) }
 }

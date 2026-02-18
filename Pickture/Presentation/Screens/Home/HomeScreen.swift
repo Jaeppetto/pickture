@@ -15,8 +15,7 @@ struct HomeScreen: View {
                 dashboardContent
             }
             .background(AppColors.background)
-            .navigationTitle("홈")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     languageMenu
@@ -77,6 +76,11 @@ struct HomeScreen: View {
     private var dashboardContent: some View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
+                Text("pickture.")
+                    .font(.system(size: 28, weight: .black, design: .monospaced))
+                    .foregroundStyle(AppColors.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
                 storageCard
                 expirationWarningBanner
                 statsRow
@@ -274,8 +278,8 @@ struct HomeScreen: View {
                 Image(systemName: "sparkles")
                 Text("스와이프 정리 시작")
             }
-            .brutalistPrimaryButton()
         }
+        .buttonStyle(.brutalistPrimary)
     }
 
     // MARK: - Trash Queue Button
@@ -289,10 +293,9 @@ struct HomeScreen: View {
                 HStack(spacing: AppSpacing.xs) {
                     Image(systemName: "trash")
                     Text("삭제 대기열 보기 (\(viewModel.trashItemCount))")
-                        .foregroundStyle(AppColors.accentRed)
                 }
-                .brutalistSecondaryButton()
             }
+            .buttonStyle(.brutalistSecondary)
         }
     }
 }

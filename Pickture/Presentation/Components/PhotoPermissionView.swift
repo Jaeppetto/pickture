@@ -53,8 +53,8 @@ struct PhotoPermissionView<Content: View>: View {
                     }
                     Text("접근 허용하기")
                 }
-                .brutalistPrimaryButton()
             }
+            .buttonStyle(.brutalistPrimary)
             .disabled(viewModel.isRequesting)
             .padding(.horizontal, AppSpacing.xl)
 
@@ -92,8 +92,8 @@ struct PhotoPermissionView<Content: View>: View {
                 viewModel.openSettings()
             } label: {
                 Text("설정으로 이동")
-                    .brutalistPrimaryButton()
             }
+            .buttonStyle(.brutalistPrimary)
             .padding(.horizontal, AppSpacing.xl)
 
             Spacer()
