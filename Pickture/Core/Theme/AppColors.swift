@@ -30,10 +30,10 @@ enum AppColors {
 
     // MARK: - Chart Colors
 
-    static let chartPhoto = ink
+    static let chartPhoto = accentYellow
     static let chartVideo = accentBlue
     static let chartScreenshot = accentPurple
-    static let chartOther = accentYellow
+    static let chartOther = ink
 
     // MARK: - Overlay
 

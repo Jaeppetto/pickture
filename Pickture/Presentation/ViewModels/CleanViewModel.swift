@@ -85,8 +85,9 @@ final class CleanViewModel {
     }
 
     func startNewSession(filter: CleaningFilter? = nil, startOffset: Int = 0, shuffled: Bool = false) async {
-        // Check for saved index if not shuffled
-        if !shuffled, let savedIndex = await sessionRepository.loadFilterIndex(forFilter: filter), savedIndex > 0 {
+        // Check for saved index — skip when user explicitly chose a start offset or shuffle
+        if !shuffled, startOffset == 0,
+           let savedIndex = await sessionRepository.loadFilterIndex(forFilter: filter), savedIndex > 0 {
             pendingResumeFilter = filter
             pendingResumeIndex = savedIndex
             showResumeAlert = true
@@ -111,6 +112,13 @@ final class CleanViewModel {
 
     func applyPendingFilter(_ filter: CleaningFilter?) async {
         isShuffled = false
+        // Check for saved index like startNewSession
+        if let savedIndex = await sessionRepository.loadFilterIndex(forFilter: filter), savedIndex > 0 {
+            pendingResumeFilter = filter
+            pendingResumeIndex = savedIndex
+            showResumeAlert = true
+            return
+        }
         await startCleaning(filter: filter, resuming: false)
     }
 

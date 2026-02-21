@@ -15,12 +15,7 @@ struct HomeScreen: View {
                 dashboardContent
             }
             .background(AppColors.background)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    languageMenu
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
         }
         .task {
             await viewModel.loadTrashCount()
@@ -76,10 +71,13 @@ struct HomeScreen: View {
     private var dashboardContent: some View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
-                Text("Pickture.")
-                    .font(.custom("PressStart2P-Regular", size: 20))
-                    .foregroundStyle(AppColors.ink)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    Text("Pickture.")
+                        .font(.custom("PressStart2P-Regular", size: 20))
+                        .foregroundStyle(AppColors.ink)
+                    Spacer()
+                    languageMenu
+                }
 
                 storageCard
                 expirationWarningBanner
@@ -126,24 +124,41 @@ struct HomeScreen: View {
             columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
             spacing: AppSpacing.sm
         ) {
-            StatBadge(
-                count: viewModel.storageInfo.totalPhotoCount,
-                label: "사진",
-                iconName: "photo",
-                accentColor: AppColors.accentYellow
-            )
-            StatBadge(
-                count: viewModel.storageInfo.totalVideoCount,
-                label: "동영상",
-                iconName: "video.fill",
-                accentColor: AppColors.accentPurple
-            )
-            StatBadge(
-                count: viewModel.storageInfo.totalScreenshotCount,
-                label: "스크린샷",
-                iconName: "camera.viewfinder",
-                accentColor: AppColors.accentBlue
-            )
+            Button {
+                viewModel.startCleaning()
+            } label: {
+                StatBadge(
+                    count: viewModel.storageInfo.totalPhotoCount,
+                    label: "사진",
+                    iconName: "photo",
+                    accentColor: AppColors.accentYellow
+                )
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                viewModel.startCleaning(with: .videosOnly())
+            } label: {
+                StatBadge(
+                    count: viewModel.storageInfo.totalVideoCount,
+                    label: "동영상",
+                    iconName: "video.fill",
+                    accentColor: AppColors.accentBlue
+                )
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                viewModel.startCleaning(with: .screenshotsOnly())
+            } label: {
+                StatBadge(
+                    count: viewModel.storageInfo.totalScreenshotCount,
+                    label: "스크린샷",
+                    iconName: "camera.viewfinder",
+                    accentColor: AppColors.accentPurple
+                )
+            }
+            .buttonStyle(.plain)
         }
     }
 

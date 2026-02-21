@@ -58,6 +58,7 @@ struct CleanScreen: View {
             Button("처음부터") {
                 Task { await viewModel.startFresh() }
             }
+            Button("취소", role: .cancel) { }
         } message: {
             Text("이전에 \(String(viewModel.pendingResumeIndex))번째 사진까지 진행했습니다.")
         }
@@ -122,7 +123,7 @@ struct CleanScreen: View {
 
                     cleaningModeButton(
                         title: "시작위치 선택하기",
-                        subtitle: "특정 시점부터 정리 시작",
+                        subtitle: "원하는 사진부터 정리",
                         icon: "photo.on.rectangle.angled",
                         accentColor: AppColors.accentGreen
                     ) {
