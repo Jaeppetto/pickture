@@ -73,6 +73,7 @@
 		D947E889F3DA3D99F6FBE529 /* StartCleaningSessionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7936CCFEDBD65A6F0B1225 /* StartCleaningSessionUseCase.swift */; };
 		DAA0C8277317D2B36B592BCA /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD3A6AACA6AD071FD1B6FCD /* AppColors.swift */; };
 		DD3B55E25C831CB7AC125FE3 /* SessionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84519DC5B69208738E13C2DF /* SessionSummaryView.swift */; };
+		C2B3D4E5F6071829304A5B6D /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A2C3D4E5F60718293A4B5C /* SplashScreenView.swift */; };
 		E98BB83C0F5349BDA8E38476 /* AnalyzeStorageUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C464BA778893579F5B12A116 /* AnalyzeStorageUseCase.swift */; };
 		EB3A2E0E3C2DA3C7C08CF348 /* StorageInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64B7985633CB2DE184620BD /* StorageInsight.swift */; };
 		F04CA6DEE636292C859F75AC /* DeletionQueueScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6B24442C54EBC57E46EB8E /* DeletionQueueScreen.swift */; };
@@ -139,6 +140,7 @@
 		7706ACD06AB4DABE34E28033 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		7E6B24442C54EBC57E46EB8E /* DeletionQueueScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletionQueueScreen.swift; sourceTree = "<group>"; };
 		84519DC5B69208738E13C2DF /* SessionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSummaryView.swift; sourceTree = "<group>"; };
+		B1A2C3D4E5F60718293A4B5C /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		867E9A8D1DB0AE2F6FD25CED /* PHAuthorizationStatus+Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAuthorizationStatus+Domain.swift"; sourceTree = "<group>"; };
 		8728F116B8CB05F58DE0C60E /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		89B1D2ADBE344326BBF83303 /* TrashRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashRepositoryProtocol.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				63187D5435BE4DEA0D69376C /* Home */,
 				2429AB94DD7276C5F29D6AF3 /* Settings */,
 				A8B571579B4DF9247F6CDFF4 /* MainTabView.swift */,
+				B1A2C3D4E5F60718293A4B5C /* SplashScreenView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -680,6 +683,7 @@
 				DD3B55E25C831CB7AC125FE3 /* SessionSummaryView.swift in Sources */,
 				83603335D2F66925F2BD634C /* SettingsScreen.swift in Sources */,
 				AAB11930E59BEAA792A23223 /* SettingsViewModel.swift in Sources */,
+				C2B3D4E5F6071829304A5B6D /* SplashScreenView.swift in Sources */,
 				D947E889F3DA3D99F6FBE529 /* StartCleaningSessionUseCase.swift in Sources */,
 				71EB7421B3902135535012AE /* StorageAnalysisRepository.swift in Sources */,
 				258D950D7ED567146A9D3CB7 /* StorageAnalysisRepositoryProtocol.swift in Sources */,
