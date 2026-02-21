@@ -10,16 +10,26 @@ struct SwipeCardView: View {
     @State private var isRemoved = false
     @State private var appeared = false
 
+    // Zoom state
+    @State private var zoomScale: CGFloat = 1.0
+    @State private var lastZoomScale: CGFloat = 1.0
+    @State private var zoomOffset: CGSize = .zero
+    @State private var lastZoomOffset: CGSize = .zero
+
     private let swipeThreshold: CGFloat = 120
+    private let maxZoomScale: CGFloat = 4.0
+    private var isZoomed: Bool { zoomScale > 1.05 }
     private let shape = RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
 
     var body: some View {
         ZStack {
             cardImage
-            decisionTintOverlay
-            metadataOverlay
-            directionOverlay
-                .allowsHitTesting(false)
+            if !isZoomed {
+                decisionTintOverlay
+                metadataOverlay
+                directionOverlay
+                    .allowsHitTesting(false)
+            }
         }
         .aspectRatio(3.0 / 4.0, contentMode: .fit)
         .clipShape(shape)
@@ -33,11 +43,13 @@ struct SwipeCardView: View {
         )
         .scaleEffect(appeared ? 1.0 : 0.965)
         .offset(y: appeared ? 0 : 12)
-        .rotationEffect(.degrees(Double(offset.width) / 20.0))
-        .offset(x: offset.width, y: offset.height)
+        .rotationEffect(isZoomed ? .zero : .degrees(Double(offset.width) / 20.0))
+        .offset(x: isZoomed ? 0 : offset.width, y: isZoomed ? 0 : offset.height)
         .opacity(isRemoved ? 0 : 1)
         .contentShape(shape)
         .highPriorityGesture(dragGesture)
+        .simultaneousGesture(pinchGesture)
+        .onTapGesture(count: 2) { doubleTap() }
         .onAppear {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
                 appeared = true
@@ -54,6 +66,8 @@ struct SwipeCardView: View {
                     Image(uiImage: thumbnail)
                         .resizable()
                         .scaledToFit()
+                        .scaleEffect(zoomScale)
+                        .offset(zoomOffset)
                 } else {
                     ProgressView()
                 }
@@ -151,30 +165,71 @@ struct SwipeCardView: View {
         .opacity(progress)
     }
 
-    // MARK: - Drag Gesture
+    // MARK: - Gestures
 
     private var dragGesture: some Gesture {
         DragGesture()
             .onChanged { value in
-                offset = value.translation
+                if isZoomed {
+                    zoomOffset = CGSize(
+                        width: lastZoomOffset.width + value.translation.width,
+                        height: lastZoomOffset.height + value.translation.height
+                    )
+                } else {
+                    offset = value.translation
+                }
             }
             .onEnded { value in
-                let direction = resolveDirection(translation: value.translation)
-
-                if let direction {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
-                        applyFinalOffset(for: direction)
-                        isRemoved = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        onSwiped(direction)
-                    }
+                if isZoomed {
+                    lastZoomOffset = zoomOffset
                 } else {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
-                        offset = .zero
+                    let direction = resolveDirection(translation: value.translation)
+
+                    if let direction {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
+                            applyFinalOffset(for: direction)
+                            isRemoved = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            onSwiped(direction)
+                        }
+                    } else {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
+                            offset = .zero
+                        }
                     }
                 }
             }
+    }
+
+    private var pinchGesture: some Gesture {
+        MagnifyGesture()
+            .onChanged { value in
+                zoomScale = max(1.0, min(lastZoomScale * value.magnification, maxZoomScale))
+            }
+            .onEnded { _ in
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    resetZoom()
+                }
+            }
+    }
+
+    private func doubleTap() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            if isZoomed {
+                resetZoom()
+            } else {
+                zoomScale = 2.5
+                lastZoomScale = 2.5
+            }
+        }
+    }
+
+    private func resetZoom() {
+        zoomScale = 1.0
+        lastZoomScale = 1.0
+        zoomOffset = .zero
+        lastZoomOffset = .zero
     }
 
     private func resolveDirection(translation: CGSize) -> Decision? {

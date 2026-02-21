@@ -508,6 +508,9 @@
     "Pickture." : {
 
     },
+    "Start Pickture" : {
+
+    },
     "tab.clean" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1652,6 +1655,7 @@
       }
     },
     "스와이프 정리" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1680,6 +1684,7 @@
       }
     },
     "스와이프 정리 시작" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
