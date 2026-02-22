@@ -34,6 +34,7 @@ struct SettingsScreen: View {
                                 Text("中文").tag("zh-Hans")
                             }
                             .tint(AppColors.ink)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
 
@@ -44,6 +45,19 @@ struct SettingsScreen: View {
                                 Spacer()
                                 Text("1.0.0")
                                     .foregroundStyle(AppColors.inkMuted)
+                            }
+                        }
+
+                        settingsRow {
+                            Link(destination: URL(string: "https://jaeppetto.github.io/pickture/privacy-policy.html")!) {
+                                HStack {
+                                    Label("개인정보 처리방침", systemImage: "hand.raised")
+                                        .foregroundStyle(AppColors.ink)
+                                    Spacer()
+                                    Image(systemName: "arrow.up.right")
+                                        .font(.footnote.weight(.semibold))
+                                        .foregroundStyle(AppColors.inkMuted)
+                                }
                             }
                         }
                     }

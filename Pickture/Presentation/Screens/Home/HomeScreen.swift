@@ -8,6 +8,7 @@ struct HomeScreen: View {
 
     @Environment(\.locale) private var locale
     @State private var showDeletionQueue = false
+    @State private var showSettings = false
 
     var body: some View {
         NavigationStack {
@@ -35,6 +36,22 @@ struct HomeScreen: View {
                 viewModel: deletionQueueViewModelFactory(),
                 onDeletionCompleted: {}
             )
+        }
+        .sheet(isPresented: $showSettings) {
+            NavigationStack {
+                SettingsScreen(viewModel: settingsViewModel)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                showSettings = false
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .font(.footnote.weight(.bold))
+                                    .foregroundStyle(AppColors.ink)
+                            }
+                        }
+                    }
+            }
         }
     }
 
@@ -71,12 +88,24 @@ struct HomeScreen: View {
     private var dashboardContent: some View {
         ScrollView {
             VStack(spacing: AppSpacing.md) {
-                HStack {
+                HStack(spacing: AppSpacing.sm) {
                     Text("Pickture.")
                         .font(.custom("PressStart2P-Regular", size: 20))
                         .foregroundStyle(AppColors.ink)
                     Spacer()
                     languageMenu
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(AppColors.ink)
+                            .frame(width: 32, height: 32)
+                            .background(AppColors.surface, in: Circle())
+                            .overlay {
+                                Circle().strokeBorder(AppColors.border, lineWidth: 1.5)
+                            }
+                    }
                 }
 
                 storageCard
