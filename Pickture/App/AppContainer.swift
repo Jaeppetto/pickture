@@ -30,6 +30,10 @@ final class AppContainer {
         photoDataSource: photoLibraryDataSource
     )
 
+    // MARK: - Services
+
+    private(set) lazy var analyticsService: any AnalyticsServiceProtocol = FirebaseAnalyticsService()
+
     // MARK: - Theme
 
     let theme = AppTheme()
@@ -76,7 +80,8 @@ final class AppContainer {
             analyzeStorageUseCase: makeAnalyzeStorageUseCase(),
             navigationCoordinator: navigationCoordinator,
             trashRepository: trashRepository,
-            cleaningSessionRepository: cleaningSessionRepository
+            cleaningSessionRepository: cleaningSessionRepository,
+            analyticsService: analyticsService
         )
     }
 
@@ -87,7 +92,8 @@ final class AppContainer {
             processDecisionUseCase: makeProcessSwipeDecisionUseCase(),
             completeSessionUseCase: makeCompleteSessionUseCase(),
             sessionRepository: cleaningSessionRepository,
-            trashRepository: trashRepository
+            trashRepository: trashRepository,
+            analyticsService: analyticsService
         )
     }
 
@@ -95,11 +101,13 @@ final class AppContainer {
         DeletionQueueViewModel(
             trashRepository: trashRepository,
             confirmDeletionUseCase: makeConfirmDeletionUseCase(),
-            photoRepository: photoRepository
+            photoRepository: photoRepository,
+            analyticsService: analyticsService
         )
     }
 
     private(set) lazy var settingsViewModel = SettingsViewModel(
-        preferenceRepository: userPreferenceRepository
+        preferenceRepository: userPreferenceRepository,
+        analyticsService: analyticsService
     )
 }

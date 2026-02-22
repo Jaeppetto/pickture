@@ -16,8 +16,7 @@ struct CleanScreen: View {
                 cleanContent
             }
             .background(AppColors.background)
-            .navigationTitle("정리")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
             .toolbar {
                 if case .cleaning = viewModel.screenState {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -91,7 +90,7 @@ struct CleanScreen: View {
                     .font(.custom("PressStart2P-Regular", size: 20))
                     .foregroundStyle(AppColors.ink)
                     .frame(maxWidth: .infinity)
-                    .padding(.top, AppSpacing.sm)
+                    .padding(.top, AppSpacing.lg)
 
                 VStack(spacing: AppSpacing.sm) {
                     cleaningModeButton(

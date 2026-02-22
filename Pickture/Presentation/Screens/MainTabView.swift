@@ -17,7 +17,7 @@ struct MainTabView: View {
                 }
             )
             .tabItem {
-                Label("홈", systemImage: "house.fill")
+                Label("tab.home", systemImage: "house.fill")
             }
             .tag(AppTab.home)
 
@@ -31,7 +31,7 @@ struct MainTabView: View {
                 photoRepository: container.photoRepository
             )
             .tabItem {
-                Label("정리", systemImage: "sparkles")
+                Label("tab.clean", systemImage: "sparkles")
             }
             .tag(AppTab.clean)
         }

@@ -48,6 +48,7 @@ final class CleanViewModel {
     private let completeSessionUseCase: CompleteSessionUseCase
     private let sessionRepository: any CleaningSessionRepositoryProtocol
     private let trashRepository: any TrashRepositoryProtocol
+    private let analyticsService: any AnalyticsServiceProtocol
 
     private let pageSize = AppConstants.Photo.pageSize
     private let prefetchThreshold = 10
@@ -60,7 +61,8 @@ final class CleanViewModel {
         processDecisionUseCase: ProcessSwipeDecisionUseCase,
         completeSessionUseCase: CompleteSessionUseCase,
         sessionRepository: any CleaningSessionRepositoryProtocol,
-        trashRepository: any TrashRepositoryProtocol
+        trashRepository: any TrashRepositoryProtocol,
+        analyticsService: any AnalyticsServiceProtocol
     ) {
         self.photoRepository = photoRepository
         self.startSessionUseCase = startSessionUseCase
@@ -68,6 +70,7 @@ final class CleanViewModel {
         self.completeSessionUseCase = completeSessionUseCase
         self.sessionRepository = sessionRepository
         self.trashRepository = trashRepository
+        self.analyticsService = analyticsService
     }
 
     // MARK: - Session Lifecycle
@@ -146,6 +149,12 @@ final class CleanViewModel {
             await loadNextPageMetadata(filter: filter)
             screenState = .cleaning
 
+            let event = AnalyticsEvent.sessionStarted(
+                filter: filter?.photoType?.rawValue ?? "all",
+                photoCount: totalPhotoCount
+            )
+            analyticsService.logEvent(event.name, parameters: event.parameters)
+
             // Phase 2: priority thumbnails (current + next few — immediate)
             await loadPriorityThumbnails()
 
@@ -165,6 +174,14 @@ final class CleanViewModel {
             currentSession = completed
             screenState = .summary(completed)
             HapticManager.sessionComplete()
+
+            let duration = completed.endedAt?.timeIntervalSince(completed.startedAt) ?? 0
+            let event = AnalyticsEvent.sessionCompleted(
+                kept: completed.totalKept,
+                deleted: completed.totalDeleted,
+                duration: duration
+            )
+            analyticsService.logEvent(event.name, parameters: event.parameters)
             await stopAllCaching()
         } catch {
             // Fallback to idle
@@ -207,6 +224,13 @@ final class CleanViewModel {
                 decision: decision,
                 session: session
             )
+
+            let swipeEvent = AnalyticsEvent.swipeDecision(
+                decision: decision == .delete ? "delete" : "keep",
+                photoIndex: currentIndex
+            )
+            analyticsService.logEvent(swipeEvent.name, parameters: swipeEvent.parameters)
+
             currentIndex += 1
 
             // Save filter index for resume
@@ -239,6 +263,9 @@ final class CleanViewModel {
         undoStack.removeLast()
         currentIndex -= 1
         HapticManager.undo()
+
+        let event = AnalyticsEvent.undoDecision
+        analyticsService.logEvent(event.name, parameters: event.parameters)
 
         // Rollback session counters
         if var session = currentSession {

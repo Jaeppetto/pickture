@@ -22,9 +22,33 @@ settings:
       SWIFT_OPTIMIZATION_LEVEL: "-O"
       SWIFT_COMPILATION_MODE: wholemodule
 
+packages:
+  FirebaseAnalytics:
+    url: https://github.com/firebase/firebase-ios-sdk
+    version: "11.0.0"
+
 configs:
   Debug: debug
   Release: release
+
+schemes:
+  Pickture:
+    build:
+      targets:
+        Pickture: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - PicktureTests
+        - PicktureUITests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
 
 targets:
   Pickture:
@@ -38,6 +62,12 @@ targets:
       - path: Pickture/Resources/Assets.xcassets
       - path: Pickture/Resources/Localizable
       - path: Pickture/Resources/Info.plist
+      - path: Pickture/Resources/Fonts
+      - path: Pickture/Resources/GoogleService-Info.plist
+        optional: true
+    dependencies:
+      - package: FirebaseAnalytics
+        product: FirebaseAnalytics
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jaeppetto.pickture
@@ -55,6 +85,8 @@ targets:
       path: Pickture/Resources/Info.plist
       properties:
         NSPhotoLibraryUsageDescription: "사진 라이브러리를 분석하고 정리하기 위해 접근 권한이 필요합니다."
+        UIAppFonts:
+          - PressStart2P-Regular.ttf
         UILaunchScreen:
           UIColorName: Background
 

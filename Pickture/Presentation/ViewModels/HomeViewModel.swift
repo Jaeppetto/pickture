@@ -17,23 +17,29 @@ final class HomeViewModel {
     private let navigationCoordinator: NavigationCoordinator
     private let trashRepository: any TrashRepositoryProtocol
     private let cleaningSessionRepository: any CleaningSessionRepositoryProtocol
+    private let analyticsService: any AnalyticsServiceProtocol
 
     init(
         analyzeStorageUseCase: AnalyzeStorageUseCase,
         navigationCoordinator: NavigationCoordinator,
         trashRepository: any TrashRepositoryProtocol,
-        cleaningSessionRepository: any CleaningSessionRepositoryProtocol
+        cleaningSessionRepository: any CleaningSessionRepositoryProtocol,
+        analyticsService: any AnalyticsServiceProtocol
     ) {
         self.analyzeStorageUseCase = analyzeStorageUseCase
         self.navigationCoordinator = navigationCoordinator
         self.trashRepository = trashRepository
         self.cleaningSessionRepository = cleaningSessionRepository
+        self.analyticsService = analyticsService
     }
 
     func loadStorageInfo() async {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
+
+        let event = AnalyticsEvent.screenViewed(name: "home")
+        analyticsService.logEvent(event.name, parameters: event.parameters)
 
         do {
             let result = try await analyzeStorageUseCase.execute()
@@ -67,6 +73,9 @@ final class HomeViewModel {
     }
 
     func startCleaning(with filter: CleaningFilter? = nil) {
+        let event = AnalyticsEvent.tabSelected(tab: "clean")
+        analyticsService.logEvent(event.name, parameters: event.parameters)
+
         navigationCoordinator.navigateToClean(with: filter)
     }
 }

@@ -1,8 +1,14 @@
 import SwiftUI
 
+import FirebaseCore
+
 @main
 struct PicktureApp: App {
     @State private var container = AppContainer()
+
+    init() {
+        FirebaseApp.configure()
+    }
 
     var body: some Scene {
         WindowGroup {
