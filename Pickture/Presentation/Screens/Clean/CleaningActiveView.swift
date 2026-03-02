@@ -5,11 +5,14 @@ struct CleaningActiveView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Progress bar
+            // Progress header
             if let session = viewModel.currentSession {
                 CleaningProgressView(
                     session: session,
-                    totalPhotos: viewModel.totalPhotoCount
+                    totalPhotos: viewModel.totalPhotoCount,
+                    onComplete: {
+                        Task { await viewModel.completeSession() }
+                    }
                 )
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.top, AppSpacing.xs)

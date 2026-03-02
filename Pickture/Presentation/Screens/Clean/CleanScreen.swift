@@ -17,16 +17,6 @@ struct CleanScreen: View {
             }
             .background(AppColors.background)
             .toolbar(.hidden, for: .navigationBar)
-            .toolbar {
-                if case .cleaning = viewModel.screenState {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("완료") {
-                            Task { await viewModel.completeSession() }
-                        }
-                        .font(AppTypography.bodyMedium)
-                    }
-                }
-            }
         }
         .task {
             await viewModel.checkForActiveSession()
@@ -90,7 +80,6 @@ struct CleanScreen: View {
                     .font(.custom("PressStart2P-Regular", size: 20))
                     .foregroundStyle(AppColors.ink)
                     .frame(maxWidth: .infinity)
-                    .padding(.top, AppSpacing.lg)
 
                 VStack(spacing: AppSpacing.sm) {
                     cleaningModeButton(
@@ -141,7 +130,10 @@ struct CleanScreen: View {
             }
             .padding(AppSpacing.md)
             .padding(.bottom, AppSpacing.xl)
+            .frame(maxHeight: .infinity)
         }
+        .frame(maxHeight: .infinity)
+        .scrollBounceBehavior(.basedOnSize)
     }
 
     private func cleaningModeButton(

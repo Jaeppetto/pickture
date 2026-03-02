@@ -4,6 +4,9 @@
     "·" : {
 
     },
+    "/%@" : {
+
+    },
     "%@" : {
 
     },
@@ -31,16 +34,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已释放 %1$@"
-          }
-        }
-      }
-    },
-    "%@/%@" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@/%2$@"
           }
         }
       }
