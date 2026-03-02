@@ -96,3 +96,44 @@
 - **Trash queue button not showing:** Added eager `loadTrashCount()` call in HomeScreen `.task` before permission check. Previously only ran after `loadStorageInfo()` which gated on permissions.
 - **Deletion queue count not refreshing:** Fixed by ensuring `loadTrashCount()` runs reliably (related to trash button fix above). `onDismiss` handler was correct but count was stale from ViewModel reset.
 - **Session index not persisted on completion:** Removed `clearFilterIndex()` from `completeSession()`. Index now persists until user explicitly chooses "처음부터" in the resume alert.
+
+## 2026-02-18 — Internationalization & Redesign
+
+### Changes
+- **Full multi-language support (i18n):** Added comprehensive localization across all presentation files (ko/en/ja/zh-Hans). Fixed undo logic in cleaning flow.
+- **Redesign pass:** Visual overhaul across multiple screens.
+- **Home screen last session card:** Added last session summary card with expiration warning banner.
+- **Locale-aware relative time:** Switched to `RelativeDateTimeFormatter` for proper locale-aware relative time display on Home.
+- **Bug fixes:** Resolved broken buttons, photo display issues, and home title rendering.
+
+## 2026-02-19 — Performance & Branding
+
+### Changes
+- **Photo loading optimization:** Implemented asset cache for efficient photo loading with immediate UI transition — eliminates loading delays when navigating.
+- **Press Start 2P pixel font:** Added custom pixel font for branding. Updated Start Pickture title and key headings.
+- **True global shuffle:** Implemented proper global shuffle for cleaning mode with priority thumbnail loading — shuffles entire photo library, not just per-page.
+
+## 2026-02-21 — Splash & Gestures
+
+### Changes
+- **Custom animated splash screen:** Built brutalist-style animated splash with brand identity.
+- **Pinch-to-zoom on swipe cards:** Added pinch-to-zoom and double-tap zoom gestures to photo swipe cards for closer inspection during cleaning.
+
+## 2026-02-22 — Analytics & Settings
+
+### Changes
+- **Firebase Analytics GA4:** Integrated Firebase Analytics for usage tracking. Fixed localization conflicts from integration.
+- **Category colors unified:** Standardized accent colors across Home and Clean screens for visual consistency.
+- **Settings button & privacy policy:** Added settings button to Home screen toolbar with privacy policy link.
+
+## 2026-03-02 — Clean Screen Fixes
+
+### Changes
+- **Restored missing "완료" button:** The done button was placed in a `.toolbar` ToolbarItem, but the navigation bar was hidden via `.toolbar(.hidden, for: .navigationBar)`, making it invisible. Moved the button into `CleaningProgressView` as a direct view element.
+- **Brutalist progress header redesign:** Redesigned `CleaningProgressView` with `.brutalistCard()` wrapper, mono-styled counter, stat badges, and a yellow accent done button with brutalist border — visually consistent with the bottom action bar.
+- **Idle view center alignment:** Changed Start Pickture mode selection buttons from top-aligned to vertically centered using `frame(maxHeight: .infinity)` with `.scrollBounceBehavior(.basedOnSize)`.
+
+### Files Modified
+- `Presentation/Components/CleaningProgressView.swift` — full redesign with brutalist card, onComplete callback
+- `Presentation/Screens/Clean/CleanScreen.swift` — removed dead toolbar code, centered idle view
+- `Presentation/Screens/Clean/CleaningActiveView.swift` — pass onComplete to CleaningProgressView
