@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1B2C3D4E5F60718A9B0C1D2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F1E2D3C4B5A60718A9B0C1D2 /* PrivacyInfo.xcprivacy */; };
 		026296A5AB83D6C7B9D796C5 /* PicktureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433B993C6EED4F54F158A78A /* PicktureApp.swift */; };
 		02963D64F5B70143BEF97DE6 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B135DA903D3A75A8A2B34EF /* HomeViewModel.swift */; };
 		0523313F6FC45538BDAE14A8 /* CleaningDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD37D567217F7AA5810E3D2 /* CleaningDecision.swift */; };
@@ -174,6 +175,7 @@
 		D188B6CE7E6DCB94FC86F443 /* PicktureIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktureIconView.swift; sourceTree = "<group>"; };
 		DA1418113F20C91D06F2DD51 /* Int64+ByteFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+ByteFormatting.swift"; sourceTree = "<group>"; };
 		DBB29BF2DF45B4D66095D251 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F1E2D3C4B5A60718A9B0C1D2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DD1761A06A9ABE82B657A0E7 /* PhotoPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPermissionViewModel.swift; sourceTree = "<group>"; };
 		DD4D56CE96E471EF3BFC2639 /* StorageAnalysisRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAnalysisRepository.swift; sourceTree = "<group>"; };
 		DFB3D01A5D273B38C79365EF /* AppTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTypography.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 				03A067CC464FF7F4B32A1164 /* Assets.xcassets */,
 				E1DE51BB4AF14507C6BA661E /* GoogleService-Info.plist */,
 				DBB29BF2DF45B4D66095D251 /* Info.plist */,
+				F1E2D3C4B5A60718A9B0C1D2 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -656,6 +659,7 @@
 				594F3EC22E5D273FFB912541 /* Assets.xcassets in Resources */,
 				3677EB8517E8965A594532F2 /* GoogleService-Info.plist in Resources */,
 				18844800F3B75347650DB752 /* Localizable.xcstrings in Resources */,
+				A1B2C3D4E5F60718A9B0C1D2 /* PrivacyInfo.xcprivacy in Resources */,
 				C9088CBB552C84BE6D7425F6 /* PressStart2P-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
