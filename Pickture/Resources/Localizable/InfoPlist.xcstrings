@@ -1,7 +1,20 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Pickture"
+          }
+        }
+      }
+    },
     "NSPhotoLibraryUsageDescription" : {
+      "comment" : "Privacy - Photo Library Usage Description",
       "localizations" : {
         "en" : {
           "stringUnit" : {
