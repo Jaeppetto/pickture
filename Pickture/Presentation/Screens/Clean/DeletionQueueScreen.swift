@@ -232,9 +232,9 @@ struct DeletionQueueScreen: View {
 
     private func expirationLabel(for item: TrashItem) -> String {
         let days = daysUntilExpiration(for: item)
-        if days <= 0 { return String(localized: "오늘 만료", locale: locale) }
-        let format = String(localized: "%@일 남음", locale: locale)
-        return String(format: format, locale: locale, String(days))
+        if days <= 0 { return localizedString("오늘 만료") }
+        let format = localizedString("%@일 남음")
+        return String(format: format, String(days))
     }
 
     private func deletedLabel(for item: TrashItem) -> String {
@@ -247,9 +247,18 @@ struct DeletionQueueScreen: View {
             ).day ?? 0
         )
 
-        if days == 0 { return String(localized: "오늘 삭제됨", locale: locale) }
-        let format = String(localized: "%@일 전 삭제", locale: locale)
-        return String(format: format, locale: locale, String(days))
+        if days == 0 { return localizedString("오늘 삭제됨") }
+        let format = localizedString("%@일 전 삭제")
+        return String(format: format, String(days))
+    }
+
+    private func localizedString(_ key: String) -> String {
+        let langCode = locale.language.languageCode?.identifier ?? "ko"
+        guard let path = Bundle.main.path(forResource: langCode, ofType: "lproj"),
+              let bundle = Bundle(path: path) else {
+            return NSLocalizedString(key, comment: "")
+        }
+        return NSLocalizedString(key, bundle: bundle, comment: "")
     }
 
     private var selectAllButtonTitle: LocalizedStringKey {

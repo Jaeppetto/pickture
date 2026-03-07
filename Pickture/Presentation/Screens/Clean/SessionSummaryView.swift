@@ -49,7 +49,7 @@ struct SessionSummaryView: View {
                     .offset(y: showStats ? 0 : 20)
 
                 // Duration
-                if let duration = sessionDuration {
+                if let duration = sessionDurationComponents {
                     Text("소요 시간: \(duration)")
                         .font(AppTypography.footnote)
                         .foregroundStyle(AppColors.inkMuted)
@@ -139,17 +139,13 @@ struct SessionSummaryView: View {
 
     // MARK: - Helpers
 
-    private var sessionDuration: String? {
+    private var sessionDurationComponents: String? {
         guard let endedAt = session.endedAt else { return nil }
         let interval = endedAt.timeIntervalSince(session.startedAt)
-        let minutes = Int(interval) / 60
-        let seconds = Int(interval) % 60
-
-        if minutes > 0 {
-            let format = String(localized: "%@분 %@초", locale: locale)
-            return String(format: format, locale: locale, String(minutes), String(seconds))
-        }
-        let format = String(localized: "%@초", locale: locale)
-        return String(format: format, locale: locale, String(seconds))
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = interval >= 60 ? [.minute, .second] : [.second]
+        formatter.unitsStyle = .abbreviated
+        formatter.calendar?.locale = locale
+        return formatter.string(from: interval)
     }
 }

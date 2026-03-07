@@ -46,7 +46,7 @@ struct PhotoMetadataOverlay: View {
 
                 if photo.location != nil {
                     divider
-                    metadataRow(icon: "location", label: "위치", value: String(localized: "위치 정보 있음", locale: locale))
+                    metadataRow(icon: "location", label: "위치", value: LocalizedStringKey("위치 정보 있음"))
                 }
             }
             .background(
@@ -85,6 +85,24 @@ struct PhotoMetadataOverlay: View {
                 .font(AppTypography.footnote)
                 .foregroundStyle(AppColors.inkMuted)
             Spacer()
+            Text(verbatim: value)
+                .font(AppTypography.footnoteMedium)
+                .foregroundStyle(AppColors.ink)
+        }
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.sm)
+    }
+
+    private func metadataRow(icon: String, label: LocalizedStringKey, value: LocalizedStringKey) -> some View {
+        HStack(spacing: AppSpacing.xs) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(AppColors.inkMuted)
+                .frame(width: 20)
+            Text(label)
+                .font(AppTypography.footnote)
+                .foregroundStyle(AppColors.inkMuted)
+            Spacer()
             Text(value)
                 .font(AppTypography.footnoteMedium)
                 .foregroundStyle(AppColors.ink)
@@ -101,13 +119,13 @@ struct PhotoMetadataOverlay: View {
         return formatter.string(from: photo.createdAt)
     }
 
-    private var photoTypeName: String {
+    private var photoTypeName: LocalizedStringKey {
         switch photo.type {
-        case .image: String(localized: "사진", locale: locale)
-        case .video: String(localized: "동영상", locale: locale)
-        case .screenshot: String(localized: "스크린샷", locale: locale)
-        case .gif: String(localized: "GIF", locale: locale)
-        case .livePhoto: String(localized: "라이브 포토", locale: locale)
+        case .image: "사진"
+        case .video: "동영상"
+        case .screenshot: "스크린샷"
+        case .gif: "GIF"
+        case .livePhoto: "라이브 포토"
         }
     }
 

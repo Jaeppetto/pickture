@@ -337,7 +337,7 @@ struct HomeScreen: View {
             } label: {
                 HStack(spacing: AppSpacing.xs) {
                     Image(systemName: "trash")
-                    Text("삭제 대기열 보기 (\(viewModel.trashItemCount))")
+                    Text("삭제 대기열 보기 (\(String(viewModel.trashItemCount)))")
                 }
             }
             .buttonStyle(.brutalistSecondary)

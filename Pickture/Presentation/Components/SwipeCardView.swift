@@ -88,7 +88,7 @@ struct SwipeCardView: View {
     private var directionOverlay: some View {
         if offset.width < -30 {
             stampOverlay(
-                text: String(localized: "삭제", locale: locale),
+                text: "삭제",
                 color: AppColors.delete,
                 rotation: 12,
                 progress: min(1, abs(offset.width) / swipeThreshold)
@@ -97,7 +97,7 @@ struct SwipeCardView: View {
 
         if offset.width > 30 {
             stampOverlay(
-                text: String(localized: "보관", locale: locale),
+                text: "보관",
                 color: AppColors.keep,
                 rotation: -12,
                 progress: min(1, offset.width / swipeThreshold)
@@ -135,6 +135,17 @@ struct SwipeCardView: View {
     private func metadataChip(icon: String, text: String) -> some View {
         HStack(spacing: AppSpacing.xxxs) {
             Image(systemName: icon)
+            Text(verbatim: text)
+        }
+        .font(AppTypography.captionMedium)
+        .foregroundStyle(AppColors.ink)
+        .padding(.horizontal, AppSpacing.xxs)
+        .padding(.vertical, AppSpacing.xxs)
+    }
+
+    private func metadataChip(icon: String, text: LocalizedStringKey) -> some View {
+        HStack(spacing: AppSpacing.xxxs) {
+            Image(systemName: icon)
             Text(text)
         }
         .font(AppTypography.captionMedium)
@@ -144,7 +155,7 @@ struct SwipeCardView: View {
     }
 
     private func stampOverlay(
-        text: String,
+        text: LocalizedStringKey,
         color: Color,
         rotation: Double,
         progress: Double
@@ -273,13 +284,13 @@ struct SwipeCardView: View {
         }
     }
 
-    private var photoTypeText: String {
+    private var photoTypeText: LocalizedStringKey {
         switch photo.type {
-        case .image: String(localized: "사진", locale: locale)
-        case .video: String(localized: "동영상", locale: locale)
-        case .screenshot: String(localized: "스크린샷", locale: locale)
-        case .gif: String(localized: "GIF", locale: locale)
-        case .livePhoto: String(localized: "Live", locale: locale)
+        case .image: "사진"
+        case .video: "동영상"
+        case .screenshot: "스크린샷"
+        case .gif: "GIF"
+        case .livePhoto: "Live"
         }
     }
 
