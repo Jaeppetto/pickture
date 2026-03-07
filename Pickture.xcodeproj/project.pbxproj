@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A1B2C3D4E5F60718A9B0C1D2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F1E2D3C4B5A60718A9B0C1D2 /* PrivacyInfo.xcprivacy */; };
+		B2C3D4E5F6071829A0B1C2D3 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E2F3A4B5C6D71829A0B1C2D3 /* InfoPlist.xcstrings */; };
 		026296A5AB83D6C7B9D796C5 /* PicktureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433B993C6EED4F54F158A78A /* PicktureApp.swift */; };
 		02963D64F5B70143BEF97DE6 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B135DA903D3A75A8A2B34EF /* HomeViewModel.swift */; };
 		0523313F6FC45538BDAE14A8 /* CleaningDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD37D567217F7AA5810E3D2 /* CleaningDecision.swift */; };
@@ -183,6 +184,7 @@
 		E05B88D7B9C7994391A8F869 /* UserPreferenceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferenceRepository.swift; sourceTree = "<group>"; };
 		E1DE51BB4AF14507C6BA661E /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E1DF45917988A6D9E96690AF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E2F3A4B5C6D71829A0B1C2D3 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		E2BB4BD1F3C77C781112F383 /* AppSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpacing.swift; sourceTree = "<group>"; };
 		EA7936CCFEDBD65A6F0B1225 /* StartCleaningSessionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartCleaningSessionUseCase.swift; sourceTree = "<group>"; };
 		EC73155666011350F13F62F7 /* UserPreferenceRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferenceRepositoryProtocol.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 		886EE6B5ED8540100F7C0E5D /* Localizable */ = {
 			isa = PBXGroup;
 			children = (
+				E2F3A4B5C6D71829A0B1C2D3 /* InfoPlist.xcstrings */,
 				E1DF45917988A6D9E96690AF /* Localizable.xcstrings */,
 			);
 			path = Localizable;
@@ -658,6 +661,7 @@
 			files = (
 				594F3EC22E5D273FFB912541 /* Assets.xcassets in Resources */,
 				3677EB8517E8965A594532F2 /* GoogleService-Info.plist in Resources */,
+				B2C3D4E5F6071829A0B1C2D3 /* InfoPlist.xcstrings in Resources */,
 				18844800F3B75347650DB752 /* Localizable.xcstrings in Resources */,
 				A1B2C3D4E5F60718A9B0C1D2 /* PrivacyInfo.xcprivacy in Resources */,
 				C9088CBB552C84BE6D7425F6 /* PressStart2P-Regular.ttf in Resources */,
