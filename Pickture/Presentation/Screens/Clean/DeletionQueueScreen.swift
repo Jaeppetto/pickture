@@ -165,6 +165,10 @@ struct DeletionQueueScreen: View {
                 }
             }
             .contentShape(shape)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Text("\(deletedLabel(for: item)), \(item.fileSize.formattedBytesShort)"))
+            .accessibilityValue(isSelected ? Text("선택됨") : Text("선택 안됨"))
+            .accessibilityAddTraits(.isButton)
         }
         .buttonStyle(.plain)
     }

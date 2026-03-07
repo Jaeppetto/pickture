@@ -49,6 +49,7 @@ struct HomeScreen: View {
                                     .font(.footnote.weight(.bold))
                                     .foregroundStyle(AppColors.ink)
                             }
+                            .accessibilityLabel(Text("닫기"))
                         }
                     }
             }
@@ -81,6 +82,7 @@ struct HomeScreen: View {
                     Circle().strokeBorder(AppColors.border, lineWidth: 1.5)
                 }
         }
+        .accessibilityLabel(Text("언어"))
     }
 
     // MARK: - Dashboard
@@ -106,6 +108,7 @@ struct HomeScreen: View {
                                 Circle().strokeBorder(AppColors.border, lineWidth: 1.5)
                             }
                     }
+                    .accessibilityLabel(Text("설정"))
                 }
 
                 storageCard
@@ -380,5 +383,6 @@ private struct StatBadge: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.sm)
         .brutalistCard(accent: accentColor)
+        .accessibilityElement(children: .combine)
     }
 }

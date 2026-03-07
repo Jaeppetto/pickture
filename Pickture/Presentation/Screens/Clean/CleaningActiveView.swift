@@ -51,16 +51,19 @@ struct CleaningActiveView: View {
             actionButton(icon: "trash.fill", bgColor: AppColors.accentRed, fgColor: .white, size: 52) {
                 Task { await viewModel.deleteCurrentPhoto() }
             }
+            .accessibilityLabel(Text("삭제"))
 
             actionButton(icon: "arrow.uturn.backward", bgColor: AppColors.surface, fgColor: AppColors.ink, size: 44) {
                 Task { await viewModel.undoLastDecision() }
             }
             .opacity(viewModel.canUndo ? 1 : 0.35)
             .disabled(!viewModel.canUndo)
+            .accessibilityLabel(Text("되돌리기"))
 
             actionButton(icon: "checkmark", bgColor: AppColors.accentGreen, fgColor: .white, size: 52) {
                 Task { await viewModel.keepCurrentPhoto() }
             }
+            .accessibilityLabel(Text("보관"))
         }
         .padding(.horizontal, AppSpacing.lg)
         .padding(.vertical, AppSpacing.sm)
