@@ -20,13 +20,19 @@ struct PicktureApp: App {
 private struct RootView: View {
     let container: AppContainer
     @State private var showSplash = true
+    @State private var hasCompletedOnboarding: Bool
     @State private var showLanguageToast = false
     @State private var toastMessage = ""
     @State private var toastWorkItem: DispatchWorkItem?
 
+    init(container: AppContainer) {
+        self.container = container
+        _hasCompletedOnboarding = State(initialValue: container.onboardingStateStore.hasCompletedOnboarding)
+    }
+
     var body: some View {
         ZStack {
-            MainTabView(container: container)
+            appContent
                 .preferredColorScheme(container.theme.colorScheme)
                 .environment(\.locale, resolvedLocale)
                 .task {
@@ -71,6 +77,26 @@ private struct RootView: View {
                     showSplash = false
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var appContent: some View {
+        if hasCompletedOnboarding {
+            MainTabView(container: container)
+                .transition(.opacity.combined(with: .move(edge: .trailing)))
+        } else {
+            OnboardingScreen {
+                completeOnboarding()
+            }
+            .transition(.opacity.combined(with: .move(edge: .leading)))
+        }
+    }
+
+    private func completeOnboarding() {
+        container.onboardingStateStore.markCompleted()
+        withAnimation(.easeInOut(duration: 0.28)) {
+            hasCompletedOnboarding = true
         }
     }
 

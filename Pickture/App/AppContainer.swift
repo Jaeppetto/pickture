@@ -38,6 +38,10 @@ final class AppContainer {
 
     let theme = AppTheme()
 
+    // MARK: - Onboarding
+
+    let onboardingStateStore = OnboardingStateStore()
+
     // MARK: - Navigation
 
     let navigationCoordinator = NavigationCoordinator()

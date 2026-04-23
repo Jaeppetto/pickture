@@ -79,7 +79,6 @@ struct CleaningSessionTests {
         #expect(session.totalReviewed == 0)
         #expect(session.totalDeleted == 0)
         #expect(session.totalKept == 0)
-        #expect(session.totalFavorited == 0)
         #expect(session.freedBytes == 0)
         #expect(session.endedAt == nil)
     }

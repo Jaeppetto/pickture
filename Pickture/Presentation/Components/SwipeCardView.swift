@@ -21,6 +21,22 @@ struct SwipeCardView: View {
     private var isZoomed: Bool { zoomScale > 1.05 }
     private let shape = RoundedRectangle(cornerRadius: AppSpacing.BrutalistTokens.cornerRadius, style: .continuous)
 
+    private static let appearSpring: Animation = .spring(response: 0.42, dampingFraction: 0.82)
+    private static let snapBackSpring: Animation = .spring(response: 0.5, dampingFraction: 0.68)
+    private static let flyOffSpring: Animation = .interpolatingSpring(stiffness: 240, damping: 24)
+    private static let zoomSpring: Animation = .spring(response: 0.3, dampingFraction: 0.8)
+
+    private var dragProgress: CGFloat {
+        min(1, abs(offset.width) / swipeThreshold)
+    }
+
+    private var cardScale: CGFloat {
+        if !appeared { return 0.965 }
+        if isRemoved { return 0.92 }
+        if isZoomed { return 1.0 }
+        return 1.0 + dragProgress * 0.015
+    }
+
     var body: some View {
         ZStack {
             cardImage
@@ -41,7 +57,7 @@ struct SwipeCardView: View {
                 .fill(AppColors.shadowColor)
                 .offset(x: AppSpacing.BrutalistTokens.shadowOffset, y: AppSpacing.BrutalistTokens.shadowOffsetLarge)
         )
-        .scaleEffect(appeared ? 1.0 : 0.965)
+        .scaleEffect(cardScale)
         .offset(y: appeared ? 0 : 12)
         .rotationEffect(isZoomed ? .zero : .degrees(Double(offset.width) / 20.0))
         .offset(x: isZoomed ? 0 : offset.width, y: isZoomed ? 0 : offset.height)
@@ -51,7 +67,7 @@ struct SwipeCardView: View {
         .simultaneousGesture(pinchGesture)
         .onTapGesture(count: 2) { doubleTap() }
         .onAppear {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
+            withAnimation(Self.appearSpring) {
                 appeared = true
             }
         }
@@ -197,7 +213,7 @@ struct SwipeCardView: View {
                     let direction = resolveDirection(translation: value.translation)
 
                     if let direction {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
+                        withAnimation(Self.flyOffSpring) {
                             applyFinalOffset(for: direction)
                             isRemoved = true
                         }
@@ -205,7 +221,7 @@ struct SwipeCardView: View {
                             onSwiped(direction)
                         }
                     } else {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
+                        withAnimation(Self.snapBackSpring) {
                             offset = .zero
                         }
                     }
@@ -219,14 +235,14 @@ struct SwipeCardView: View {
                 zoomScale = max(1.0, min(lastZoomScale * value.magnification, maxZoomScale))
             }
             .onEnded { _ in
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                withAnimation(Self.zoomSpring) {
                     resetZoom()
                 }
             }
     }
 
     private func doubleTap() {
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+        withAnimation(Self.zoomSpring) {
             if isZoomed {
                 resetZoom()
             } else {
