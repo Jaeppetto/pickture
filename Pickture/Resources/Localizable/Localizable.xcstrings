@@ -2738,6 +2738,34 @@
         }
       }
     },
+    "정리 완료 축하" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cleaning complete celebration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "整理完了のお祝い"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정리 완료 축하"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清理完成庆祝"
+          }
+        }
+      }
+    },
     "정리 완료!" : {
       "localizations" : {
         "en" : {

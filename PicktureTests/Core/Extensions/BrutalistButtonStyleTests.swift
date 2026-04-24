@@ -20,3 +20,26 @@ struct BrutalistButtonStyleTests {
         #expect(metrics.scale == 0.995)
     }
 }
+
+@Suite("SessionSummaryRevealTimeline Tests")
+struct SessionSummaryRevealTimelineTests {
+    @Test("standard timing reveals icon title stats and actions in order")
+    func standardTimingRevealsPhasesInOrder() {
+        let timeline = SessionSummaryRevealTimeline(reduceMotion: false)
+
+        #expect(timeline.delay(for: .icon) == 0.1)
+        #expect(timeline.delay(for: .title) == 0.24)
+        #expect(timeline.delay(for: .stats) == 0.38)
+        #expect(timeline.delay(for: .actions) == 0.52)
+    }
+
+    @Test("reduced motion uses shorter timing while preserving order")
+    func reducedMotionUsesShorterTimingWhilePreservingOrder() {
+        let timeline = SessionSummaryRevealTimeline(reduceMotion: true)
+
+        #expect(timeline.delay(for: .icon) == 0)
+        #expect(timeline.delay(for: .title) == 0.08)
+        #expect(timeline.delay(for: .stats) == 0.16)
+        #expect(timeline.delay(for: .actions) == 0.24)
+    }
+}
