@@ -68,6 +68,25 @@ private struct BrutalistCardModifier: ViewModifier {
 
 // MARK: - Brutalist Button Style
 
+struct BrutalistButtonPressMetrics {
+    let bodyOffset: CGFloat
+    let scale: CGFloat
+
+    static func metrics(isPressed: Bool, shadowOffset: CGFloat) -> BrutalistButtonPressMetrics {
+        guard isPressed else {
+            return BrutalistButtonPressMetrics(
+                bodyOffset: 0,
+                scale: 1
+            )
+        }
+
+        return BrutalistButtonPressMetrics(
+            bodyOffset: shadowOffset * 0.9,
+            scale: 0.995
+        )
+    }
+}
+
 struct BrutalistButtonStyle: ButtonStyle {
     enum Style {
         case primary, secondary, destructive, ghost
@@ -112,7 +131,10 @@ struct BrutalistButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        let currentOffset = configuration.isPressed ? shadowOffset : 0
+        let metrics = BrutalistButtonPressMetrics.metrics(
+            isPressed: configuration.isPressed,
+            shadowOffset: shadowOffset
+        )
 
         configuration.label
             .font(AppTypography.bodySemibold)
@@ -123,17 +145,19 @@ struct BrutalistButtonStyle: ButtonStyle {
             .overlay {
                 shape.strokeBorder(AppColors.border, lineWidth: borderWidth)
             }
-            .background(
-                hasShadow
-                    ? AnyView(
-                        shape
-                            .fill(shadowColor)
-                            .offset(x: shadowOffset, y: shadowOffset)
-                    )
-                    : AnyView(EmptyView())
-            )
-            .offset(x: currentOffset, y: currentOffset)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .scaleEffect(metrics.scale)
+            .offset(x: metrics.bodyOffset, y: metrics.bodyOffset)
+            .background(alignment: .topLeading) {
+                if hasShadow {
+                    shape
+                        .fill(shadowColor)
+                        .offset(x: shadowOffset, y: shadowOffset)
+                }
+            }
+            .padding(.trailing, hasShadow ? shadowOffset : 0)
+            .padding(.bottom, hasShadow ? shadowOffset : 0)
+            .contentShape(shape)
+            .animation(.spring(response: 0.16, dampingFraction: 0.78), value: configuration.isPressed)
     }
 }
 

@@ -32,4 +32,17 @@ final class PicktureUITests: XCTestCase {
         let homeTab = tabBar.buttons.element(boundBy: 0)
         homeTab.tap()
     }
+
+    func testOnboardingStartCompletesWithoutBottomSheet() throws {
+        app.terminate()
+        app.launchArguments += ["-onboarding_completed", "NO"]
+        app.launch()
+
+        let startButton = app.buttons["Start Pickture"]
+        XCTAssertTrue(startButton.waitForExistence(timeout: 4), "Onboarding start button should appear")
+
+        startButton.tap()
+
+        XCTAssertFalse(app.buttons["Continue"].waitForExistence(timeout: 1), "Onboarding should not show a bottom sheet")
+    }
 }

@@ -393,6 +393,34 @@
         }
       }
     },
+    "Continue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "続ける"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계속"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续"
+          }
+        }
+      }
+    },
     "English" : {
       "localizations" : {
         "en" : {
@@ -513,12 +541,6 @@
     },
     "Start Pickture" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start Pickture"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -531,10 +553,44 @@
             "value" : "Start Pickture"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Pickture"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start Pickture"
+          }
+        }
+      }
+    },
+    "Swipe. Clean. Lighten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe.\nClean.\nLighten."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe.\nClean.\nLighten."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe.\nClean.\nLighten."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe.\nClean.\nLighten."
           }
         }
       }
@@ -1253,6 +1309,63 @@
         }
       }
     },
+    "사진은 기기 안에서만 처리됩니다." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos are processed only on your device."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真はデバイス上だけで処理されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진은 기기 안에서만 처리됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片仅在你的设备上处理。"
+          }
+        }
+      }
+    },
+    "사진을 넘기듯 정리하고, 내 폰은 더 가볍게." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe through your photos and make your phone feel lighter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真をめくるように整理して、スマホをもっと軽く。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 넘기듯 정리하고, 내 폰은 더 가볍게."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "像翻看照片一样整理，让手机更轻盈。"
+          }
+        }
+      }
+    },
     "사진을 랜덤으로 섞어서 정리" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1476,6 +1589,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除完成"
+          }
+        }
+      }
+    },
+    "삭제 전 대기열에서 한 번 더 확인합니다." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review deletions once more in the deletion queue."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除前に削除待ちリストでもう一度確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 전 대기열에서 한 번 더 확인합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除前可在删除队列中再次确认。"
           }
         }
       }
@@ -2162,6 +2304,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今日已删除"
+          }
+        }
+      }
+    },
+    "온보딩 계속하기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue onboarding"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンボーディングを続ける"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "온보딩 계속하기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续引导"
           }
         }
       }
@@ -2992,174 +3162,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日语"
-          }
-        }
-      }
-    },
-    "Swipe. Clean. Lighten." : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe.\nClean.\nLighten."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe.\nClean.\nLighten."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe.\nClean.\nLighten."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe.\nClean.\nLighten."
-          }
-        }
-      }
-    },
-    "사진을 넘기듯 정리하고, 내 폰은 더 가볍게." : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "사진을 넘기듯 정리하고, 내 폰은 더 가볍게."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe through your photos and make your phone feel lighter."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "写真をめくるように整理して、スマホをもっと軽く。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "像翻看照片一样整理，让手机更轻盈。"
-          }
-        }
-      }
-    },
-    "사진은 기기 안에서만 처리됩니다." : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "사진은 기기 안에서만 처리됩니다."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Photos are processed only on your device."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "写真はデバイス上だけで処理されます。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "照片仅在你的设备上处理。"
-          }
-        }
-      }
-    },
-    "삭제 전 대기열에서 한 번 더 확인합니다." : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "삭제 전 대기열에서 한 번 더 확인합니다."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Review deletions once more in the deletion queue."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "削除前に削除待ちリストでもう一度確認できます。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除前可在删除队列中再次确认。"
-          }
-        }
-      }
-    },
-    "Continue" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "계속"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "続ける"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "继续"
-          }
-        }
-      }
-    },
-    "온보딩 계속하기" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "온보딩 계속하기"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue onboarding"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オンボーディングを続ける"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "继续引导"
           }
         }
       }
